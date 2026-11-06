@@ -62,6 +62,9 @@ and policy. A few documents name ForbOS files (paths such as `desktop/config/...
 
 ## Build
 
+On Windows, enable long paths before cloning (`git config --global core.longpaths true`): a few
+test fixtures sit in deep directories of the persistent store.
+
 You need Zig 0.17.0 exactly (the build refuses any other version) and nothing else: the package
 has no dependencies and builds offline. From the repository root:
 
