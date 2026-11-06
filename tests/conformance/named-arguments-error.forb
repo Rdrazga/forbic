@@ -1,0 +1,2 @@
+Scale(N:i64,Factor:i64=2)<computes>:i64=N/Factor
+Boom<public>:i64=Scale(10,Factor:=0)

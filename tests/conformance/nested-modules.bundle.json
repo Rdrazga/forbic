@@ -1,0 +1,13 @@
+{
+  "root": "main.forb",
+  "modules": [
+    {
+      "path": "main.forb",
+      "source": "Kit:=import{\"kit/shapes.forb\"}\nusing{Kit.Geometry}\nUnit:i64=2\nLocal:=module{\n  Scale<public>(X:i64)<computes>:i64=X*Unit\n  Hidden<internal>:i64=7\n  Deep<public>:=module{\n    Offsets:Kit.Row=array{1,2,3}\n    Doubled<public>()<computes>:[]i64=For(X:Offsets,Scale(X)+Hidden)\n  }\n}\nP:Kit.Geometry.point=Kit.Geometry.point{x:=3,y:=4}\nArea<public>:i64=Flat.Area(P)\nDoubled<public>:[]i64=Local.Deep.Doubled()\nTone<public>:Kit.Geometry.Flat.kind=Flat.kind.square\nGrid:Kit.Row=array{5,6}\nTotal<public>:i64=Kit.Total(Grid)\nShort<public>:i64=Kit.Total(array{1})\nC:counter=counter{}\nRead(X:counter)<transacts>:i64=X.Count\nBumps<public>:i64=C.Bump()+C.Bump()\nSeen<public>:i64=Read(C)\nPeeked<public>:i64=Kit.Geometry.Peek\n"
+    },
+    {
+      "path": "kit/shapes.forb",
+      "source": "Row<public>:=[]i64\nSeed<internal>:i64=10\nTotal<public>(R:Row)<computes>:i64=Attempt(R[0]+R[1],0)\nGeometry<public>:=module{\n  point<public>:=struct{x:i64=0,y:i64=0}\n  Flat<public>:=module{\n    kind<public>:=enum<closed>{round,square}\n    Area<public>(P:point)<computes>:i64=P.x*P.y+Seed\n  }\n  counter<public>:=class{\n    var<private> Count<public>:i64=0\n    Bump<public>()<transacts>:i64=Block{set Self.Count=Self.Count+1;Self.Count}\n  }\n  Private:=module{\n    Secret<public>:i64=99\n  }\n  Peek<public>:i64=Private.Secret\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# A nested function is private to the function that declares it (06:1180): no access specifier.
+Count()<computes>:i64 = Block{
+    Next<public>(X:i64)<computes>:i64 = X + 1
+    Next(1)
+}
+A:i64 = Count()

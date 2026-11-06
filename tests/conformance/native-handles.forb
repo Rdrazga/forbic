@@ -1,0 +1,12 @@
+Line(R:reader)<transacts>:string=Attempt(R.ReadLine[],"<end>")
+Later(R:reader,W:writer,Wait:float)<transacts><suspends>:string=Block{Sleep(Wait);L:=Line(R);W.WriteLine("{Wait} {L}");Print("later {L}");L}
+Config<public>:option(reader)=option{OpenReader["config"]}
+Log<public>:option(writer)=option{OpenWriter["log"]}
+Missing<public>:option(reader)=option{OpenReader["missing"]}
+First<public>:string=Attempt(Line(Config?),"-")
+Kept<public>:i64=Attempt(Block{W:=Log?;W.WriteLine("start {First}");1},0)
+Gone<public>:i64=Attempt(Block{W:=Log?;W.WriteLine("never");Require[false];1},0)
+Lost<public>:string=Attempt(Block{R:=Config?;L:=R.ReadLine[];Require[false];L},"-")
+Same<public>:logic=Attempt(Config?==OpenReader["config"],false)
+Task<public>:option(task(string))=Attempt(Block{R:=Config?;W:=Log?;option{Spawn{Later(R,W,1.0)}}},option{})
+Rest<public>:string=Attempt(Line(Config?),"-")

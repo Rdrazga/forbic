@@ -1,0 +1,20 @@
+# RFC-0085, I10: the Book's examples 18 (09:507) and 19 (09:547).
+Start:i64 = 0
+game_state := enum{ (game_state:)Start, Playing, Paused }
+StateStart:game_state = game_state.Start
+Differs:logic = If(StateStart != game_state.Playing, true, false)
+Same:logic = If(StateStart == (game_state:)Start, true, false)
+Number:i64 = Start
+keyword_enum := enum{
+    (keyword_enum:)public
+    (keyword_enum:)for
+    (keyword_enum:)For
+    (keyword_enum:)set
+    (keyword_enum:)true
+    (keyword_enum:)i64
+    (keyword_enum:)keyword_enum
+    Regular
+}
+Words:[]keyword_enum = array{keyword_enum.public, keyword_enum.for, (keyword_enum:)For, keyword_enum.set, (keyword_enum:)true, (keyword_enum:)i64, (keyword_enum:)keyword_enum, keyword_enum.Regular}
+Name(K:keyword_enum)<computes>:string = Case(K, (keyword_enum:)set => "set", keyword_enum.keyword_enum => "own name", _ => "other")
+Names:[]string = array{Name((keyword_enum:)set), Name(keyword_enum.keyword_enum), Name(keyword_enum.Regular)}

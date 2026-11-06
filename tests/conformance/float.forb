@@ -1,0 +1,8 @@
+# Project-authored supported Forbic numeric-core fixture.
+Scale(X:float)<computes>:float = X * 0.5
+Ratio<public>:float = Scale(1.1)
+Positive:float = Inf
+Negative:float = -Inf
+Invalid:float = NaN
+Zero:float = -0.0
+Rounded:float = 1.0000000000000002 * 0.9999999999999998 - 1.0

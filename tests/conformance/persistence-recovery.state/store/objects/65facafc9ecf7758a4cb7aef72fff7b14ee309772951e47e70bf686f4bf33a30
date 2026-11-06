@@ -1,0 +1,1 @@
+{"schema":1,"cells":[{"cell":":Stats","key":"persistent_key","value":0}],"types":[{"struct":{"package":"/","name":"player_stats","fields":[{"name":"Level","type":1,"default":"1"},{"name":"Experience","type":1,"default":"0"}]}},{"primitive":"i64"}]}

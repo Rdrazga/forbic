@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.state-loops-test"
+ApiVersion:i64=1
+SourceSha256:string="8ed62968bfceb0b84bcae8b33234788d8d12a41d0cc53399b0edc0c87cdd0b5e"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

@@ -1,0 +1,2 @@
+Make(N:i64)<computes>:function(tuple(i64),i64)=Fn(X:i64){N/X}
+Boom<public>:i64=Make(10)(0)

@@ -1,0 +1,6 @@
+.zig-cache/
+zig-out/
+.local/
+# Design records and planning notes are kept locally, not published.
+docs/rfcs/
+notes/

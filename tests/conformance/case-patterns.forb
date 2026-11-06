@@ -1,0 +1,26 @@
+Shape:=class{}
+Circle:=class(Shape){R:i64}
+Rect:=class(Shape){W:i64,H:i64}
+Color:=enum{Red,Green,Blue}
+Items:[]i64=array{5,6}
+var Calls:i64=0
+Next(N:i64)<transacts>:i64=Block{set Calls=Calls+1;N}
+Area(S:Shape)<transacts>:i64=Case(S,C:Circle=>3*C.R*C.R,Rect{W:=W,H:=H} where W==H=>W*W,R:Rect=>R.W*R.H,_=>0)
+Inc(M:option(i64))<computes>:i64=Case(M,option{X}=>X+1,option{}=>0)
+Pick(P:tuple(i64,i64))<computes>:i64=Case(P,tuple{0,Y}=>Y,tuple{X,_} where X>10=>X,tuple{X,Y}=>X+Y)
+At(N:i64)<computes>:i64=Case(N,X:i64 where Items[X]>5=>1,X:i64 where X<0=>2,_=>3)
+Step(N:i64)<transacts>:i64=Case(Next(N)+1,X:i64 where Next(X)>100=>1,2=>20,X:i64=>X)
+Tint(N:i64)<computes>:Color=If(N>0,Color.Green,Color.Red)
+Name(N:i64)<computes>:string=Case(Tint(N),Color.Red=>"red",Color.Green=>"green",Color.Blue=>"blue")
+Deep(M:option(tuple(i64,string)))<computes>:string=Case(M,option{tuple{0,S}}=>S,option{tuple{N,_}}=>Case(N,1=>"one",_=>"many"),option{}=>"none")
+A<public>:i64=Area(Circle{R:=2})
+B<public>:i64=Area(Rect{W:=3,H:=3})
+C<public>:i64=Area(Rect{W:=2,H:=5})
+D<public>:i64=Area(Shape{})
+E<public>:i64=Inc(option{41})+Inc(option{})
+F<public>:i64=Pick(tuple{0,7})+Pick(tuple{20,7})*10+Pick(tuple{2,7})*1000
+G<public>:i64=At(1)*100+At(-4)*10+At(9)
+H<public>:i64=Step(1)*100+Step(5)
+I<public>:i64=Calls
+J<public>:string=Name(1)+Name(0)
+K<public>:string=Deep(option{tuple{0,"zero"}})+Deep(option{tuple{1,"a"}})+Deep(option{tuple{9,"b"}})+Deep(option{})

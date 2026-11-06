@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.recursion-test","api_version":1,"source_sha256":"e5668933a0ebea4fc5bb2f21fd9bb2912ce409731b09ca27485fe30341ce180e","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Final":{"Index":3,"Sum":9},"Recovered":{"Index":3,"Sum":9},"Total":22,"Visits":3}}

@@ -1,0 +1,2 @@
+# Cancel carries <suspends> (Book 14:879): an immediate function cannot cancel a task.
+Stop(T:task(void))<transacts>:void = T.Cancel()

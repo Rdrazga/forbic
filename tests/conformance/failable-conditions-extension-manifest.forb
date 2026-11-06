@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.failable-conditions-test"
+ApiVersion:i64=1
+SourceSha256:string="50093e7675171b43cf156be7567c252fb62f631b8c448250d47753dd4312b481"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

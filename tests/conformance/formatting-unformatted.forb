@@ -1,0 +1,19 @@
+# TASK-0109, W4.5: `forbic fmt` turns this file into formatting.forb, which it leaves as it is.
+Base:i64=40   # the answer, less two
+
+
+
+var Count:i64=0
+Prices:map(i64,i64)=map{1=>10,2  =>  20}
+Keys:[]i64=For(K->V:Prices,K)
+Each:[]i64=For(I:1..3,-I)
+Add(N:i64)<transacts>:i64=Block{
+set Count+=N
+        # spaces in strings and interpolations stay
+  "{ Count }  items".Length+Count*2}
+Total:i64=Add(Base)
+Text:string="base {Base+2}, total {If(Total>100,"big","small")}"
+Choice:i64=If(Total>5,Block{
+# inside
+Base+2
+},-1)

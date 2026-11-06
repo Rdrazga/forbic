@@ -1,0 +1,18 @@
+Offset:i64=100
+Make(N:i64)<computes>:function(tuple(i64),i64)=Fn(X:i64){N+X}
+Twice(K:i64)<computes>:i64=Iterate(Fn(S:i64){S+K},3,1)
+Both(A:i64,B:string)<computes>:string=Block{G:=Fn(Z:i64){B+ToString(Z+A)};G(5)}
+Rec:=struct{V:i64=3}
+Field(R:Rec)<computes>:i64=Block{F:=Fn(V:i64){R.V+V};F(10)}
+Nested(A:i64)<computes>:i64=Block{O:=Fn(B:i64){Block{I:=Fn(C:i64){A+B+C};I(1)}};O(20)}
+var Cell:i64=1
+Bump(D:i64)<transacts>:i64=Block{F:function<transacts>(tuple(i64),i64)=Fn(X:i64){Block{set Cell=Cell+X+D;Cell}};F(2)}
+Snap()<transacts>:i64=Block{var L:i64=1;F:=Fn(X:i64){L+X};set L=50;F(1)}
+A<public>:i64=Make(5)(10)
+B<public>:i64=Twice(4)
+C<public>:string=Both(1,"v")
+D<public>:i64=Field(Rec{})
+E<public>:i64=Nested(100)
+F<public>:i64=Bump(10)
+G<public>:i64=Snap()
+H<public>:i64=Offset

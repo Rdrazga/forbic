@@ -1,0 +1,57 @@
+# RFC-0085, I2: an Fn that assigns a local var of the code around it shares the local. The local
+# is then one variable cell, ref(T), that the code around it and every closure naming it use.
+# RFC-0085's Total: the Fn adds to Sum, and the function reads it after the loop.
+Total(Xs:[]i64)<transacts>:i64 = Block{
+    var Sum:i64 = 0
+    Add:function<transacts>(tuple(i64), void) = Fn(X:i64)<transacts>:void{ Set(Sum, Sum + X) }
+    For(Y:Xs, Add(Y))
+    Sum
+}
+# Closures that outlive the frame keep its cell: each counter has its own.
+counter := tuple(function<reads>(tuple(), i64), function<transacts>(tuple(), void))
+MakeCounter(Initial:i64)<transacts>:counter = Block{
+    var Count:i64 = Initial
+    tuple{Fn()<reads>:i64{ Count }, Fn()<transacts>:void{ Set(Count, Count + 1) }}
+}
+Counts()<transacts>:tuple(i64, i64) = Block{
+    A := MakeCounter(0)
+    B := MakeCounter(10)
+    A(1)()
+    A(1)()
+    B(1)()
+    tuple{A(0)(), B(0)()}
+}
+# No loop carries a shared local: the closure's writes during the loop stay.
+Loops(N:i64)<transacts>:i64 = Block{
+    var X:i64 = 0
+    Bump := Fn()<transacts>:i64{ Set(X, X + 100) }
+    For(I:1..N, Block{ set X = X + I; Bump() })
+    X
+}
+# A write in a region that fails is undone, from the frame and from a closure.
+Undo(N:i64)<transacts>:i64 = Block{
+    var X:i64 = N
+    Add := Fn(K:i64)<transacts>:i64{ Set(X, X + K) }
+    Held:i64 = X
+    Attempt(Block{ Add(1); Fail["undo"]; X }, Set(X, X + 7))
+    Held + X
+}
+# A local that a closure only names is also shared (Q1), as in the Book: 51.
+Snap()<transacts>:i64 = Block{ var L:i64 = 1; F := Fn(X:i64){ L + X }; set L = 50; F(1) }
+# A task captures the cell, and the creator sees its write after the wait.
+Waits()<transacts><suspends>:i64 = Block{
+    var Seen:i64 = 0
+    Note := Fn(K:i64)<transacts>:void{ Set(Seen, Seen + K) }
+    T := Spawn{ Sleep(1.0); Note(7) }
+    Note(100)
+    T.Await()
+    Seen
+}
+V1:i64 = Total(array{1, 2, 3, 4})
+V2:tuple(i64, i64) = Counts()
+V3:i64 = Loops(3)
+V4:i64 = Undo(3)
+V5:i64 = Snap()
+V6:task(i64) = Spawn{ Waits() }
+# A bound closure at the root reports its cell.
+Kept:counter = MakeCounter(5)

@@ -1,0 +1,7 @@
+row:=struct{Name:string,Size:i64}
+Positive(N:i64)<computes><decides>:i64=If(Require[N>=0],N+2,N)
+Make(N:i64)<computes><decides>:row=row{Name:="雪",Size:=Positive[N]}
+Recover(N:i64)<computes>:row=Attempt(Make[N],row{Name:="empty",Size:=0})
+Rows<public>:[]row=array{Recover(4),Recover(-1)}
+Count<public>:i64=Rows.Length
+Total<public>:i64=Attempt(Positive[-1],7)

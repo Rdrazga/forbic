@@ -1,0 +1,1 @@
+F(N:i64)<computes>:i64=N/0;V:function(tuple(i64),i64)=F;Value:i64=Attempt(V(42),0)

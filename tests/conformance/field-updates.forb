@@ -1,0 +1,14 @@
+Inner:=struct{X:i64=1
+Y:string="a"}
+Outer:=struct{Name:string="n"
+In:Inner=Inner{}
+Count:i64=0}
+var Player:Outer=Outer{}
+Moved<public>:Outer=WithField(Player,Count,5)
+set Player.Count=7
+set Player.In.X=40
+set Player.In.Y="b"
+set Player.Count+=3
+Bump()<transacts>:i64=Block{set Player.Count*=2;Player.Count}
+Seen<public>:i64=Bump()
+Loc<public>:i64=Block{var Q:Outer=Outer{};set Q.In.X+=9;set Q.Name="z";Q.In.X}

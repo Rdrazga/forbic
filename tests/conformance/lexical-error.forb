@@ -1,0 +1,3 @@
+Value<public>:i64=1
+<# a block comment that is never closed
+Other<public>:i64=2

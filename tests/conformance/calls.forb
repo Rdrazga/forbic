@@ -1,0 +1,6 @@
+row:=struct{Name:string,Size:i64}
+Offset(N:i64)<computes>:i64=N+2
+Make(N:i64)<computes>:row=row{Name:="雪",Size:=Offset(N)}
+Rows<public>:[]row=array{Make(4),Make(8)}
+Count<public>:i64=Rows.Length
+Total<public>:i64=Offset(Count)

@@ -1,0 +1,4 @@
+# The root module of the sample project: the folder /hello@example.com/Hello, which
+# forbic.json names. Its files are one module, read in the order of their names.
+Text := import{/hello@example.com/Text}
+Greeting<public>:string = Text.Greet("world")

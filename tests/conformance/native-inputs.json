@@ -1,0 +1,5 @@
+start 1700000000
+first 1700000001
+second 1700000001
+third 1700000002.5
+{"Start":1700000000,"Again":true,"Lost":-1,"Shown":[],"First":{"$task":{"sequence":1,"state":"completed","result":1700000001}},"Second":{"$task":{"sequence":2,"state":"completed","result":1700000001}},"Third":{"$task":{"sequence":3,"state":"completed","result":1700000002.5}},"$scheduler":{"tick_rate":60,"tick":150,"created":3,"completed":3,"canceled":0,"switches":9,"waiting":[]},"$inputs":{"count":3,"bytes":0}}

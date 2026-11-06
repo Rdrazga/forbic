@@ -1,0 +1,25 @@
+var Cell:i64=0
+R(A:i64,B:i64)<computes>:rational=Attempt(Rational[A,B],MakeRationalFromInt(0))
+Share(Total:i64,N:i64)<computes><decides>:i64=Floor(Rational[Total,N])
+Probe(B:i64)<transacts>:i64=Attempt(Block{set Cell=Cell+1;Quotient[7,B]},-Cell-100)
+Half<public>:rational=R(10,-4)
+Same<public>:logic=R(5,2)==R(15,6) and R(1,-3)==R(-1,3)
+Down<public>:i64=Floor(Half)
+Up<public>:i64=Ceil(Half)
+Quot<public>:i64=Attempt(Quotient[-7,2],0)
+Rem<public>:i64=Attempt(Mod[-7,2],0)
+NegQuot<public>:i64=Attempt(Quotient[7,-2],0)
+NegRem<public>:i64=Attempt(Mod[7,-2],0)
+Truncated<public>:i64=-7/2
+Sum<public>:rational=R(1,2)+R(1,3)-R(1,6)
+Product<public>:rational=-R(3,4)*R(2,9)
+Ordered<public>:logic=R(1,3)<R(1,2) and R(-1,2)<=R(-1,2)
+Approx<public>:float=ToFloat(R(1,8))
+Whole<public>:rational=MakeRationalFromInt(7)
+Fair<public>:i64=Attempt(Share[225,100],-1)
+NoPlayers<public>:i64=Attempt(Share[225,0],-1)
+Kept<public>:i64=Probe(2)
+Dropped<public>:i64=Probe(0)
+Prices<public>:map(rational,string)=map{R(1,2)=>"half",R(1,3)=>"third"}
+Found<public>:string=Or(Lookup(Prices,R(2,4)),"none")
+Count<public>:i64=Cell

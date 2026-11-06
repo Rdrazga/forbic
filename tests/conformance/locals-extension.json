@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.locals-test","api_version":1,"source_sha256":"eb3b5329abebdc0314e80c4322aafdd884779024d43149f56cfd64d54c408208","work_budget":256,"isolation":"pure-language; no OS sandbox","bindings":4,"values":{"Rows":[{"Name":"雪","Size":5,"Before":1},{"Name":"雪","Size":7,"Before":5}],"Count":2,"Total":17}}

@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.predicates","api_version":1,"source_sha256":"a1e1e8f709c4727a9bc7307eced75547daa75e3d0b80142db0f7a81449e4a78f","work_budget":128,"isolation":"pure-language; no OS sandbox","bindings":5,"values":{"Enabled":true,"NaNEqual":true,"NaNOrdered":false,"ZeroEqual":true,"TextEqual":true}}

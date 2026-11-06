@@ -1,0 +1,24 @@
+# Structured concurrency, P3.1 (RFC-0082): Spawn, Sleep and the scheduler.
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# A site: Sleep waits on the virtual clock, 60 ticks a second; a call of Fetch is a site too.
+Fetch(N:i64)<transacts><suspends>:i64 = Block{ Sleep(0.1); Note("fetched {N}"); N * 10 }
+
+Main()<transacts><suspends>:void = Block{
+    Note("main")
+    W := Spawn{ Fetch(1) }    # runs at once, until it waits
+    X := Fetch(2)             # Main waits here; the root goes on
+    Note("got {X}")
+    Sleep(2.5)
+    Note("done")
+}
+
+# Inside a rollback region a spawn is held: it starts when the outermost region commits,
+# after the output of the region, and never when the region fails.
+Held(N:i64)<transacts><decides>:i64 = Block{ Spawn{ Fetch(N) }; Print("held {N}"); Require[N > 3]; N }
+
+Started:task(void) = Spawn{ Main() }
+Kept:i64 = Attempt(Held[4], -1)
+Dropped:i64 = Attempt(Held[3], -1)
+Forever:task(i64) = Spawn{ Block{ Sleep(Inf); 0 } }

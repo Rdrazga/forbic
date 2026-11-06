@@ -1,0 +1,2 @@
+Items:[]i64=array{5}
+Value:i64=If(Items[0]>1/0,1,2)

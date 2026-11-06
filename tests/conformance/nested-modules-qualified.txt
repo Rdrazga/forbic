@@ -1,0 +1,43 @@
+# kit/shapes.forb
+(/kit/shapes:)Row<public>:=[](/Verse.org/Verse:)i64
+(/kit/shapes:)Seed<internal>:(/Verse.org/Verse:)i64=10
+(/kit/shapes:)Total<public>((local:)R:(/kit/shapes:)Row)<computes>:(/Verse.org/Verse:)i64=Attempt((local:)R[0]+(local:)R[1],0)
+(/kit/shapes:)Geometry<public>:=module{
+  (/kit/shapes/Geometry:)point<public>:=struct{(/kit/shapes/Geometry/point:)x:(/Verse.org/Verse:)i64=0,(/kit/shapes/Geometry/point:)y:(/Verse.org/Verse:)i64=0}
+  (/kit/shapes/Geometry:)Flat<public>:=module{
+    (/kit/shapes/Geometry/Flat:)kind<public>:=enum<closed>{(/kit/shapes/Geometry/Flat/kind:)round,(/kit/shapes/Geometry/Flat/kind:)square}
+    (/kit/shapes/Geometry/Flat:)Area<public>((local:)P:(/kit/shapes/Geometry:)point)<computes>:(/Verse.org/Verse:)i64=(local:)P.(/kit/shapes/Geometry/point:)x*(local:)P.(/kit/shapes/Geometry/point:)y+(/kit/shapes:)Seed
+  }
+  (/kit/shapes/Geometry:)counter<public>:=class{
+    var<private> (/kit/shapes/Geometry/counter:)Count<public>:(/Verse.org/Verse:)i64=0
+    (/kit/shapes/Geometry/counter:)Bump<public>()<transacts>:(/Verse.org/Verse:)i64=Block{set Self.(/kit/shapes/Geometry/counter:)Count=Self.(/kit/shapes/Geometry/counter:)Count+1;Self.(/kit/shapes/Geometry/counter:)Count}
+  }
+  (/kit/shapes/Geometry:)Private:=module{
+    (/kit/shapes/Geometry/Private:)Secret<public>:(/Verse.org/Verse:)i64=99
+  }
+  (/kit/shapes/Geometry:)Peek<public>:(/Verse.org/Verse:)i64=(/kit/shapes/Geometry:)Private.(/kit/shapes/Geometry/Private:)Secret
+}
+# main.forb
+(/main:)Kit:=import{"kit/shapes.forb"}
+using{Kit.Geometry}
+(/main:)Unit:(/Verse.org/Verse:)i64=2
+(/main:)Local:=module{
+  (/main/Local:)Scale<public>((local:)X:(/Verse.org/Verse:)i64)<computes>:(/Verse.org/Verse:)i64=(local:)X*(/main:)Unit
+  (/main/Local:)Hidden<internal>:(/Verse.org/Verse:)i64=7
+  (/main/Local:)Deep<public>:=module{
+    (/main/Local/Deep:)Offsets:(/main:)Kit.(/kit/shapes:)Row=(/Verse.org/Verse:)array{1,2,3}
+    (/main/Local/Deep:)Doubled<public>()<computes>:[](/Verse.org/Verse:)i64=For((local:)X:(/main/Local/Deep:)Offsets,(/main/Local:)Scale((local:)X)+(/main/Local:)Hidden)
+  }
+}
+(/main:)P:(/main:)Kit.(/kit/shapes:)Geometry.(/kit/shapes/Geometry:)point=(/main:)Kit.(/kit/shapes:)Geometry.(/kit/shapes/Geometry:)point{(/kit/shapes/Geometry/point:)x:=3,(/kit/shapes/Geometry/point:)y:=4}
+(/main:)Area<public>:(/Verse.org/Verse:)i64=(/kit/shapes/Geometry:)Flat.(/kit/shapes/Geometry/Flat:)Area((/main:)P)
+(/main:)Doubled<public>:[](/Verse.org/Verse:)i64=(/main:)Local.(/main/Local:)Deep.(/main/Local/Deep:)Doubled()
+(/main:)Tone<public>:(/main:)Kit.(/kit/shapes:)Geometry.(/kit/shapes/Geometry:)Flat.(/kit/shapes/Geometry/Flat:)kind=(/kit/shapes/Geometry:)Flat.(/kit/shapes/Geometry/Flat:)kind.(/kit/shapes/Geometry/Flat/kind:)square
+(/main:)Grid:(/main:)Kit.(/kit/shapes:)Row=(/Verse.org/Verse:)array{5,6}
+(/main:)Total<public>:(/Verse.org/Verse:)i64=(/main:)Kit.(/kit/shapes:)Total((/main:)Grid)
+(/main:)Short<public>:(/Verse.org/Verse:)i64=(/main:)Kit.(/kit/shapes:)Total((/Verse.org/Verse:)array{1})
+(/main:)C:(/kit/shapes/Geometry:)counter=(/kit/shapes/Geometry:)counter{}
+(/main:)Read((local:)X:(/kit/shapes/Geometry:)counter)<transacts>:(/Verse.org/Verse:)i64=(local:)X.(/kit/shapes/Geometry/counter:)Count
+(/main:)Bumps<public>:(/Verse.org/Verse:)i64=(/main:)C.(/kit/shapes/Geometry/counter:)Bump()+(/main:)C.(/kit/shapes/Geometry/counter:)Bump()
+(/main:)Seen<public>:(/Verse.org/Verse:)i64=(/main:)Read((/main:)C)
+(/main:)Peeked<public>:(/Verse.org/Verse:)i64=(/main:)Kit.(/kit/shapes:)Geometry.(/kit/shapes/Geometry:)Peek

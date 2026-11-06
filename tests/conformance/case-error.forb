@@ -1,0 +1,3 @@
+Color:=enum{Red,Blue}
+Pick(C:Color)<computes>:i64=Case(C,Color.Red=>1,_=>1/0)
+Value:i64=Pick(Color.Blue)

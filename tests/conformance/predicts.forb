@@ -1,0 +1,35 @@
+# RFC-0085, I12: `<predicts>` is a checked effect. A predicting function runs only predicting code.
+var Health:i64 = 50
+# The Book's 13:157 and 13:414, with the heap effect Forbic requires.
+CheckPlayerStatus()<reads><predicts>:i64 = Health
+HandleJumpInput()<computes><predicts>:void = tuple{}
+Double(X:i64)<computes><predicts>:i64 = X * 2
+Scaled(Xs:[]i64)<computes><predicts>:[]i64 = For(X:Xs, Double(X))
+Root(X:float)<computes><predicts>:float = Sqrt(X)
+Say(S:string)<transacts><predicts>:void = Print(S)
+Apply(F:function<computes><predicts>(tuple(i64), i64), X:i64)<computes><predicts>:i64 = F(X)
+Adder(K:i64)<computes><predicts>:function<computes><predicts>(tuple(i64), i64) = Fn(X:i64){ X + K }
+# A dictating function calls predicting ones, and a predicting function is a dictating value.
+Dictating(X:i64)<computes>:i64 = Double(X) + 1
+Through:function<computes>(tuple(i64), i64) = Double
+shape := class<computes><predicts>{
+    Size:i64 = 2
+    Area()<reads><predicts>:i64 = Self.Size * Self.Size
+}
+square := class(shape){
+    Area<override>()<reads><predicts>:i64 = Self.Size * 4
+}
+Measure(S:shape)<reads><predicts>:i64 = S.Area()
+Build()<allocates><predicts>:shape = square{}
+Wait()<transacts><suspends><predicts>:i64 = Block{ Sleep(1.0); Double(3) }
+A:i64 = CheckPlayerStatus()
+B:void = HandleJumpInput()
+C:[]i64 = Scaled(array{1, 2, 3})
+D:float = Root(9.0)
+E:void = Say("predicted")
+F:i64 = Apply(Double, 5)
+G:i64 = Adder(10)(1)
+H:i64 = Dictating(4)
+I:i64 = Through(6)
+J:tuple(i64, i64) = tuple{Measure(shape{}), Measure(Build())}
+T:task(i64) = Spawn{ Wait() }

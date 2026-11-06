@@ -1,0 +1,3 @@
+# The Book's 03:1133: a weak_map has no Length.
+W:weak_map(i64, i64) = map{1 => 2}
+N:i64 = W.Length

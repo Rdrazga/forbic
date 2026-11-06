@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.defaults-test","api_version":1,"source_sha256":"6ce98e7094182520a8352e83940a28e7315732503856e0b4e580446300624e43","work_budget":64,"isolation":"pure-language; no OS sandbox","bindings":4,"values":{"Theme":{"Accent":"#7e9cd8","Opacity":0.7},"Labels":["Traverse","Stanza"],"Count":2}}

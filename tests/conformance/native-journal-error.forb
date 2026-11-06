@@ -1,0 +1,2 @@
+Note(W:writer)<writes>:void=W.WriteLine("x")
+Value<public>:i64=1

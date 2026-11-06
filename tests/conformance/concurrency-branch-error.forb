@@ -1,0 +1,2 @@
+# A Branch in a Loop{} body would belong to the loop's visit, not to the function.
+Ticker()<transacts><suspends>:void = Loop{ Branch{ Sleep(1.0) }; Sleep(1.0) }

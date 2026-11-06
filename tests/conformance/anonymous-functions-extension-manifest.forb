@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.anonymous-functions-test"
+ApiVersion:i64=1
+SourceSha256:string="f541958b521fc6f67f4bd036b55641145946f3b2455b4451849d84bcc013c0c9"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

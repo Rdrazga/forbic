@@ -1,0 +1,24 @@
+# Lexical completion (RFC-0089): hexadecimal integers, the f64 suffix, every escape of the Book,
+# block and indented comments, and the typed definition with :=.
+Mask<public>:i64=0xFF
+Largest<public>:i64=0x7FFFFFFFFFFFFFFF
+Smallest<public>:i64=-0x8000000000000000
+Mixed<public>:i64=0xAB+0xab
+Wide<public>:float=12.34f64
+Scaled<public>:float=2.5e+3f64
+N:i64=7
+Marks<public>:string="\<{N}\> \& \# \~ \'q\' \{\}"
+Tabbed<public>:string="a\tb"
+Inline<public>:i64=1 <# one #> + <# two <# nested #> #> 2
+<# A block comment
+   over lines #>
+Spanning<public>:i64=1 +<# a comment
+that spans lines #> 2
+InString<public>:string="x <# kept #> y # kept"
+<#>
+    Hidden<public>:i64=99
+    more hidden text
+After<public>:i64=5
+Typed<public>:i64:=3
+Name<public>:string := "forb"
+Local<public>:i64=Block{X:i64:=3;var Y:i64:=4;set Y=Y+X;Y*X}

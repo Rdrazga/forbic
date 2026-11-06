@@ -1,0 +1,11 @@
+{"header":{"toolchain":"forbic 0.0.1 (Forbic pure-core prototype; Zig 0.17.0)","profile":"bootstrap","program":"98ce480909b56f4855cf99713a6e478b14a3c51c712e4ee11262f1a6cf31d497","seed":6216465378251330560,"tick_rate":60,"grants":[{"kind":"key","name":"alice"},{"kind":"key","name":"bob"}],"store":{"base":null,"schema":"65facafc9ecf7758a4cb7aef72fff7b14ee309772951e47e70bf686f4bf33a30"}}}
+{"input":{"sequence":0,"kind":"load","request":0,"tick":0,"status":"end"}}
+{"input":{"sequence":1,"kind":"load","request":1,"tick":0,"status":"end"}}
+{"action":{"sequence":0,"channel":4294967295,"text":"{\"cell\":\":Stats\",\"key\":\"alice\",\"value\":{\"$package_name\":\"/\",\"$class_name\":\"player_stats\",\"x_Level\":1,\"x_Experience\":10}}"}}
+{"action":{"sequence":1,"channel":4294967295,"text":"{\"cell\":\":Stats\",\"key\":\"alice\",\"value\":{\"$package_name\":\"/\",\"$class_name\":\"player_stats\",\"x_Level\":1,\"x_Experience\":15}}"}}
+{"seal":{"actions":2,"inputs":2}}
+{"published":{"generation":"7726d7f05fdb72c8bc130844d7a9f151765023be3b6e8c3d5ae8167b44594601","through":2}}
+{"action":{"sequence":2,"channel":4294967295,"text":"{\"cell\":\":Stats\",\"key\":\"bob\",\"value\":{\"$package_name\":\"/\",\"$class_name\":\"player_stats\",\"x_Level\":1,\"x_Experience\":3}}"}}
+{"seal":{"actions":3,"inputs":2}}
+{"end":{"outcome":"completed"}}
+{"published":{"generation":"54ec7d0ed082fc64646ff726691b6da8707db7492d4b4471a0b455fed8dd89fc","through":3}}

@@ -1,0 +1,5 @@
+Check(X:i64)<computes><decides>:i64=If(Require[X>=0],X,Fail["negative"])
+Gap<public>:i64=Attempt(Check[-1],If(true,6,1/0))
+Rows<public>:[][]i64=If(false,array{array{1/0}},array{array{},array{7}})
+Enabled<public>:logic=Attempt(Require[false],true)
+Reason<public>:string=Attempt(Fail["missing theme"],"kanagawa")

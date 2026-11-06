@@ -1,0 +1,2 @@
+# In a `Case[...]` an arm written like an unguarded arm before it can never be chosen.
+Named(N:i64)<computes><decides>:string = Case[N, 1 => "one", 2 => "two", 1 => "uno"]

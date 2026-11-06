@@ -1,0 +1,2 @@
+Peek(R:reader)<reads><decides>:string=R.ReadLine[]
+First<public>:string=Attempt(Block{R:=OpenReader["config"];Peek[R]},"-")

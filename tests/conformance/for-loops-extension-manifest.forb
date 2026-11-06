@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.for-loops-test"
+ApiVersion:i64=1
+SourceSha256:string="493e42ab44db9fae643d284dee2e3afc47a033d50f2c79e2b3ee60d432af9e99"
+WorkBudget:i64=4096
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

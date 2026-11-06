@@ -1,0 +1,2 @@
+Gate:event(i64) = event(i64){}
+Peek()<transacts>:i64 = Gate.Await()

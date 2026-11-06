@@ -1,0 +1,1 @@
+{"format":2,"failure_count":1,"truncated":false,"failures":[{"instruction":11,"function":19,"local_instruction":13,"code":"requirement_failed","reason":null,"path":"tests/conformance/shared-locals-tasks.forb","span":{"start":2069,"end":2076},"line":42,"column":72}]}

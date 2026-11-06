@@ -1,0 +1,3 @@
+var Count:i64=0
+Peek()<reads>:i64=Count
+Bump()<reads>:i64=Block{set Count=Count+1;Count}

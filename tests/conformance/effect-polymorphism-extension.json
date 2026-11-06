@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.effect-polymorphism-test","api_version":1,"source_sha256":"3638414ee909e1fa5c52cbaa6b9f2dd30a42b951b413c2e12e4938ec25041dd2","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Pure":7,"Moved":6,"Kept":2,"Rolled":7,"Total":29}}

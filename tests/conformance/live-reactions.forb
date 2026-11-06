@@ -1,0 +1,40 @@
+# Reactions, P4.4 (RFC-0084): `When(G, B)` runs B whenever what G read changes and G holds;
+# `Upon(G, B)` runs B once, the first time G holds, and its task completes with B's result.
+# A write notifies the reactions that read it; they are delivered when the write is outside
+# every region, or when the outermost region around it commits.
+var Health:i64 = 100
+var IsDead:logic = false
+var Hits:i64 = 0
+var Log:i64 = 0
+
+# The Book's 15:454: an Upon that fires once, when its guard first holds.
+Dead:task(logic) = Upon(Health <= 0, Set(IsDead, true))
+# A When that counts the writes of Health; it runs at once, as its guard holds.
+Counter:task(void) = When(Health, Set(Hits, Hits + 1))
+set Health = 50
+Alive:logic = IsDead
+set Health = 0
+Fell:logic = IsDead
+
+# Two Whens read A; the one that registered first is delivered first, once per write, and
+# each appends its digit to Log.
+var A:i64 = 0
+First:task(void) = When(A > 0, Set(Log, Log * 10 + 1))
+Second:task(void) = When(A > 0, Set(Log, Log * 10 + 2))
+set A = 1
+Ordered:i64 = Log
+
+# A write in a region is delivered when the region commits, and one in a region that fails is
+# not: the reaction is not told.
+Tried:logic = Attempt(Block{ set A = 2; Require[A < 0]; true }, false)
+Kept:logic = Attempt(Block{ set A = 3; true }, false)
+AfterRegions:i64 = Log
+
+# A write in a function's frame is delivered at the end of the write, before the function
+# returns; the reaction made in a region that fails never starts (R3).
+Bump()<transacts>:i64 = Block{ set A = 4; Log }
+Bumped:i64 = Bump()
+var Made:i64 = 0
+Never:logic = Attempt(Block{ U:task(i64) = Upon(true, Set(Made, 1)); Require[Made < 0]; true }, false)
+NotMade:i64 = Made
+Total:i64 = Hits

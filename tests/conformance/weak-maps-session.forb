@@ -1,0 +1,34 @@
+# RFC-0087, P5.4: session cells, module vars of type weak_map(session, V), read and set one key at a time.
+# The Book's 16:620: a per-session counter.
+var GlobalCounter:weak_map(session, i64) = map{}
+IncrementCounter()<reads><writes>:i64 = Block{
+    CurrentValue := Attempt(GlobalCounter[GetSession()], 0)
+    set GlobalCounter[GetSession()] = CurrentValue + 1
+    CurrentValue + 1
+}
+First<public>:i64 = IncrementCounter()
+Second<public>:i64 = IncrementCounter()
+# An entry holds any value type, and is updated inside, through an index and a field.
+point := struct{X:i64, Y:i64}
+var Paths:weak_map(session, []i64) = map{}
+var Spots:weak_map(session, point) = map{}
+S<public>:session = GetSession()
+Missing<public>:i64 = Attempt(Paths[S][0], -1)
+set Paths[S] = array{1, 2, 3}
+set Spots[S] = point{X := 1, Y := 2}
+Moved()<reads><writes><decides>:i64 = Block{
+    K := GetSession()
+    set Paths[K][1] = 20
+    set Spots[K].X += 5
+    Paths[K][1] + Spots[K].X
+}
+M<public>:i64 = Attempt(Moved[], -1)
+# A write in a region that fails is undone with it.
+Undone<public>:i64 = Attempt(Block{set GlobalCounter[S] = 100; Require[false]; 0}, Attempt(GlobalCounter[S], -1))
+# A live variable reads an entry, and a task waits for one.
+var live Twice:i64 = Attempt(GlobalCounter[GetSession()], 0) * 2
+Waiter()<suspends><transacts>:i64 = Await(Block{N := GlobalCounter[GetSession()]; Require[N > 2]; N})
+W := Spawn{Waiter()}
+Before<public>:i64 = Twice
+set GlobalCounter[S] = 3
+After<public>:i64 = Twice

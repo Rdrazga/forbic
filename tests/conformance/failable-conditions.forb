@@ -1,0 +1,16 @@
+var Cell:i64=0
+Items:[]i64=array{5,1}
+Check(N:i64)<computes><decides>:i64=Block{Require[N>0];N}
+Pick(I:i64)<computes>:i64=If(Items[I]>3,1,0)
+Pos(N:i64)<computes>:i64=If(Check[N]>2,10,20)
+Bucket(F:float)<computes>:i64=If(Floor[F]>=3,1,2)
+Try(I:i64)<transacts>:i64=If(Block{set Cell=Cell+10;Items[I]}>3,Cell+100,Cell+200)
+A<public>:i64=Pick(0)
+B<public>:i64=Pick(1)
+C<public>:i64=Pick(7)
+D<public>:i64=Pos(5)
+E<public>:i64=Pos(-1)
+F<public>:i64=Bucket(3.5)
+G<public>:i64=Bucket(1.0e30)
+H<public>:i64=Try(0)
+I<public>:i64=Try(4)

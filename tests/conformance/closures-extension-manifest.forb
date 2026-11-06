@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.closures-test"
+ApiVersion:i64=1
+SourceSha256:string="874387dda02caad3623e997a6234b2e86e83767497f7e5655b757dac3783005b"
+WorkBudget:i64=2048
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

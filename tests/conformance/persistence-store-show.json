@@ -1,0 +1,4 @@
+{"generation":"4c1de175038c541ba2e849b67e4f71f4356d100c56277728b9bf1b0790d1210b","number":1,"parent":null}
+{"schema":{"schema":0,"cells":[{"cell":":Stats","key":"persistent_key"}]}}
+{"entry":{"cell":":Stats","key":"alice","object":"5a26c10825fef79f9e5c2611eb75f54bae05aec178c47545d73c2abb396fa1fd","value":{"$package_name":"/","$class_name":"player_stats","x_Level":1,"x_Experience":15}}}
+{"entry":{"cell":":Stats","key":"bob","object":"f3379e1412aa8a84a55bf9c862ec63be218aa90598b94273e52f960d35e000c8","value":{"$package_name":"/","$class_name":"player_stats","x_Level":1,"x_Experience":3}}}

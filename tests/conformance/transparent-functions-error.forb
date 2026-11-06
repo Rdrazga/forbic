@@ -1,0 +1,4 @@
+# A transparent function takes its result type from its body, so the body cannot name
+# the function itself.
+Count(N:i64)<computes> := If(N > 0, Count(N - 1) + 1, 0)
+A:i64 = Count(3)

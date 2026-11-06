@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.condition-bindings-test","api_version":1,"source_sha256":"8558609d7e8826c39049d65f4a0686826a106b89708a17bce31216362a47a7a8","work_budget":4096,"isolation":"pure-language; no OS sandbox","bindings":13,"values":{"A":400,"B":-1,"C":-1,"D":15,"E":0,"F":1,"G":2,"H":0,"I":"n5","J":123}}

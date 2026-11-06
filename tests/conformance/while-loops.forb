@@ -1,0 +1,13 @@
+Items:[]i64=array{3,4,5}
+var Cell:i64=0
+Sum(N:i64)<transacts>:i64=Block{var I:i64=0;var Total:i64=0;While(I<N,Block{set Total=Total+I;set I=I+1});Total}
+Count(Limit:i64)<transacts>:i64=Block{var K:i64=0;While(K<Limit,Block{set Cell=Cell+10;set K=K+1});Cell*1000+K}
+Bound(Max:i64)<transacts>:i64=Block{var I:i64=0;var Last:i64=-1;While(X:=Items[I],X<=Max,Block{set Last=X;set I=I+1});Last*10+I}
+Nested()<transacts>:i64=Block{var A:i64=0;var Total:i64=0;While(A<3,Block{var B:i64=0;While(B<A,Block{set Total=Total+1;set B=B+1});set A=A+1});Total}
+Never()<transacts>:logic=Block{var I:i64=5;While(I<0,set I=I-1)}
+A<public>:i64=Sum(5)
+B<public>:i64=Count(3)
+C<public>:i64=Bound(4)
+D<public>:i64=Nested()
+E<public>:logic=Never()
+F<public>:i64=Sum(0)

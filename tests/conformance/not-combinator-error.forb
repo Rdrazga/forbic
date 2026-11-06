@@ -1,0 +1,3 @@
+Items:[]i64=array{1}
+Boom()<computes><decides>:i64=Block{Not[Items[5]];10/(Items[0]-1)}
+V<public>:i64=Attempt(Boom[],0)

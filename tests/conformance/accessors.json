@@ -1,0 +1,1 @@
+{"Object":{"$object":0},"Initial":110,"Updated":160,"AsProperty":{"$object":0},"Through":171,"Hero":{"$object":2},"Refused":100,"Accepted":40,"Lowered":25,"Survived":20,"Fallen":-1,"Kept":20,"$objects":[{"id":0,"class":"tracked_value","fields":{"Storage":161}},{"id":2,"class":"entity","fields":{"InternalHealth":20}}]}

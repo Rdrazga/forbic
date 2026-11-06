@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.failable-frames-test","api_version":1,"source_sha256":"706a8c315ec4fdfad6f70ebde5d6a2db0a077cbe3c36c53936cebfb0e5f6b009","work_budget":256,"isolation":"pure-language; no OS sandbox","bindings":3,"values":{"Rows":[{"Name":"雪","Size":6},{"Name":"empty","Size":0}],"Count":2,"Total":7}}

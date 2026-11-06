@@ -1,0 +1,7 @@
+mode<public> := enum<closed> { Light, Dark }
+empty := enum{}
+settings := struct { Mode:mode = mode.Dark, Allowed:[]mode = array{mode.Light, mode.Dark} }
+Keep(X:mode)<computes>:mode = X
+Desktop<public>:settings = settings{}
+Selected<public>:mode = Keep(mode.Light)
+Unused:[]empty = array{}

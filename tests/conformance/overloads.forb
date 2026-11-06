@@ -1,0 +1,24 @@
+Describe(X:i64)<computes>:string="int "+ToString(X)
+Describe(X:string)<computes>:string="str "+X
+Describe(X:i64,Y:i64)<computes>:string="pair "+ToString(X+Y)
+Describe(B:logic)<computes>:string=If(B,"yes","no")
+Pick(Xs:[]i64)<computes>:i64=Xs.Length
+Pick(Xs:[]string)<computes>:i64=Xs.Length*10
+Twice(X:i64)<computes>:i64=X*2
+Twice(X:float)<computes>:float=X*2.0
+Apply:function(tuple(i64),i64)=Twice
+Names:[]string=array{"a","b"}
+var Count:i64=0
+Bump(N:i64)<transacts>:i64=Block{set Count=Count+N;Count}
+Bump(S:string)<transacts>:i64=Block{set Count=Count+S.Length;Count}
+A<public>:string=Describe(5)
+B<public>:string=Describe("x")
+C<public>:string=Describe(1,2)
+D<public>:string=Describe(true)
+E<public>:i64=Pick(array{1,2})
+F<public>:i64=Pick(Names)
+G<public>:i64=Twice(3)
+H<public>:float=Twice(1.5)
+I<public>:i64=Apply(21)
+J<public>:i64=Bump(5)
+K<public>:i64=Bump("abc")

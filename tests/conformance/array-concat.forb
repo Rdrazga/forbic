@@ -1,0 +1,8 @@
+Append(Items:[]i64,N:i64)<computes>:[]i64=Items+array{N}
+Build(S:[]i64)<computes>:[]i64=Append(S,S.Length*10)
+Empty:[]i64=array{}
+Joined<public>:[]i64=array{1,2}+Empty+array{3}
+Grown<public>:[]i64=Iterate(Build,4,array{0})
+Words<public>:[]string=array{"a"}+array{"b","c"}
+Both<public>:i64=(Joined+Grown).Length
+Pick<public>:i64=Attempt((Joined+Grown)[6],-1)

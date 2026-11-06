@@ -1,0 +1,2 @@
+# A Return in a Spawn body inside an arm would leave the body, which has no caller (Book 14:595).
+Detached()<transacts><suspends>:i64 = Race(Block{ T := Spawn{ Return(1) }; Sleep(1.0); 0 }, Block{ Sleep(2.0); 2 })

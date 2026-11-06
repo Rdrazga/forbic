@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.classes-test"
+ApiVersion:i64=1
+SourceSha256:string="1558209ec396e9484276ead2e9feac63b66cb4fa977c6ca86f9ccd0430e59499"
+WorkBudget:i64=256
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

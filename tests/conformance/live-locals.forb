@@ -1,0 +1,59 @@
+# Live locals (RFC-0085, I14; RFC-0084, P4.8): a guard that names a local var shares it
+# (S1b), and so do `set live` of it and `var live` (S1c); its cell then carries a live record.
+var Seen:i64 = -1
+var Doubled:i64 = 0
+
+# The Book's 15:533, `StopObserving`: the cancelled Upon never runs, so Y remains 0.
+StopObserving()<transacts><suspends>:void = Block{
+    var X:i64 = 0
+    var Y:i64 = 0
+    Watch := Upon(X > 5, Set(Y, X))
+    Watch.Cancel()
+    set X = 10
+    Set(Seen, Y)
+}
+Stopped:task(void) = Spawn{ StopObserving() }
+
+# The Book's converging cycle (15:297) over locals: X = -1, Y = 0.
+Converge()<transacts>:i64 = Block{
+    var X:i64 = 2
+    var Y:i64 = 2
+    set live X = If(Y < 0, 0, Y - 1)
+    set live Y = If(X < 0, 0, X - 1)
+    X * 10 + Y
+}
+Settled:i64 = Converge()
+
+# `var live` locals in a chain, and a plain set that detaches one.
+Chain(V:i64)<transacts>:tuple(i64, i64) = Block{
+    var A:i64 = 1
+    var live B:i64 = A + 1
+    var live C:i64 = B * 2
+    set A = V
+    Before := C
+    set B = 0
+    set A = V + 1
+    tuple{Before, C}
+}
+Chained:tuple(i64, i64) = Chain(5)
+
+# A module var follows a local of a frame that has returned, through its guard; the closure
+# the frame handed on writes the local.
+Make(K:i64)<transacts>:function<transacts>(tuple(i64), i64) = Block{
+    var L:i64 = 1
+    set live Doubled = L * K
+    Fn(V:i64)<transacts>:i64{ Set(L, V) }
+}
+Setter:function<transacts>(tuple(i64), i64) = Make(2)
+First:i64 = Doubled
+Written:i64 = Setter(21)
+Second:i64 = Doubled
+
+# A region that fails takes back a `set live` on a local.
+Undone:i64 = Block{
+    var X:i64 = 1
+    var Y:i64 = 0
+    R := Attempt(Block{ set live Y = X + 10; Require[X > 5]; 1 }, 0)
+    set X = 2
+    Y * 10 + R
+}

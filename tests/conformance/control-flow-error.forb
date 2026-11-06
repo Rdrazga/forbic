@@ -1,0 +1,2 @@
+N:i64=3
+Value<public>:i64=If(N>1,N*2)

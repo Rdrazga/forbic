@@ -1,0 +1,12 @@
+var Cell:i64=1
+Identity[T:type](X:T)<computes>:T{X}
+Twice[T:type](F:function(tuple(T),T),X:T)<computes>:T{F(F(X))}
+Step[T:type](X:T)<transacts>:T{Block{set Cell=Cell+1;X}}
+Inc(N:i64)<computes>:i64=N+1
+box:=struct{F:function<transacts>(tuple(i64),i64)=Step[i64]}
+Make()<computes>:box=box{}
+Number<public>:i64=Identity[i64](41)+Twice[i64](Inc,Identity[i64](0))
+Text<public>:string=Identity[string]("hello")
+Selected<public>:function<transacts>(tuple(i64),i64)=Make().F
+Moved<public>:i64=Selected(3)+Selected(4)
+Total<public>:i64=Number+Moved+Cell

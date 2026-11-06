@@ -1,0 +1,1 @@
+{"format":1,"failure_count":2,"truncated":false,"failures":[{"instruction":56,"code":"requirement_failed","reason":null,"path":"tests/conformance/native-journal.forb","span":{"start":404,"end":411},"line":6,"column":61},{"instruction":70,"code":"requirement_failed","reason":null,"path":"tests/conformance/native-journal.forb","span":{"start":486,"end":493},"line":7,"column":62}]}

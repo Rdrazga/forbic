@@ -1,0 +1,26 @@
+# RFC-0087, P5.6: a later version of schema-evolution-before.forb, which the store it wrote
+# (schema-evolution.state) accepts: the class gains a field with a default, the open enum an
+# enumerator after its old ones, and the program a persistent cell (G3, 18:215, 18:230, 18:266).
+#   forbic check tests/conformance/schema-evolution.forb --state tests/conformance/schema-evolution.state
+# says so without running it. Run without a state directory, as here, its store is empty (S3).
+mode<public> := enum<persistable><open>{Easy, Normal, Hard}
+profile<public> := class<final><persistable>{
+    Title:string = ""
+    Level:i64 = 1
+    Mode:mode = mode.Easy
+    Badges:[]string = array{}
+}
+best<public> := struct<persistable>{ Score:i64, At:float = 0.0 }
+var Profiles<public>:weak_map(persistent_key, profile) = map{}
+var Best<public>:weak_map(persistent_key, best) = map{}
+var Visits<public>:weak_map(persistent_key, i64) = map{}
+Main()<transacts><decides>:i64 = Block{
+    K := GetPersistentKey["alice"]
+    P := Attempt(Profiles[K], profile{})
+    set Profiles[K] = profile{Title := P.Title, Level := P.Level + 1, Mode := mode.Hard, Badges := array{"veteran"}}
+    set Visits[K] = Attempt(Visits[K], 0) + 1
+    P.Level
+}
+Before<public>:i64 = Attempt(Main[], -1)
+Score<public>:i64 = Attempt(Best[GetPersistentKey["alice"]].Score, -1)
+Badges<public>:i64 = Attempt(Profiles[GetPersistentKey["alice"]].Badges.Length, -1)

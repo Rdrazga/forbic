@@ -1,0 +1,2 @@
+# TASK-0109, W4.5: `forbic fmt` refuses what the lexer refuses, with the compiler's diagnostic.
+Greeting:string = "hello

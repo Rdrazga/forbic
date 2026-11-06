@@ -1,0 +1,6 @@
+Valid(x:i64)<computes>:logic=x>=0 and x<=100
+Enabled<public>:logic=Valid(55) and not Valid(101)
+NaNEqual<public>:logic=NaN==NaN
+NaNOrdered<public>:logic=NaN>=Inf
+ZeroEqual<public>:logic=0.0==-0.0
+TextEqual<public>:logic="snow"=="snow"

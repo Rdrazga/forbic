@@ -1,0 +1,4 @@
+Fold[T:type,A:type](Step:function(tuple(T,A),T),Items:[]A,Init:T)<computes>:T{Loop(Fn[Step:function(tuple(T,A),T)=Step,Items:[]A=Items](S:tuple(i64,T))<computes>:option(tuple(i64,T)){Attempt(option{tuple{S(0)+1,Step(S(1),Items[S(0)])}},option{})},tuple{0,Init})(1)}
+Boom(Total:i64,N:i64)<computes>:i64=Total/0
+Items:[]i64=array{1}
+Value:i64=Fold[i64,i64](Boom,Items,1)

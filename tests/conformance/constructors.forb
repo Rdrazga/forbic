@@ -1,0 +1,86 @@
+# Constructor functions, delegation, class Block{...} clauses and <final> members (RFC-0075), with
+# an extension method named like a builtin and a loop body that writes a field through Self.
+var Log:[]string = array{}
+var Made:i64 = 0
+Say(Text:string, Value:i64)<transacts>:i64 = Block{ set Log = Log + array{Text}; Value }
+Entity := class{
+    Name:string
+    var Health:i64 = 100
+    var Label:string = ""
+    Kind<final>:string = "entity"
+    Block{
+        set Made = Made + 1
+        set Self.Label = "{Self.Kind}-{Self.Name}"
+    }
+}
+MakeEntity<constructor>(Name:string, Health:i64 = 7)<transacts> := Entity{Name := Name, Health := Say("health", Health)}
+MakeNamed<constructor>(Name:string)<transacts> := Entity{Name := Name}
+Character := class(Entity){
+    Class:string
+    Level:i64 = 1
+    Block{ Say("character {Self.Name}", 0) }
+}
+MakeCharacter<constructor>(Name:string, Class:string, Level:i64)<transacts> := Character{
+    Class := Class
+    Level := Say("level", Level)
+    MakeEntity<constructor>(Name, Say("argument", Level) * 100)
+}
+MakeCharacter<constructor>(Name:string)<transacts> := Character{MakeCharacter<constructor>(Name, "novice", 1)}
+Checked<constructor>(Name:string, Level:i64)<transacts><decides> := Character{
+    Class := "checked"
+    Level := Block{ Require[Level > 0]; Say("checked", Level) }
+    MakeEntity<constructor>(Health := Level, Name := Name)
+}
+Knight := class(Character){
+    var Health<override>:i64 = 250
+    Class<override>:string = "knight"
+    Charge(Times:i64)<transacts>:i64 = Block{
+        var I:i64 = 0
+        While(I < Times, Block{ set Self.Health = Self.Health - 10; set I = I + 1 })
+        Loop{
+            If(Self.Health <= 200, Break(), false)
+            set Self.Health -= 25
+        }
+        Self.Health
+    }
+}
+Shape := class<abstract>{
+    Id:i64
+    var Area:i64 = 0
+    Sides<abstract>()<transacts>:i64
+    Block{ set Self.Area = Self.Area + Self.Sides() }
+}
+MakeShape<constructor>(Id:i64, Scale:i64 = 2)<transacts> := Shape{Id := Id, Area := Id * Scale}
+Square := class(Shape){
+    Edge:i64
+    Sides<override>()<transacts>:i64 = 4
+}
+MakeSquare<constructor>(Id:i64, Edge:i64)<transacts>:Square = Block{
+    Doubled:i64 = Edge * 2
+    Square{Edge := Doubled, MakeShape<constructor>(Scale := Doubled, Id := Id)}
+}
+(V:i64).BitAnd(W:i64)<computes>:i64 = V + W
+Bob := MakeEntity("bob")
+Hero := MakeCharacter("Aldric", "Warrior", 5)
+Novice := MakeCharacter("nov")
+Plain := Character{MakeNamed<constructor>("plain"), Class := "none"}
+Sir := Knight{MakeNamed<constructor>("sir")}
+Box := MakeSquare(3, 5)
+Maker:function<transacts>(tuple(string,i64),Entity) = MakeEntity
+BobHealth:i64 = Bob.Health
+BobLabel:string = Bob.Label
+HeroHealth:i64 = Hero.Health
+HeroText:string = "{Hero.Name}/{Hero.Class}/{Hero.Level}/{Hero.Label}"
+NoviceText:string = "{Novice.Class}/{Novice.Health}"
+PlainHealth:i64 = Plain.Health
+SirText:string = "{Sir.Class}/{Sir.Health}/{Sir.Kind}"
+Charged:i64 = Sir.Charge(2)
+BoxArea:i64 = Box.Area
+BoxEdge:i64 = Box.Edge
+Passed:i64 = Attempt(Checked["ok", 3].Health, 0 - 1)
+Refused:i64 = Attempt(Checked["no", 0].Health, 0 - 1)
+Undone:i64 = Attempt(Block{ X := MakeEntity("gone", 1); Require[X.Health > 1]; X.Health }, 0 - 2)
+ByValue:i64 = Maker("fn", 11).Health
+Bits:i64 = 6.BitAnd(3) * 10 + BitAnd(6, 3)
+Count:i64 = Made
+Trail:[]string = Log

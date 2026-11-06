@@ -1,0 +1,36 @@
+Name:string="José"
+Kind(C:char)<computes>:i64=Case(C,'a'=>1,'e'=>1,'i'=>1,'o'=>1,'u'=>1,_=>0)
+Vowels(T:string)<computes>:i64=For(C:T,Kind(C)==1,C).Length
+Head(T:string)<computes><decides>:char=T[0]
+var Seen:map(char,i64)=map{}
+Note(C:char)<transacts><decides>:i64=Block{set Seen[C]=Or(Lookup(Seen,C),0)+1;Require[C!='!'];Seen.Length}
+Length<public>:i64=Name.Length
+First<public>:char=Attempt(Head[Name],'?')
+None<public>:char=Attempt(Head[""],'?')
+Third<public>:char=Attempt(Name[3],'?')
+Past<public>:char=Attempt(Name[5],'?')
+Units<public>:[]char=For(C:Name,C)
+Scalars<public>:[]char32=For(I->C:Name,R:=Name.ScalarAt[I],R)
+Front<public>:string=Attempt(Name.Slice[0,3],"!")
+Accent<public>:string=Attempt(Name.Slice[3],"!")
+Split<public>:string=Attempt(Name.Slice[0,4],"!")
+Empty<public>:string=Attempt(Name.Slice[4,4],"!")
+Back<public>:string=Attempt(string[Units],"!")
+Same<public>:logic=Back==Name
+Broken<public>:string=Attempt(string[array{0oC3,0o28}],"!")
+Code<public>:i64=First.ToCodeUnit()
+Point<public>:i64='é'.ToCodePoint()
+Made<public>:char=Attempt((74).ToChar[],'?')
+TooBig<public>:char=Attempt((256).ToChar[],'?')
+Wide<public>:char32=Attempt((233).ToChar32[],0u3F)
+Surrogate<public>:char32=Attempt((55296).ToChar32[],0u3F)
+Widened<public>:char32=Attempt(First.ToAsciiChar32[],0u3F)
+NotAscii<public>:char32=Attempt(Third.ToAsciiChar32[],0u3F)
+Shown<public>:string="{First}|{Third}|{'é'}|{0u1F600.ToAsciiString()}"
+Count<public>:i64=Vowels("education")
+A<public>:i64=Attempt(Note['x'],-1)
+B<public>:i64=Attempt(Note['!'],-1)
+C<public>:i64=Attempt(Note['x'],-1)
+Tally<public>:map(char,i64)=Seen
+Names<public>:map(char32,string)=map{'é'=>"e-acute",0u1F600=>"grin"}
+Grin<public>:string=Attempt(Names['😀'],"?")

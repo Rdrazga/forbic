@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.blocks-test"
+ApiVersion:i64=1
+SourceSha256:string="15f134e55ddf125ccfe64947589e835bd2e97253331a516f5fe7b0fbe1446568"
+WorkBudget:i64=256
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

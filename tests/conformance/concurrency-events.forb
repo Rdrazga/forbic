@@ -1,0 +1,63 @@
+# Structured concurrency, P3.2 (RFC-0082): events, Signal, and the Await of events and handles.
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# A rendezvous: a Signal wakes every task waiting then, in the order they began to wait.
+Gate:event(i64) = event(i64){}
+Waiter(N:i64)<transacts><suspends>:i64 = Block{ Note("wait {N}"); V := Gate.Await(); Note("woke {N} with {V}"); V + N }
+
+# Await gives a task's result, waiting for it if it has not completed; it is sticky.
+Fetch(N:i64)<transacts><suspends>:i64 = Block{ Sleep(0.1); Note("fetched {N}"); N * 10 }
+
+Main()<transacts><suspends>:i64 = Block{
+    A := Spawn{ Waiter(1) }
+    B := Spawn{ Waiter(2) }
+    Gate.Signal(7)              # both wake, after Main's turn
+    Gate.Signal(8)              # nobody waits now: lost
+    F := Spawn{ Fetch(3) }
+    X := F.Await()
+    Y := F.Await()              # completed: at once
+    Note("fetched twice {X} {Y}")
+    A.Await() + B.Await() + X
+}
+
+# Inside a rollback region a Signal is held: it happens when the outermost region commits,
+# and never when the region fails.
+Ear:event(string) = event(string){}
+Listen()<transacts><suspends>:void = Loop{ W := Ear.Await(); Note("heard {W}") }
+Say(W:string, Keep:logic)<transacts><decides>:i64 = Block{ Ear.Signal(W); Require[Keep]; 1 }
+
+Listener:task(void) = Spawn{ Listen() }
+Started:task(i64) = Spawn{ Main() }
+Kept:i64 = Attempt(Say["kept", true], 0)
+Dropped:i64 = Attempt(Say["dropped", false], 0)
+
+# P3.9: a sticky event keeps the value signalled last, for every later Await; a subscribable
+# event calls its subscriptions in the order they were made, at once; a Subscribe or a Cancel
+# in a region that fails is undone, and a subscription cancelled during a Signal is not called.
+Phase:sticky_event(string) = sticky_event(string){}
+Late()<transacts><suspends>:string = Block{ Sleep(0.5); P := Phase.Await(); Note("late {P}"); P }
+Score:subscribable_event(i64) = subscribable_event(i64){}
+var Total:i64 = 0
+var Handles:[]cancelable = array{}
+Tally(N:i64)<transacts>:void = Set(Total, Total + N)
+Shout(N:i64)<transacts>:void = Note("score {N}")
+Echo(N:i64)<transacts>:void = Note("echo {N}")
+Quiet(N:i64)<transacts>:void = Block{ X := Attempt(Block{ C := Handles[0]; C.Cancel(); 1 }, 0); Note("quiet {N}") }
+Tallier:cancelable = Score.Subscribe(Tally)
+Shouter:cancelable = Score.Subscribe(Shout)
+Undone:i64 = Attempt(Block{ C := Score.Subscribe(Echo); Require[false]; 1 }, 0)
+Game()<transacts><suspends>:string = Block{
+    L := Spawn{ Late() }
+    Phase.Signal("lobby")
+    Phase.Signal("playing")
+    Score.Signal(10)
+    Q := Score.Subscribe(Quiet)
+    Set(Handles, array{Score.Subscribe(Echo)})
+    Score.Signal(5)
+    Stays := Attempt(Block{ Tallier.Cancel(); Require[false]; 1 }, 0)
+    Score.Signal(1)
+    Note("now {Phase.Await()}")
+    L.Await()
+}
+Played:task(string) = Spawn{ Game() }

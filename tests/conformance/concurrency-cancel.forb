@@ -1,0 +1,57 @@
+# Structured concurrency, P3.7 (RFC-0082): T.Cancel(), the Await of a cancelled task,
+# NextTick(), the interfaces awaitable(t) and signalable(t), and GetSimulationElapsedTime().
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# Book 14:888: a request lands at the watcher's next site; asking twice is safe.
+var CleanedUp:i64 = 0
+Watcher()<transacts><suspends>:void = Block{
+    Defer{ set CleanedUp = 1 }
+    NextTick()
+}
+
+# Book 14:923 (Q3): awaiting a cancelled task cancels the awaiter.
+Work()<transacts><suspends>:i64 = Block{ Defer{ Note("work cancelled") }; Sleep(1.0); 5 }
+Wait(N:i64, T:task(i64))<transacts><suspends>:i64 = Block{ Defer{ Note("waiter {N} cancelled") }; T.Await() }
+
+# An arm that awaits a cancelled task cancels the task running its Sync: the other arm first.
+Arm(T:task(i64))<transacts><suspends>:i64 = Block{ Defer{ Note("arm cancelled") }; T.Await() }
+Both(T:task(i64))<transacts><suspends>:i64 = Block{
+    Defer{ Note("both cancelled") }
+    R := Sync(Arm(T), Block{ Defer{ Note("other arm cancelled") }; Sleep(5.0); 1 })
+    R(0) + R(1)
+}
+
+# The interfaces: an event is awaitable and signalable, a handle awaitable.
+Channel:event(i64) = event(i64){}
+Reader:awaitable(i64) = Channel
+Writer:signalable(i64) = Channel
+Consume(Source:awaitable(i64))<transacts><suspends>:i64 = Source.Await()
+Produce(Target:signalable(i64))<transacts>:void = Target.Signal(42)
+
+var Clock:[]float = array{}
+Tick()<transacts>:void = Set(Clock, Clock + array{GetSimulationElapsedTime()})
+
+Main()<transacts><suspends>:i64 = Block{
+    LongTask:task(void) = Spawn{ Watcher() }
+    LongTask.Cancel()
+    LongTask.Cancel()
+    T := Spawn{ Work() }
+    A := Spawn{ Wait(1, T) }
+    B := Spawn{ Wait(2, T) }
+    U := Spawn{ Both(T) }
+    T.Cancel()
+    Tick()
+    Sleep(0.5)
+    Tick()
+    C := Spawn{ Wait(3, T) }
+    Got := Spawn{ Consume(Reader) }
+    Produce(Writer)
+    Value := Consume(Got)
+    NextTick()
+    Tick()
+    Note("value {Value}")
+    Value
+}
+Started:task(i64) = Spawn{ Main() }
+Zero:float = GetSimulationElapsedTime()

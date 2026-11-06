@@ -1,0 +1,13 @@
+# The second file of the root folder: it reads Greeting from main.forb without an import.
+# A persistent record per key: run with `--key visitor` to count this visitor's runs, and
+# with `--state DIR` as well to keep the count from one run to the next.
+visit := struct<persistable>{ Count:i64 = 0 }
+var Visits:weak_map(persistent_key, visit) = map{}
+Record(Key:persistent_key)<reads><writes>:i64 = Block{
+    Before := Attempt(Visits[Key], visit{})
+    set Visits[Key] = visit{Count := Before.Count + 1}
+    Before.Count + 1
+}
+# Without the key, GetPersistentKey fails and there is no visit to count.
+Visit<public>:i64 = Attempt(Record(GetPersistentKey["visitor"]), 0)
+Shown:tuple() = Print("{Greeting} (visit {Visit})")

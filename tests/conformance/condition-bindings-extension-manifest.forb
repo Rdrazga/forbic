@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.condition-bindings-test"
+ApiVersion:i64=1
+SourceSha256:string="8558609d7e8826c39049d65f4a0686826a106b89708a17bce31216362a47a7a8"
+WorkBudget:i64=4096
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

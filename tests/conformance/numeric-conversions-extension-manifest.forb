@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.numeric-conversions-test"
+ApiVersion:i64=1
+SourceSha256:string="4e1e49f5ac307637500497c9878b173b5a585e65a2530e4a4ca7903a566d3556"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

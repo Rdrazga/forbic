@@ -1,0 +1,4 @@
+# The Book's 17:67: a persistable class is <final>.
+not_final := class<persistable>{
+    XP:i64 = 0
+}

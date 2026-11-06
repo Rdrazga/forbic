@@ -1,0 +1,37 @@
+# RFC-0085, I4: overloads, defaults and named parameters of nested functions, as top-level
+# functions have them (RFC-0058, RFC-0061).
+# Book example 53 (06:1128): overloaded, chosen by the argument's type.
+Process(X:i64)<computes>:string = Block{
+    Format(Value:i64)<computes>:string = "int: {Value}"
+    Format(Value:string)<computes>:string = "string: {Value}"
+    "{Format(X)}, {Format("x")}"
+}
+# Overloads by number and by type, each capturing what its body names, one of them a value
+# chosen by the expected function type.
+Measure(N:i64, Unit:string)<computes>:tuple(string, i64, float, i64) = Block{
+    Describe(X:i64)<computes>:string = "{X} {Unit}"
+    Describe(X:i64, Y:i64)<computes>:string = "{X + Y + N} {Unit}"
+    Twice(X:i64)<computes>:i64 = X * 2 + N
+    Twice(X:float)<computes>:float = X * 2.0
+    Apply:function(tuple(i64), i64) = Twice
+    tuple{Describe(Describe(1, 2).Length), Apply(4), Twice(1.5), Twice(3)}
+}
+# Defaults that read the parameters before them, and named arguments in any order.
+Box(Scale:i64)<computes>:tuple(i64, i64, i64, string) = Block{
+    Area(W:i64, H:i64 = W, Depth:i64 = W + H)<computes>:i64 = W * H * Depth * Scale
+    Show(A:i64, B:i64 = 10, C:string = "x")<computes>:string = "{A} {B} {C}"
+    tuple{Area(2), Area(2, 3), Area(Depth := 1, W := 2), "{Show(1)} / {Show(1, C := "z")} / {Show(C := "q", A := 9, B := 8)}"}
+}
+# A default is evaluated at each call, after the arguments, each argument once.
+var Calls:i64 = 0
+Next()<transacts>:i64 = Block{ set Calls += 1; Calls }
+Stamp()<transacts>:tuple(i64, i64) = Block{
+    Pair(A:i64, B:i64 = A * 10)<computes>:i64 = A + B
+    One := Pair(Next())
+    tuple{One, Pair(Next(), B := Calls)}
+}
+V1:string = Process(7)
+V2:tuple(string, i64, float, i64) = Measure(100, "cm")
+V3:tuple(i64, i64, i64, string) = Box(1)
+V4:tuple(i64, i64) = Stamp()
+V5:i64 = Calls

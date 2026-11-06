@@ -1,0 +1,36 @@
+# Batches, P4.5 (RFC-0084): `Batch{...}` runs its statements at once and holds back what their
+# writes notify until the outermost batch has ended; each reaction notified is then delivered
+# once, in the order of its first notification, and sees the final state.
+var X:i64 = 0
+var Y:i64 = 0
+var Notices:i64 = 0
+var NoticesInBatch:i64 = 0
+
+# The Book's 15:552: three writes in one batch notify Watch once; Never's guard never holds.
+Never:task(void) = When(X > 1 and Y < 10, Set(Notices, Notices + 100))
+Watch:task(void) = When(X, Set(Notices, Notices + 1))
+Registered:i64 = Notices
+B:i64 = Batch{ set X = 2; set Y = 10; set X += 5; set NoticesInBatch = Notices; X }
+Final:i64 = Notices
+
+# Nested batches deliver when the outermost ends; a batch in a function does too.
+var Log:string = ""
+var Z:i64 = 0
+Tracker:task(void) = When(Z, Set(Log, Log + "z{Z}"))
+Inner()<transacts>:string = Batch{ set Z = 2; Log }
+Outer:string = Batch{ set Z = 1; I := Inner(); set Z = 3; Log + "|" + I }
+AfterOuter:string = Log
+Alone:string = Inner()
+AfterInner:string = Log
+
+# In a region, a batch's notification waits for the commit, and goes with a failure.
+Failed:logic = Attempt(Block{ R := Batch{ set Z = 4; 0 }; Require[Z < 0]; true }, false)
+AfterFailed:string = Log
+Committed:logic = Attempt(Block{ R := Batch{ set Z = 5; 0 }; true }, false)
+AfterCommitted:string = Log
+
+# A task handed off inside a batch runs under it until it first waits: its first write is
+# delivered when the batch ends, its second when it runs again, at once.
+Worker()<transacts><suspends>:void = Block{ set Z = 6; set Log = Log + "t"; Sleep(0.0); set Z = 7; Set(Log, Log + "u") }
+Handed:string = Batch{ T:task(void) = Spawn{ Worker() }; set Log = Log + "b"; Log }
+AfterHanded:string = Log

@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.bound-functions-test"
+ApiVersion:i64=1
+SourceSha256:string="828eadcaa212ef616a021e001210e6a5cc24c2fc09f6ec1f5baa9b0596096f16"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

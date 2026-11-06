@@ -1,0 +1,49 @@
+# Structured concurrency, P3.6 (RFC-0082): Return, and Break to a Loop{} around the
+# expression, inside an arm of Sync, Race or Rush.
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# A Return in an arm returns from the function: the expression is abandoned, the other
+# started arm is cancelled, and the code after it never runs (Book 14:524).
+var ArmTwoRan:i64 = 0
+var PastSync:i64 = 0
+Abandon()<transacts><suspends>:i64 = Block{
+    Defer{ Note("abandon returns") }
+    Sync(
+        Block{ Sleep(0.0); Return(5) },
+        Block{ Defer{ Note("arm two cancelled") }; Sleep(0.0); Set(ArmTwoRan, 1) })
+    set PastSync = 1
+    0
+}
+
+# A Return in a function an arm calls returns from that function only (Book 14:562).
+Finish()<transacts><suspends>:i64 = Block{ Sleep(0.0); Return(5) }
+KeepWaiting()<transacts><suspends>:i64 = Block{ R := Sync(Finish(), Block{ Sleep(0.0); 2 }); R(0) + R(1) }
+
+# A Break in an arm leaves the Loop{} around the expression, after the visit's Defer.
+Count()<transacts><suspends>:i64 = Block{
+    var N:i64 = 0
+    Loop{
+        set N = N + 1
+        Defer{ Note("visit {N}") }
+        R:i64 = Race(Block{ Defer{ Note("slow {N}") }; Sleep(2.0); 2 }, Block{ Sleep(1.0); If(N == 2, Break(), 1) })
+    }
+    N
+}
+
+# A Rush whose arm exits cancels its other arms instead of keeping them; an arm that exits
+# at once ends the start phase, so the arm after it never starts.
+Hurry()<transacts><suspends>:i64 = Block{
+    Q:i64 = Rush(Block{ Defer{ Note("rush loser") }; Sleep(Inf); 0 }, Return(30), Block{ Note("never"); 1 })
+    Q
+}
+
+Main()<transacts><suspends>:i64 = Block{
+    A := Abandon()
+    K := KeepWaiting()
+    C := Count()
+    H := Hurry()
+    Note("results {A} {K} {C} {H}")
+    A + K + C + H
+}
+Started:task(i64) = Spawn{ Main() }

@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.named-arguments-test"
+ApiVersion:i64=1
+SourceSha256:string="48207477dd78ea18891e6e2cdbb5073e33673fc998bf7ea4d3e494244c38e989"
+WorkBudget:i64=4096
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

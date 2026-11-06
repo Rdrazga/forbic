@@ -1,0 +1,4 @@
+# The Book's 15:824: a call that returns a function is not a type, whatever its effect.
+var Mult:i64 = 10
+Multiply(Value:i64)<computes>:function(tuple(i64), i64) = Fn(Arg:i64)<computes>:i64{ Value * Arg }
+var X:Multiply(Mult) = 10

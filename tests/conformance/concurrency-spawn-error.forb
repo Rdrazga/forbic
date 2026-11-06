@@ -1,0 +1,2 @@
+# A site stands only in a function that suspends: root code never waits.
+Nap:void = Sleep(1.0)

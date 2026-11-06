@@ -1,0 +1,32 @@
+# RFC-0087, P5.1: `weak_map(K, V)`, a map looked up and set one key at a time (locals).
+Inv := struct{Items:weak_map(string, []i64)}
+Get(W:weak_map(string, i64), K:string)<computes>:i64 = Attempt(W[K], -1)
+# The Book's 03:1098: an entry set and read, then the local reassigned whole.
+Book()<transacts>:tuple(i64, i64) = Block{
+    var MyWeakMap:weak_map(i64, i64) = map{}
+    set MyWeakMap[0] = 1
+    First := Attempt(MyWeakMap[0], -1)
+    set MyWeakMap = map{0 => 2}
+    tuple{First, Attempt(MyWeakMap[0], -1)}
+}
+# A map is a weak_map where one is expected; an update in a region that fails is undone.
+Scores:map(string, i64) = map{"a" => 1, "b" => 2}
+Tally()<transacts>:i64 = Block{
+    var W:weak_map(string, i64) = Scores
+    set W["c"] = 30
+    Attempt(Block{set W["a"] += 10; 0}, 0)
+    Attempt(Block{set W["b"] = 99; W["zz"]}, 0)
+    Get(W, "a") * 10000 + Get(W, "b") * 100 + Get(W, "c")
+}
+# An update inside an entry, through a field.
+Nested()<transacts>:i64 = Block{
+    var I:Inv = Inv{Items := map{"x" => array{4, 5}}}
+    Attempt(Block{set I.Items["x"][1] = 50; 0}, 0)
+    Attempt(I.Items["x"][1], -1)
+}
+A<public>:tuple(i64, i64) = Book()
+B<public>:i64 = Tally()
+C<public>:i64 = Nested()
+D<public>:i64 = Get(Scores, "b")
+Names:weak_map(i64, string) = map{1 => "one"}
+E<public>:string = Attempt(Names[1], "none")

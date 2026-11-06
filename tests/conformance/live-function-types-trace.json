@@ -1,0 +1,1 @@
+{"format":1,"failure_count":1,"truncated":false,"failures":[{"instruction":56,"code":"requirement_failed","reason":null,"path":"tests/conformance/live-function-types.forb","span":{"start":992,"end":999},"line":31,"column":66}]}

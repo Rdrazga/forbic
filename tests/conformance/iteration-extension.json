@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.iteration-test","api_version":1,"source_sha256":"d47534c4da635c8629254620840b99bb0c06a37e9757c251de378ba45330a578","work_budget":256,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Final":{"Index":3,"Sum":13},"Recovered":{"Index":3,"Sum":13},"Total":33,"Visits":3}}

@@ -1,0 +1,55 @@
+# RFC-0085, I9: fields with accessors and no default. Every archetype gives each one a value,
+# which its setter receives once the instance is built and its block clauses have run, in the
+# order the fields are declared. The archetype's values are computed in the order written.
+var Log:[]string = array{}
+Say(Text:string, Value:i64)<transacts>:i64 = Block{ set Log = Log + array{Text}; Value }
+entity := class{
+    var Health<getter(GetHealth)><setter(SetHealth)>:i64
+    var Armour<getter(GetArmour)><setter(SetArmour)>:i64
+    var InternalHealth:i64 = 100
+    var InternalArmour:i64 = 0
+    Name:string = "anon"
+    Block{ Say("block {Self.Name} {Self.Health}", 0) }
+    GetHealth(:accessor)<reads>:i64 = Self.InternalHealth
+    SetHealth(:accessor, NewValue:i64)<transacts>:void = Block{
+        Say("health {NewValue}", 0)
+        If(NewValue >= 0 and NewValue <= 100, Block{ set Self.InternalHealth = NewValue; 0 }, 0)
+    }
+    GetArmour(:accessor)<reads>:i64 = Self.InternalArmour
+    SetArmour(:accessor, NewValue:i64)<transacts>:void = Block{ Say("armour {NewValue}", 0); set Self.InternalArmour = NewValue * 2; 0 }
+}
+# Written Armour first; the setters run in declaration order, after the block clause.
+Hero := entity{Armour := Say("armour value", 3), Name := "hero", Health := Say("health value", 40)}
+knight := class(entity){
+    var Oath<getter(GetOath)><setter(SetOath)>:string
+    var RawOath:string = ""
+    Block{ Say("knight block", 0) }
+    GetOath(:accessor)<reads>:string = Self.RawOath
+    SetOath(:accessor, Text:string)<transacts>:void = Block{ Say("oath {Text}", 0); set Self.RawOath = Text; 0 }
+}
+# A constructor function's archetype does the same; this setter refuses 150.
+MakeKnight<constructor>(Name:string, Oath:string)<transacts> := knight{Name := Name, Health := 150, Armour := 1, Oath := Oath}
+Sir := MakeKnight("sir", "honour")
+# Delegation lends the values a constructor gives these fields, as it lends its cells'.
+MakeEntity<constructor>(Health:i64)<transacts> := entity{Health := Say("lent", Health), Armour := 5}
+Squire := knight{Oath := "serve", MakeEntity<constructor>(60), Name := "squire"}
+# Through an interface: the class that implements it is built with the value.
+titled := interface{
+    var Title<getter(GetTitle)><setter(SetTitle)>:string
+    var Stored:string = ""
+    GetTitle(:accessor)<reads>:string = Self.Stored
+    SetTitle(:accessor, Text:string)<writes>:void = Block{ set Self.Stored = "<{Text}>"; 0 }
+}
+badge := class(titled){}
+AsTitled:titled = badge{Title := "gold"}
+# An archetype in a region that fails: its setters' writes are undone with it.
+Undone:i64 = Attempt(Block{ X := entity{Health := 10, Armour := 1}; Require[X.Health > 50]; X.Health }, -1)
+HeroHealth:i64 = Hero.Health
+HeroArmour:i64 = Hero.Armour
+SirHealth:i64 = Sir.Health
+SirOath:string = Sir.Oath
+SquireHealth:i64 = Squire.Health
+SquireArmour:i64 = Squire.Armour
+SquireName:string = Squire.Name
+Title:string = AsTitled.Title
+Trail:[]string = Log

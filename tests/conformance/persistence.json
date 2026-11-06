@@ -1,0 +1,1 @@
+{"Stats":[{"$key":"alice"},{"Level":1,"Experience":15},{"$key":"bob"},{"Level":1,"Experience":3}],"Gained":15,"Bob":1,"Nobody":-1,"Undone":0,"Later":3,"Same":true,"Held":[[{"$key":"alice"},1,{"$key":"bob"},2]],"Saved":"{\"$package_name\":\"/\",\"$class_name\":\"player_stats\",\"x_Level\":5,\"x_Experience\":0}","$inputs":{"count":2,"bytes":0}}

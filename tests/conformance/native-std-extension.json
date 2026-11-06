@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.native-std-test","api_version":1,"source_sha256":"b9083abd9d6a1777a950c0a36ad4a545d489f3404e24523fa09004239dc12e20","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":9,"values":{"Total":22,"Ordered":[3,3,7,9],"Biggest":9,"Where":2,"Missing":-1,"Norm":5,"Count":10,"Scored":122}}

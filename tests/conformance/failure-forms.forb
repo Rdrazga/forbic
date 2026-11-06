@@ -1,0 +1,35 @@
+Xs:[]i64=array{5,6,7}
+Stock:map(string,i64)=map{"nut"=>3,"gear"=>0}
+var Log:i64=0
+Entity:=class{
+  Name:string
+  var Health:i64
+  Hit(D:i64)<transacts>:i64=Block{set Self.Health=Self.Health-D;Self.Health}
+}
+Hero:option(Entity)=option{Entity{Name:="hero",Health:=100}}
+Ghost:option(Entity)=option{}
+Mask<public>:i64=BitAnd(12,10)
+Join<public>:i64=BitOr(12,10)
+Flip<public>:i64=BitXor(12,10)
+Inverse<public>:i64=BitNot(12)
+Cleared<public>:i64=BitAnd(10,BitNot(8))
+Least<public>:i64=BitNot(9223372036854775807)
+IndexOf(Items:[]i64,Target:i64)<computes><decides>:i64=First[I->V:Items,V==Target,I]
+Found<public>:i64=Attempt(IndexOf[Xs,7],-1)
+Missing<public>:i64=Attempt(IndexOf[Xs,9],-1)
+Triple<public>:i64=Attempt(First[A:3..9,B:A..9,C:B..9,A*A+B*B==C*C,A*100+B*10+C],-1)
+Lazy<public>:i64=Attempt(First[X:array{4,2,0},100/X>30,X],-1)
+Search(Min:i64)<transacts>:i64=Attempt(First[X:Xs,Block{set Log=Log+X;X}>Min,X*10],-1)
+Reached<public>:i64=Search(5)
+Unreached<public>:i64=Search(9)
+Writes<public>:i64=Log
+Has<public>:logic=logic{Stock["nut"]}
+Lacks<public>:logic=logic{Stock["bolt"]}
+Probe()<transacts>:logic=logic{Block{set Log=Log+100;Xs[9]}}
+Probed<public>:logic=Probe()
+Kept<public>:i64=Log
+Maybe<public>:option(i64)=option{Xs[1]}
+Nothing<public>:option(i64)=option{Xs[9]}
+Where<public>:option(i64)=option{First[I->V:Xs,V>5,I]}
+Chain()<transacts>:[]i64=array{Attempt(Hero?.Hit(10),-1),Attempt(Ghost?.Hit(10),-1),Attempt(Hero?.Health,-1)}
+Chained<public>:[]i64=Chain()

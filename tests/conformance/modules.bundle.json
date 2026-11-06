@@ -1,0 +1,13 @@
+{
+  "root": "main.forb",
+  "modules": [
+    {
+      "path": "main.forb",
+      "source": "Theme:=import{\"theme/settings.forb\"}\nConfig:Theme.settings=Theme.Make()\nGap<public>:i64=Config.gap\nMaster<public>:i64=Config.master\nTone<public>:Theme.mode=Theme.mode.dark\nAccent<public>:string=\"#7e9cd8\"\n"
+    },
+    {
+      "path": "theme/settings.forb",
+      "source": "Gap:i64=6\nsettings<public>:=struct{gap:i64=Gap,master:i64=55}\nMake<public>()<computes>:settings=settings{}\nmode<public>:=enum<closed>{dark,light}\n"
+    }
+  ]
+}

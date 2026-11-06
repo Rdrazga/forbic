@@ -1,0 +1,4 @@
+Animal := class{ Name:string = "animal" }
+Pen[T:subtype(Animal)] := class{ Kept:T }
+Kennel:Pen[Animal] = Pen[Animal]{Kept := Animal{}}
+Stray := Pen[i64]{Kept := 1}

@@ -1,0 +1,2 @@
+# A Sync waits for at least two arms that can suspend.
+Twice()<transacts><suspends>:tuple(i64, i64) = Sync(1, 2)

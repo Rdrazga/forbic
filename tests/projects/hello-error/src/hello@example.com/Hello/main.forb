@@ -1,0 +1,2 @@
+# A project whose second file misspells a name of the first: the diagnostic names that file.
+Greeting<public>:string = "Hello, world!"

@@ -1,0 +1,13 @@
+{
+  "root": "main.forb",
+  "modules": [
+    {
+      "path": "main.forb",
+      "source": "Theme:=import{\"theme/settings.forb\"}\nAnswer:i64=Theme.Fault()\n"
+    },
+    {
+      "path": "theme/settings.forb",
+      "source": "# helper\nFault<public>()<computes>:i64=1/0\n"
+    }
+  ]
+}

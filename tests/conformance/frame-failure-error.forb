@@ -1,0 +1,2 @@
+Bad()<computes>:i64=Attempt(Fail["caught"],1/0)
+var Cell:i64=1;set Cell=2;Value:i64=Attempt(Bad(),9)

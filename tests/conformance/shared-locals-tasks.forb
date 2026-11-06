@@ -1,0 +1,62 @@
+# RFC-0085, I5: a task body, an arm, a reaction body, a Batch body and a landing that assign a
+# local var of the code around them share it, as an Fn does. Every closure that names the local
+# then refers to its one cell, and since no region crosses a site, a task sees every write made
+# before a switch (S5).
+# RFC-0085's Waits: the body writes after its Sleep, and the creator reads after the wait.
+Waits()<transacts><suspends>:i64 = Block{
+    var Seen:i64 = 0
+    T := Spawn{ Sleep(1.0); Set(Seen, 7) }
+    T.Await()
+    Seen
+}
+# Two tasks write one cell in the order of their deadlines: 1, 2, 3, 4.
+Interleave()<transacts><suspends>:i64 = Block{
+    var X:i64 = 0
+    A := Spawn{ Sleep(1.0); set X = X * 10 + 1; Sleep(2.0); Set(X, X * 10 + 3) }
+    B := Spawn{ Sleep(2.0); set X = X * 10 + 2; Sleep(2.0); Set(X, X * 10 + 4) }
+    A.Await()
+    B.Await()
+    X
+}
+# Sync arms write one cell; a Race loser is cancelled before its write, and the Defer of the
+# other loser runs as its landing and writes the local of this function.
+Arms()<transacts><suspends>:i64 = Block{
+    var N:i64 = 0
+    var Landed:i64 = 0
+    R := Sync(Block{ Sleep(1.0); set N = N * 10 + 1; N }, Block{ Sleep(2.0); set N = N * 10 + 2; N })
+    W := Race(Block{ Sleep(1.0); Set(N, N + 1) }, Block{ Sleep(3.0); Set(N, N + 100) })
+    L := Race(Block{ Defer{ set Landed = Landed + 5 }; Sleep(5.0); 1 }, Block{ Sleep(1.0); 2 })
+    R(0) * 100000 + R(1) * 1000 + W * 10 + L + Landed * 1000000
+}
+# The creator returns first: the task writes the cell later, and the closure handed on reads it.
+Make()<transacts><suspends>:function<reads>(tuple(), i64) = Block{
+    var S:i64 = 1
+    T := Spawn{ Sleep(2.0); Set(S, S + 10) }
+    Fn()<reads>:i64{ S }
+}
+Later()<transacts><suspends>:i64 = Block{ R := Make(); Before := R(); Sleep(3.0); Before * 100 + R() }
+# A Spawn held in a region that fails is dropped with the creator's write; one that commits
+# runs at the commit.
+Held()<transacts><suspends>:i64 = Block{
+    var X:i64 = 1
+    A := Attempt(Block{ T := Spawn{ Set(X, X + 10) }; set X = X + 100; Require[X < 50]; 0 }, -1)
+    B := Attempt(Block{ T := Spawn{ Set(X, X * 2) }; set X = X + 1; 0 }, -1)
+    Sleep(1.0)
+    A * 1000 + B * 100 + X
+}
+# A Batch body and a When body write the creator's local.
+var G:i64 = 0
+React()<transacts><suspends>:i64 = Block{
+    var L:i64 = 1
+    B:i64 = Batch{ set L = L + 1; L * 2 }
+    W:task(void) = When(G, Set(L, L * 10 + G))
+    set G = 3
+    Sleep(1.0)
+    B * 1000 + L
+}
+V1:task(i64) = Spawn{ Waits() }
+V2:task(i64) = Spawn{ Interleave() }
+V3:task(i64) = Spawn{ Arms() }
+V4:task(i64) = Spawn{ Later() }
+V5:task(i64) = Spawn{ Held() }
+V6:task(i64) = Spawn{ React() }

@@ -1,0 +1,6 @@
+palette := struct { Accent:string = "#7e9cd8", Opacity:float = 0.7 }
+settings := struct { Theme:palette = palette{}, Labels:[]string = array{} }
+Default:settings = settings{}
+Custom:settings = settings{Labels := array{"Traverse"}, Theme := palette{Opacity := 0.9}}
+OverriddenFault := struct { X:i64 = 1/0 }
+Safe:OverriddenFault = OverriddenFault{X := 42}

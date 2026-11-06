@@ -1,0 +1,29 @@
+# /user@example.com/App/Kit
+(/user@example.com/App/Kit:)Geometry<public> := module{
+  (/user@example.com/App/Kit/Geometry:)Flat<public> := module{
+    (/user@example.com/App/Kit/Geometry/Flat:)Area<public>((local:)W:(/Verse.org/Verse:)i64, (local:)H:(/Verse.org/Verse:)i64)<computes>:(/Verse.org/Verse:)i64 = (local:)W * (local:)H
+  }
+}
+(/user@example.com/App/Kit:)Side<public>:(/Verse.org/Verse:)i64 = 3
+# /user@example.com/Lib
+(/user@example.com/Lib:)Base:(/Verse.org/Verse:)i64 = 20
+(/user@example.com/Lib:)Twice<public>((local:)X:(/Verse.org/Verse:)i64)<computes>:(/Verse.org/Verse:)i64 = (local:)X * 2
+
+(/user@example.com/Lib:)color<public> := enum{(/user@example.com/Lib/color:)red, (/user@example.com/Lib/color:)green}
+(/user@example.com/Lib:)Favourite<public>:(/user@example.com/Lib:)color = (/user@example.com/Lib:)color.(/user@example.com/Lib/color:)green
+# Base is internal to the Lib folder, declared in base.forb before this file.
+(/user@example.com/Lib:)Count<public>:(/Verse.org/Verse:)i64 = (/user@example.com/Lib:)Twice((/user@example.com/Lib:)Base) + 1
+# /user@example.com/App
+(/user@example.com/App:)Kit := import{/user@example.com/App/Kit}
+using{/user@example.com/Lib}
+using{/user@example.com/App/Kit/Geometry/Flat}
+# Area comes from a module a file of Kit declares; Side from Kit itself.
+(/user@example.com/App:)Square<public>:(/Verse.org/Verse:)i64 = (/user@example.com/App/Kit/Geometry/Flat:)Area((/user@example.com/App:)Kit.(/user@example.com/App/Kit:)Side, (/user@example.com/App:)Kit.(/user@example.com/App/Kit:)Side)
+
+# The second file of the App folder: one namespace with main.forb, after it.
+(/user@example.com/App:)Total<public>:(/Verse.org/Verse:)i64 = (/user@example.com/App:)Square + (/user@example.com/Lib:)Count
+(/user@example.com/App:)Colour<public>:(/user@example.com/Lib:)color = (/user@example.com/Lib:)Favourite
+(/user@example.com/App:)Double<public>:(/Verse.org/Verse:)function<computes>((/Verse.org/Verse:)tuple((/Verse.org/Verse:)i64), (/Verse.org/Verse:)i64) = (/user@example.com/Lib:)Twice
+(/user@example.com/App:)Doubled<public>:(/Verse.org/Verse:)i64 = (/user@example.com/App:)Double((/user@example.com/App:)Total)
+# A form of the library block, which follows the last file of the module.
+(/user@example.com/App:)Squares<public>:[](/Verse.org/Verse:)i64 = For((local:)X:(/Verse.org/Verse:)array{1, 2, 3}, (local:)X * (local:)X)

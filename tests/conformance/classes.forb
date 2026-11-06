@@ -1,0 +1,45 @@
+Shape:=class<abstract>{
+  Name:string
+  var Scale:i64=1
+  Area<abstract>()<transacts>:i64
+  Grow(By:i64)<transacts>:i64=Block{set Self.Scale=Self.Scale+By;Self.Scale}
+  Describe()<transacts>:string=Self.Name
+}
+Square:=class(Shape){
+  Side:i64
+  Area<override>()<transacts>:i64=Self.Side*Self.Side*Self.Scale
+}
+Rect:=class<final>(Shape){
+  W:i64
+  H:i64
+  Area<override>()<transacts>:i64=Self.W*Self.H*Self.Scale
+  Describe<override>()<transacts>:string=Super.Describe()+"!"
+}
+Sized:=interface{
+  Size()<transacts>:i64
+}
+Node:=class<unique>(Sized){
+  Value:i64
+  var Next:option(Node)
+  Size<override>()<transacts>:i64=Self.Value
+}
+S:=Square{Name:="square",Side:=3}
+R:=Rect{Name:="rect",W:=2,H:=5}
+Shapes:[]Shape=array{S,R}
+Areas(Items:[]Shape)<transacts>:[]i64=For(Item:Items,Item.Area())
+Before:[]i64=Areas(Shapes)
+Grown:i64=S.Grow(1)
+After:[]i64=Areas(Shapes)
+Kept:i64=Attempt(Block{G:=R.Grow(10);Require[G<0];G},R.Scale)
+Viewed:Shape=R
+Told:string=Viewed.Describe()
+Width:i64=Attempt(Block{Down:=Rect[Viewed];Down.W},-1)
+NotSquare:i64=Attempt(Block{Down:=Square[Viewed];Down.Side},-1)
+Tail:=Node{Value:=2,Next:=option{}}
+Head:=Node{Value:=1,Next:=option{Tail}}
+set Tail.Next=option{Head}
+Same:logic=Head==Head
+Other:logic=Head==Tail
+Sizes:[]Sized=array{Head,Tail}
+First:i64=Attempt(Sizes[0].Size(),-1)
+Again:i64=Attempt(Block{N:=Node[Sizes[1]];N.Value},-1)

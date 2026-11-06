@@ -1,0 +1,7 @@
+# RFC-0085, I4: a default of a nested function reads what a top-level default reads,
+# not the parameters or locals of the code around it.
+Scale(N:i64)<computes>:i64 = Block{
+    Times(X:i64, K:i64 = N)<computes>:i64 = X * K
+    Times(2)
+}
+V:i64 = Scale(3)

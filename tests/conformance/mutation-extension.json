@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.mutation-test","api_version":1,"source_sha256":"e91503e84d9ffe99c50991042071570efd3d21c7ad408bd75169fa7a19fd8cea","work_budget":128,"isolation":"pure-language; no OS sandbox","bindings":3,"values":{"Count":2,"Frozen":1,"Discard":1}}

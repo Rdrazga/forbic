@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.while-loops-test","api_version":1,"source_sha256":"cce5dbe763d47ec3566f4755a5094cd1afeb3220b7dae89822c72a1edd6f6b9e","work_budget":8192,"isolation":"pure-language; no OS sandbox","bindings":8,"values":{"A":10,"B":30003,"C":42,"D":3,"E":true,"F":0}}

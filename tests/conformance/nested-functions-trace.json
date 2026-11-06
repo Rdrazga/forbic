@@ -1,0 +1,1 @@
+{"format":2,"failure_count":1,"truncated":false,"failures":[{"instruction":45,"function":26,"local_instruction":10,"code":"requirement_failed","reason":null,"path":"tests/conformance/nested-functions.forb","span":{"start":2804,"end":2811},"line":70,"column":77}]}

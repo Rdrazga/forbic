@@ -1,0 +1,6 @@
+Junk(N:i64)<computes>:i64 = Block{ G := ToString(N) + "garbagegarbagegarbagegarbagegarbagegarbagegarbagegarbagegarbage"; H := G + "moremoremoremoremoremoremoremoremoremoremoremoremore"; H.Length }
+Run(N:i64)<computes>:i64 = Block{ S := "s" + ToString(N) + "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"; J := Junk(N); T := S + "tail"; T.Length + J }
+Xs:[]i64 = For(I:1..200, Run(I))
+N:i64 = Xs.Length
+# c7-1: `Junk` leaves garbage strings after `S`; a run that reclaims them (--state, a digest run)
+# copies `S` at `S + "tail"` as one that does not reclaim does, so both stop at 3:26.

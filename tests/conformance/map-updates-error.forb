@@ -1,0 +1,2 @@
+var M:map(string,i64)=map{"a"=>1}
+Boom<public>:i64=Attempt(Block{set M["a"]/=0;1},2)

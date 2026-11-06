@@ -1,0 +1,51 @@
+# RFC-0087, P5.2: `<persistable>` types (T1 to T8). One type for every row of the JSON table
+# (E2), each field with a literal default, which the program records as a constant (T5);
+# and P5.3: `ToJson` and `FromJson` of their values (E1 to E10).
+difficulty := enum<persistable><closed>{Easy, Normal, Hard}
+badge := enum<open><persistable>{FirstWin, Streak}
+coordinates := struct<persistable>{X:float = 0.0, Y:float = -0.0}
+player_stats := struct<persistable>{Level:i64 = 1, Experience:i64 = 0}
+profile := class<final><persistable>{
+    Title:string = "new"
+    Active:logic = true
+    Initial:char = 'p'
+    Mark:char32 = 0u2605
+    Unlocked:[]string = array{}
+    Best:map(string, float) = map{"intro" => 12.5, "boss" => -0.5}
+    Last:option(i64) = option{}
+    Mode:difficulty = difficulty.Normal
+    Badges:[]badge = array{badge.FirstWin}
+    Home:coordinates = coordinates{X := 2.5}
+    Range:tuple(i64, i64) = tuple{-1, 1}
+    Stats:player_stats = player_stats{Level := 5}
+    # Methods and block clauses are allowed; nothing that reads saved data runs them (E5).
+    Score()<reads>:i64 = Self.Stats.Level * 100 + Self.Stats.Experience
+}
+# A persistable type is built, compared, matched and called as any other (T7).
+Fresh:profile = profile{}
+Given:profile = profile{Title := "alice", Last := option{3}, Mode := difficulty.Hard}
+GivenTitle<public>:string = Given.Title
+FreshScore<public>:i64 = Fresh.Score()
+GivenMode<public>:string = Case(Given.Mode, difficulty.Easy => "easy", difficulty.Normal => "normal", difficulty.Hard => "hard")
+Lasts<public>:i64 = Attempt(Given.Last?, -1) + Attempt(Fresh.Last?, -1)
+FreshHome<public>:coordinates = Fresh.Home
+ZeroSame<public>:logic = Attempt(Block{Require[coordinates{} == coordinates{Y := 0.0}]; true}, false)
+BossBest<public>:float = Attempt(Fresh.Best["boss"], 0.0)
+FreshMark<public>:char32 = Fresh.Mark
+FreshRange<public>:tuple(i64, i64) = Fresh.Range
+GivenStats<public>:player_stats = Given.Stats
+# P5.3: the canonical text of a value (E1, E2), read back to an equal one (E3, E4).
+GivenText<public>:string = ToJson(Given)
+Back:profile = Attempt(FromJson[profile][GivenText], Fresh)
+BackTitle<public>:string = Back.Title
+SameText<public>:logic = Attempt(Block{Require[ToJson(Back) == GivenText]; true}, false)
+# Every scalar row at an edge, options, the empty tuple and the enums.
+Scalars<public>:string = ToJson(tuple{-9223372036854775807 - 1, -0.0, NaN, -Inf, 0.1, "q\"\\\n雪", 0oFF, 0u10FFFF, true})
+Shapes<public>:string = ToJson(tuple{option{option{1}}, tuple{}, difficulty.Hard, badge.Streak, FreshRange})
+# 17:367: a text without a field gives the field its default; metadata may be absent, and
+# members come in any order.
+Old<public>:i64 = Attempt(FromJson[player_stats]["\{\"x_Level\":3\}"].Experience, -1)
+Partial:profile = Attempt(FromJson[profile][" \{ \"x_Title\" : \"bob\", \"$class_name\" : \"profile\" \} "], Fresh)
+PartialText<public>:string = ToJson(Partial.Stats) + Partial.Title
+# A text that breaks a rule of E3 encodes no value.
+Refused<public>:i64 = Attempt(FromJson[player_stats]["\{\"x_Level\":1.5\}"].Level, -1)

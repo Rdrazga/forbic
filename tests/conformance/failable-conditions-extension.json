@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.failable-conditions-test","api_version":1,"source_sha256":"50093e7675171b43cf156be7567c252fb62f631b8c448250d47753dd4312b481","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":11,"values":{"A":1,"B":0,"C":0,"D":10,"E":20,"F":1,"G":2,"H":110,"I":210}}

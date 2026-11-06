@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.transactional-frames-test","api_version":1,"source_sha256":"6ac005527aebfa3724a8d0724395fe9d6aff90617a9c6885f9fe4ff9d4547677","work_budget":256,"isolation":"pure-language; no OS sandbox","bindings":4,"values":{"Rows":[{"Name":"雪","Size":5},{"Name":"restored","Size":5}],"Count":2,"Total":5}}

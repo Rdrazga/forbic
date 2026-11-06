@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.recursion-test"
+ApiVersion:i64=1
+SourceSha256:string="e5668933a0ebea4fc5bb2f21fd9bb2912ce409731b09ca27485fe30341ce180e"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

@@ -1,0 +1,1 @@
+{"format":1,"failure_count":1,"truncated":false,"failures":[{"instruction":48,"code":"requirement_failed","reason":null,"path":"tests/conformance/array-updates.forb","span":{"start":397,"end":398},"line":8,"column":43}]}

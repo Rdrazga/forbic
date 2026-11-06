@@ -1,0 +1,6 @@
+palette := struct { Accent:string = "#7e9cd8", Opacity:float = 0.7 }
+settings := struct { Theme:palette = palette{}, Labels:[]string = array{"Traverse", "Stanza"} }
+Default:settings = settings{}
+Theme<public>:palette = Default.Theme
+Labels<public>:[]string = Default.Labels
+Count<public>:i64 = Labels.Length

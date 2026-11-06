@@ -1,0 +1,31 @@
+# RFC-0085, I11: automatic qualification (16:789). `forbic qualify` prints this file with every
+# identifier in its qualified form; the values below are those of the program itself.
+Start:i64 = 0
+light := enum{ (light:)Start, Glow, (light:)i64 }
+point := struct{ X:i64 = 0, Y:i64 = 0 }
+count := type{_X:i64 where 0 <= _X}
+shape := class{
+    Name:string = "shape"
+    var Scale:i64 = 1
+    Area()<transacts>:i64 = Self.Scale
+    Grow(By:i64)<transacts>:i64 = Block{ set Self.Scale = Self.Scale + By; Self.Scale }
+}
+square := class(shape){
+    Side:i64 = 2
+    Area<override>()<transacts>:i64 = Self.Side * Self.Side * Self.Scale
+}
+Size(P:point)<computes>:i64 = P.X + P.Y
+Size(S:string)<computes>:i64 = S.Length
+(P:point).Sum()<computes>:i64 = P.X + P.Y
+Identity[T:type](Value:T)<computes>:T{Value}
+Total(Items:[]i64)<transacts>:i64 = Block{ var Sum:i64 = 0; For(Item:Items, Block{ set Sum = Sum + Item; Sum }); Sum }
+Adder(Base:i64)<computes>:i64 = Block{ Add := Fn[Base:i64 = Base](N:i64)<computes>:i64{Base + N}; Add(1) + Base }
+Mix()<computes>:i64 = Block{(local:)Start:i64 = 5; (local:)Start * 10 + Start}
+Corner:point = point{X := 3, Y := 4}
+Lamp:light = (light:)Start
+Glowing:logic = If(Lamp == light.Glow, true, false)
+Widths:i64 = Size(Corner) * 100 + Size("four") + Corner.Sum() * 1000
+Squares:[]shape = array{square{}, shape{}}
+Areas:i64 = Attempt(Squares[0].Grow(1) * 10 + Squares[0].Area(), -1)
+Same:string = Identity[string]("same")
+Counted:i64 = Total(array{1, 2, 3}) + Adder(10) + Mix() + Start

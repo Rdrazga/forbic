@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.failure-test"
+ApiVersion:i64=1
+SourceSha256:string="5f3a3f4e9ca3ed09ed2ac4157e9961912f1dfa44197f70d0aa82bb7f47599fb7"
+WorkBudget:i64=128
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

@@ -1,0 +1,49 @@
+# Class and interface members (RFC-0071): interface fields and default bodies, named and default
+# arguments on methods, a superclass method standing in for an interface's, extension methods,
+# <concrete> and a restated field default.
+Entity := interface{
+    Id:i64 = 7
+    var Health:i64 = 100
+    Name:string
+    Describe()<transacts>:string = "{Self.Name}/{Self.Id}/{Self.Health}"
+    Hurt(By:i64, Scale:i64 = 2)<transacts>:i64 = Block{ set Self.Health = Self.Health - By * Scale; Self.Health }
+}
+Labelled := interface{ Label()<transacts>:string }
+Unit := class{
+    var Hits:i64 = 3
+    Label()<transacts>:string = "unit"
+}
+Knight := class(Unit, Entity, Labelled){
+    Name<override>:string = "knight"
+    Hurt<override>(By:i64, Scale:i64 = 3)<transacts>:i64 = Block{ set Self.Health = Self.Health - By * Scale; Self.Health }
+}
+Squire := class(Knight){
+    Id<override>:i64 = 9
+    Label<override>()<transacts>:string = "squire"
+}
+Config := class<concrete>{ Players:i64 = 8 }
+(V:i64).Double()<computes>:i64 = V * 2
+(S:string).Wrap(Open:string, Close:string = ">")<computes>:string = Open + S + Close
+(E:Entity).Heal(By:i64 = 1)<transacts>:i64 = Block{ set E.Health = E.Health + By; E.Health }
+(Items:[]i64).First()<computes><decides>:i64 = Items[0]
+Zero(E:Entity)<transacts><decides>:i64 = Block{ set E.Health = 0; Require[E.Health > 0]; 1 }
+K := Knight{}
+S := Squire{}
+AsEntity:Entity = K
+SquireEntity:Entity = S
+Told:string = AsEntity.Describe()
+ByInterface:i64 = AsEntity.Hurt(5)
+ByClass:i64 = K.Hurt(5)
+Named:i64 = AsEntity.Hurt(Scale := 1, By := 4)
+set AsEntity.Health = AsEntity.Health + 10
+Direct:i64 = K.Health
+Healed:i64 = AsEntity.Heal() + K.Heal(By := 4)
+Undone:i64 = Attempt(Zero[AsEntity], -1)
+Kept:i64 = K.Health
+SquireTold:string = SquireEntity.Describe()
+AsLabelled:Labelled = S
+Labels:string = AsLabelled.Label() + "," + K.Label()
+Doubled:i64 = 7.Double() + K.Hits.Double()
+Wrapped:string = "a".Wrap("<") + "b".Wrap("[", Close := "]")
+Head:i64 = Attempt(array{4, 5}.First[], -1)
+Players:i64 = Config{}.Players

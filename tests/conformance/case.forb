@@ -1,0 +1,15 @@
+Color:=enum{Red,Green,Blue}
+Cfg:=struct{Mode:Color=Color.Green}
+Name(C:Color)<computes>:string=Case(C,Color.Red=>"red",Color.Green=>"green",_=>"other")
+Score(N:i64)<computes>:i64=Case(N,1=>10,2=>20,-1=>-10,_=>0)
+Word(S:string)<computes>:i64=Case(S,"a"=>1,"bc"=>2,_=>3)
+Pick(G:Cfg)<computes>:i64=Case(G.Mode,Color.Blue=>3,Color.Green=>2,_=>1)
+Grid(A:i64,B:i64)<computes>:i64=Case(A,0=>Case(B,0=>1,_=>2),_=>Case(B,0=>3,_=>4))
+A<public>:string=Name(Color.Green)
+B<public>:string=Name(Color.Blue)
+C<public>:i64=Score(2)
+D<public>:i64=Score(-1)
+E<public>:i64=Score(99)
+F<public>:i64=Pick(Cfg{})
+G<public>:i64=Word("bc")+Word("zz")
+H<public>:i64=Grid(0,0)+Grid(0,5)*10+Grid(1,0)*100+Grid(1,1)*1000

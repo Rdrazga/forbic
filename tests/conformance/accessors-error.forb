@@ -1,0 +1,7 @@
+# A getter that reads its own field calls itself (RFC-0085, I8): the call depth ends it.
+loop := class{
+    var Level<getter(GetLevel)><setter(SetLevel)>:i64 = external{}
+    GetLevel(:accessor)<reads>:i64 = Self.Level + 1
+    SetLevel(:accessor, NewValue:i64)<computes>:void = 0
+}
+Value:i64 = loop{}.Level

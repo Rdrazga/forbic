@@ -1,0 +1,2 @@
+Double(S:[]i64)<computes>:[]i64=S+S
+Value:[]i64=Iterate(Double,20,array{1,2})

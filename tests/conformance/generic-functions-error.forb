@@ -1,0 +1,2 @@
+Identity[T:type](X:T)<computes>:T{X}
+Value:i64=Identity[i64](1/0)

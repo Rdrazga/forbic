@@ -1,0 +1,22 @@
+Color:=enum{Red,Green}
+Pt:=struct{X:i64,Y:i64}
+Grid:=map(tuple(i64,i64),string)
+var Cells:Grid=map{tuple{0,0}=>"origin",tuple{1,2}=>"a",tuple{3,4}=>"b"}
+Same[T:comparable](A:T,B:T)<computes>:logic{A==B}
+Drop(K:tuple(i64,i64))<transacts><decides>:i64=Block{set Cells=Without[Cells,K];Cells.Length}
+Hit<public>:string=Attempt(Cells[tuple{1,2}],"?")
+Miss<public>:string=Attempt(Cells[tuple{2,1}],"?")
+Points<public>:map(Pt,Color)=map{Pt{X:=1,Y:=2}=>Color.Red,Pt{X:=2,Y:=1}=>Color.Green}
+Shade<public>:Color=Attempt(Points[Pt{X:=2,Y:=1}],Color.Red)
+Lists<public>:map([]option(string),i64)=map{array{option{"x"},option{}}=>1,array{}=>2}
+Found<public>:i64=Attempt(Lists[array{}]+Lists[array{option{"x"},option{}}],-1)
+Equal<public>:logic=Same[tuple(Pt,[]i64)](tuple{Pt{X:=1,Y:=2},array{1,2}},tuple{Pt{X:=1,Y:=2},array{1,2}})
+Ordered<public>:logic=map{"a"=>1,"b"=>2}==map{"b"=>2,"a"=>1}
+Zero<public>:logic=tuple{0.0,NaN}==tuple{-0.0,NaN}
+A<public>:i64=Attempt(Drop[tuple{1,2}],-1)
+B<public>:i64=Attempt(Drop[tuple{1,2}],-1)
+set Cells[tuple{1,2}]="again"
+Rolled<public>:i64=Attempt(Block{set Cells=Without[Cells,tuple{0,0}];set Cells[tuple{9,9}]="z";Cells[tuple{7,7}];0},Cells.Length)
+Keys<public>:[]tuple(i64,i64)=For(K->V:Cells,K)
+Names<public>:[]string=For(K->V:Cells,K!=tuple{0,0},"{K(0)},{K(1)}={V}")
+Final<public>:Grid=Cells

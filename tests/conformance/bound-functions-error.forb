@@ -1,0 +1,1 @@
+F(A:i64,B:i64)<computes>:i64=A+B;Value:i64=Bind(F,1/0)(42)

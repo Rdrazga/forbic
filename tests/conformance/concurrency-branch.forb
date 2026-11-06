@@ -1,0 +1,34 @@
+# Structured concurrency, P3.4 (RFC-0082): Rush, Branch and the tasks a frame owns.
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# A branch belongs to the frame that ran it: when Fire returns, its end asks the branch to
+# cancel and waits until it has settled, after its Defer (Book 14:664).
+Fire()<transacts><suspends>:void = Block{
+    Branch{ Defer{ Note("branch cleaned") }; Sleep(0.0); Note("branch body") }
+    Note("fire returns")
+}
+
+# Rush yields the first arm to complete; the others keep running, owned by the frame, and
+# here finish before it ends (Book 14:443).
+Gate:event(i64) = event(i64){}
+Parked()<transacts><suspends>:i64 = Block{ Gate.Await(); Note("parked ran"); 100 }
+Quick()<transacts><suspends>:i64 = Block{ Sleep(0.0); 2 }
+First()<transacts><suspends>:i64 = Block{ W := Rush(Parked(), Quick()); Gate.Signal(0); Sleep(0.0); W }
+
+# A frame's end asks the tasks it owns to cancel in the order they came.
+Leaf(N:i64)<transacts><suspends>:void = Block{ Defer{ Note("leaf {N}") }; Sleep(Inf) }
+Owner()<transacts><suspends>:void = Block{ Branch{ Leaf(1) }; Branch{ Leaf(2) }; Note("owner ends") }
+
+Main()<transacts><suspends>:i64 = Block{
+    Fire()
+    R := First()
+    Owner()
+    R
+}
+Started:task(i64) = Spawn{ Main() }
+
+# A branch of a frame that never ends keeps waiting: it and its frame's task are listed at the end.
+Never:event(i64) = event(i64){}
+Lingers()<transacts><suspends>:i64 = Block{ Branch{ Never.Await() }; Sleep(Inf); 0 }
+Waiting:task(i64) = Spawn{ Lingers() }

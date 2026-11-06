@@ -1,0 +1,2 @@
+Double(S:string)<computes>:string=S+S
+Value:string=Iterate(Double,20,"ab")

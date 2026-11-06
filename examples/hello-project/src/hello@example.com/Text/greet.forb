@@ -1,0 +1,2 @@
+# The folder /hello@example.com/Text: a module of its own, which main.forb imports by its path.
+Greet<public>(Name:string)<computes>:string = "Hello, {Name}!"

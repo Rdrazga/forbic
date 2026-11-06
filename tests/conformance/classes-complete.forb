@@ -1,0 +1,52 @@
+# Classes completion (RFC-0092): override results and access that narrow, Super{...},
+# effects on structs, and restricted hierarchies with GetCastableFinalSuperClass.
+base_type := class{ Name:string }
+derived_type := class(base_type){ Value:i64 = 0 }
+producer := class{
+    Create()<reads><allocates>:base_type = base_type{Name := "base"}
+    Kind<public>()<computes>:string = "producer"
+}
+sub_producer := class(producer){
+    # A narrower result: the subclass sees `derived_type`, the base still reaches it.
+    Create<override>()<reads><allocates>:derived_type = derived_type{Name := "{Super.Create().Name} refined", Value := 42}
+    # A narrower access: through `sub_producer` only its subclasses call it.
+    Kind<override><protected>()<computes>:string = "sub"
+    Describe()<computes>:string = "{Self.Kind()} {Super.Kind()}"
+}
+Refined:i64 = sub_producer{}.Create().Value
+P:producer = sub_producer{}
+Through:string = P.Create().Name
+Kinds:string = "{P.Kind()} / {sub_producer{}.Describe()}"
+
+# Super{...} builds a new instance of the superclass; Super.Method runs on this one.
+tagged := class{
+    var Tag:string = "original"
+    Describe()<transacts>:string = "[{Self.Tag}]"
+}
+call_parent := class(tagged){ Describe<override>()<transacts>:string = "call {Super.Describe()}" }
+build_parent := class(tagged){ Describe<override>()<transacts>:string = "build {Super{Tag := "fresh"}.Describe()}" }
+A:tagged = call_parent{}
+set A.Tag = "updated"
+B:tagged = build_parent{}
+set B.Tag = "updated"
+Calls:string = "{A.Describe()} {B.Describe()}"
+
+# A struct states what building one needs.
+point := struct<computes>{ X:i64 = 1, Y:i64 = 2 }
+var Scale:i64 = 3
+scaled := struct<reads>{ Factor:i64 = 1 }
+Scaled()<reads>:scaled = scaled{Factor := Scale}
+Sum:i64 = point{X := 4}.X + Scaled().Factor
+
+# A restricted hierarchy and the family query (Book 10:2904, 11:1673).
+entity := class{ Id:i64 = 0 }
+component := class<abstract><unique><castable><final_super_base>{ Owner:entity }
+physics_component := class<unique><final_super>(component){ Mass:i64 = 5 }
+render_component := class<unique><final_super>(component){ Material:string = "matte" }
+rigid_body := class<unique>(physics_component){ Speed:i64 = 2 }
+Family(C:component)<computes><decides>:castable_subtype(component) = GetCastableFinalSuperClass[component, C]
+Mass(C:component)<reads>:i64 = Attempt(Block{ K := Family[C]; physics_component[K[C]].Mass }, -1)
+Body:component = rigid_body{Owner := entity{}}
+Paint:component = render_component{Owner := entity{}}
+Masses:[]i64 = array{Mass(Body), Mass(Paint)}
+Picked:castable_subtype(component) = Attempt(Family[Body], render_component)

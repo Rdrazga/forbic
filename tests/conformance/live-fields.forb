@@ -1,0 +1,49 @@
+# Live fields, P4.2 (RFC-0084): a class declares fields that follow their guards, which its
+# block clauses attach to every new instance, and `set live E.F = G` attaches a guard to a
+# `var` field of an instance.
+var Bonus:i64 = 5
+
+# A guard that reads Self starts from the type's default, then is attached in order: Total
+# reads Doubled, declared after it, and follows it once Doubled is attached.
+meter := class{
+    var Raw:i64 = 1
+    var live Total:i64 = Self.Doubled + Bonus
+    var live Doubled:i64 = Self.Raw * 2
+    live Label:string = "raw {Self.Raw}"
+}
+M:meter = meter{ Raw := 3 }
+First:tuple(i64, i64, string) = tuple{M.Total, M.Doubled, M.Label}
+
+# A subclass attaches its own live fields after its superclass's.
+big_meter := class(meter){ live Scaled:i64 = Self.Total * 10 }
+B:big_meter = big_meter{}
+
+# Writes propagate to the fields that read them.
+Bump(Amount:i64)<transacts>:i64 = Block{ set M.Raw = M.Raw + Amount; M.Total }
+Bumped:i64 = Bump(2)
+set Bonus = 100
+Scaled:i64 = B.Scaled
+
+# The Book's 15:602: a field anyone reads and only its class makes live.
+score_board := class{
+    var Raw:i64 = 0
+    var<private> live Shown<public>:i64 = Self.Raw + 1
+    Follow(Other:score_board)<transacts>:i64 = Block{ set live Self.Shown = Other.Raw * 2; Self.Shown }
+}
+Left:score_board = score_board{}
+Right:score_board = score_board{ Raw := 4 }
+Followed:i64 = Left.Follow(Right)
+Raise()<transacts>:i64 = Block{ set Right.Raw = 7; Left.Shown }
+Raised:i64 = Raise()
+
+# set live on a field of an instance, and a plain set that ends it.
+gauge := class{ var Level:i64 = 0 }
+G:gauge = gauge{}
+set live G.Level = Bonus + 1
+set Bonus = 10
+Seen:i64 = G.Level
+set G.Level = 0
+set Bonus = 20
+
+# A region that fails forgets the instance it built, its records and what they propagated.
+Tried:logic = Attempt(Block{ T:meter = meter{ Raw := 50 }; set M.Raw = 0; Require[T.Total < 0]; true }, false)

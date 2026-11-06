@@ -1,0 +1,85 @@
+# RFC-0083: refinement types, the `(local:)` qualifier, parametric aliases, open enums and the
+# conversions of a refinement back to its base.
+
+# A refinement is a type of its own whose values are those of its base between two bounds.
+Age := type{_X:i64 where 0 <= _X, _X <= 120}
+Percent := type{_X:float where 0.0 <= _X, _X <= 1.0}
+Celsius := type{_X:float where _X >= -273.15}
+Finite := type{_X:float where -Inf < _X, _X < Inf}
+Small := type{_X:float where _X < 0.1}
+Positive := type{_X:i64 where _X > 0}
+
+# A literal within the bounds is one of the refinement, which the compiler sees.
+Valid<public>:Age = 25
+Opacity<public>:Percent = 0.5
+Freezing<public>:Celsius = -273.15
+Largest<public>:Finite = 1.7976931348623157e+308
+Tiny<public>:Small = 0.09999999999999999
+
+# A value known only at run time is converted by a failable cast.
+ToAge(N:i64)<computes><decides>:Age = Age[N]
+Thirty<public>:i64 = Attempt(i64(ToAge[30]), -1)
+TooOld<public>:i64 = Attempt(i64(ToAge[150]), -1)
+Negative<public>:i64 = Attempt(i64(ToAge[-1]), -1)
+Edge<public>:i64 = Attempt(i64(ToAge[120]), -1)
+Absolute<public>:float = Attempt(float(Celsius[-300.0]), 1.0)
+NotFinite<public>:float = Attempt(float(Finite[Inf]), 2.0)
+NoNumber<public>:float = Attempt(float(Finite[NaN]), 3.0)
+NotBelow<public>:float = Attempt(float(Small[0.1]), 4.0)
+NotZero<public>:i64 = Attempt(i64(Positive[0]), -1)
+
+# `i64(X)` and `float(X)` give the base back; arithmetic is the base's.
+NextYear<public>:i64 = i64(Valid) + 1
+Doubled<public>:float = float(Opacity) * 2.0
+Text<public>:string = "{Valid} at {Opacity}"
+Same<public>:logic = Valid == 25 and 25 == Valid and Valid != 30
+
+# A refinement is a type like any other: fields, keys, elements, options, generics, `Case`.
+Person := struct{Years:Age = 1, Name:string}
+Ann<public>:Person = Person{Name := "Ann"}
+Older<public>:Person = WithField(Ann, Years, 7)
+Names<public>:map(Age, string) = map{1 => "one", 2 => "two"}
+Two<public>:string = Attempt(Names[2], "none")
+Ages<public>:[]Age = array{1, 2, 3}
+Maybe<public>:option(Age) = option{3}
+Id[T:type](V:T)<computes>:T { V }
+Kept<public>:i64 = i64(Id[Age](5))
+Word(A:Age)<computes>:string = Case(A, 0 => "none", 1 => "one", _ => "many")
+Words<public>:string = Word(1) + Word(0) + Word(50)
+
+# A failed cast fails its region, which undoes what it wrote.
+var Log:i64 = 0
+Admit(N:i64)<transacts><decides>:Age = Block{set Log = Log * 10 + 1; A := Age[N]; set Log = Log * 10 + 2; A}
+Refused<public>:i64 = Attempt(i64(Admit[200]), -1)
+AfterRefused<public>:i64 = Log
+Admitted<public>:i64 = Attempt(i64(Admit[20]), -1)
+AfterAdmitted<public>:i64 = Log
+Listed<public>:[]i64 = For(N:-1..2, V := Age[N], i64(V))
+
+# `(local:)` declares a local that may share its name with a declaration outside the function;
+# inside, the name is the local.
+Volume:i64 = 5
+Mix()<computes>:i64 = Block{(local:)Volume:i64 = 1; (local:)Volume * 10 + Volume}
+Mixed<public>:i64 = Mix()
+Scale((local:)Volume:i64)<computes>:i64 = Block{(local:)Base:i64 = 10; (local:)Base * Volume}
+Scaled<public>:i64 = Scale(4)
+Outside<public>:i64 = Volume
+
+# A parametric alias is the type its text names with the arguments in place.
+Pair[T:type] := tuple(T, T)
+Table[K:comparable] := map(K, Pair[i64])
+Scores<public>:Table[string] = map{"a" => tuple{1, 2}}
+Swapped<public>:Pair[i64] = Attempt(tuple{Scores["a"](1), Scores["a"](0)}, tuple{0, 0})
+
+# An open enum may gain cases: `Case(...)` over it needs a default, and `Case[...]` fails.
+Mode := enum<open>{On, Off, Idle}
+Current:Mode = Mode.Idle
+Defaulted<public>:i64 = Case(Current, Mode.On => 1, _ => 2)
+Pick(M:Mode)<computes><decides>:i64 = Case[M, Mode.On => 1, Mode.Off => 10]
+Picked<public>:i64 = Attempt(Pick[Current], 0) + Attempt(Pick[Mode.Off], 0)
+
+# Arms that test types: the narrower first, as no value would reach it after the wider one.
+Animal := class{}
+Dog := class(Animal){}
+Kind(V:any)<computes><decides>:string = Case[V, D:Dog => "dog", A:Animal => "animal"]
+Kinds<public>:string = Attempt(Kind[any(Dog{})], "") + Attempt(Kind[any(Animal{})], "") + Attempt(Kind[any(5)], "-")

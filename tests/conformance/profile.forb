@@ -1,0 +1,14 @@
+Wait(Seconds:float)<transacts><suspends>:float=Block{Sleep(Seconds);Seconds}
+Fails()<transacts><decides>:i64=Block{Require[false];1}
+Early(N:i64)<transacts>:i64=Block{Profile("early",Block{If(N<0,Return(-1),false);N*2})}
+Turns()<transacts>:i64=Block{var N:i64=0;Loop{Profile("turn",Block{set N=N+1;If(N>2,Break(),false)})};N}
+Quick<public>:i64=Profile("quick",6*7)
+Gone<public>:i64=Attempt(Profile("gone",Fails[]),0)
+Rolled<public>:i64=Attempt(Block{Profile("rolled",5);Require[false];1},-1)
+Kept<public>:i64=Attempt(Block{Profile("kept",7)},-1)
+Left<public>:i64=Early(-1)
+Done<public>:i64=Early(3)
+Counted<public>:i64=Turns()
+Nested<public>:i64=Profile("outer",Profile("inner",1)+1)
+Slow<public>:task(float)=Spawn{Profile("slow",Wait(2.5))}
+Total<public>:task(float)=Spawn{Profile("total",Profile("first",Wait(1.0))+Wait(1.5))}

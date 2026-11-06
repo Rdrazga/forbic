@@ -1,0 +1,13 @@
+var Scores:map(string,i64)=map{"a"=>1,"b"=>2}
+Maybe:option(i64)=option{7}
+Nothing:option(i64)=option{}
+Look(K:string)<transacts>:i64=Attempt(Scores[K],-1)
+Bump(K:string)<transacts><decides>:i64=Block{set Scores[K]+=10;Scores[K]}
+A<public>:i64=Look("a")
+B<public>:i64=Look("zz")
+C<public>:i64=Attempt(Maybe?,-5)
+D<public>:i64=Attempt(Nothing?,-5)
+set Scores["c"]=30
+E<public>:i64=Attempt(Bump["a"],-1)
+F<public>:i64=Attempt(Bump["q"],-1)
+G<public>:map(string,i64)=Scores

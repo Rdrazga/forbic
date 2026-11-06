@@ -1,0 +1,2 @@
+Xs:[]i64=array{0,1}
+Boom<public>:option(i64)=option{First[X:Xs,10/X>5,X]}

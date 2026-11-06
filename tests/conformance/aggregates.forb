@@ -1,0 +1,5 @@
+point := struct { X:i64, Y:i64 }
+Pair(X:i64)<computes>:[]point = array{point{Y := X + 1, X := X}, point{X := 0, Y := 0}}
+Items<public>:[]point = Pair(7)
+Count<public>:i64 = Items.Length
+Empty:[][]string = array{array{}, array{"snow: 雪"}}

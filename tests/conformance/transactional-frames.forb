@@ -1,0 +1,8 @@
+row:=struct{Name:string,Size:i64}
+var Cell:i64=1
+First(A:i64,B:i64)<computes>:i64=A
+Change(N:i64)<transacts><decides>:row=row{Name:="雪",Size:=First(Set(Cell,Cell+N),If(Require[N>=0],Cell,Cell))}
+Recover(N:i64)<transacts>:row=Attempt(Change[N],row{Name:="restored",Size:=Cell})
+Rows<public>:[]row=array{Recover(4),Recover(-1)}
+Count<public>:i64=Rows.Length
+Total<public>:i64=Attempt(Change[-2].Size,Cell)

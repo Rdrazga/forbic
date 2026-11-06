@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.strings-test"
+ApiVersion:i64=1
+SourceSha256:string="2afbdd48f0daeb6e2ad6172fe29a3e77e6d81cbb510036f8b53f6575d5b50507"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

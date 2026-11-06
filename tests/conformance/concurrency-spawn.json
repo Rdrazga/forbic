@@ -1,0 +1,2 @@
+held 4
+{"Log":["main","fetched 1","fetched 2","got 20","fetched 4","done"],"Started":{"$task":{"sequence":1,"state":"completed","result":[]}},"Kept":4,"Dropped":-1,"Forever":{"$task":{"sequence":4,"state":"active"}},"$scheduler":{"tick_rate":60,"tick":156,"created":4,"completed":3,"canceled":0,"switches":13,"waiting":[{"task":4,"kind":"spawn","wait":"sleep","span":[984,989]}]}}

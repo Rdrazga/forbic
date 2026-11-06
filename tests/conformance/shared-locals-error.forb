@@ -1,0 +1,3 @@
+# A shared local can be changed by another function: reading it needs <reads>.
+Count()<writes>:i64 = Block{ var X:i64 = 0; Bump := Fn()<writes>:void{ Set(X, 1) }; Bump(); X }
+A:i64 = Count()

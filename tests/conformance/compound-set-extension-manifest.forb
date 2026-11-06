@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.compound-set-test"
+ApiVersion:i64=1
+SourceSha256:string="c11719b8f67a2974b23e5297f47d736ea650a73973562cbd6b774cfd76eb29c3"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

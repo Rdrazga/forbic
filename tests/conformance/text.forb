@@ -1,0 +1,17 @@
+point := struct { X:i64, Y:i64 }
+shade := enum { Light, Dark }
+Thing := class { Name:string }
+ToString(P:point)<computes>:string = "({P.X},{P.Y})"
+ToString(S:shade)<computes>:string = If(S == shade.Light, "light", "dark")
+ToString(T:Thing)<transacts>:string = "Thing:" + T.Name
+ToString(Xs:[]i64)<computes>:string = "n=" + ToString(Xs.Length)
+pair := struct { A:i64, B:i64 }
+ToString(P:pair)<computes> := "<{P.A}|{P.B}>"
+Pt:point = point{X := 1, Y := 2}
+Plain<public>:string = "{7} {1.5} {true} {"s"} {'c'}"
+Own<public>:string = "{Pt}"
+Kinds<public>:string = "{shade.Dark} {Thing{Name := "a"}} {array{4, 5, 6}}"
+Call<public>:string = ToString(Pt) + ToString(7) + ToString(1.5) + ToString(false)
+Nested<public>:string = "[{Pt}] {"x{Pt}"} {ToString(Pt)}"
+Each<public>:[]string = For(I:1..3, "{point{X := I, Y := I * I}}")
+Transparent<public>:string = "{pair{A := 1, B := 2}}"

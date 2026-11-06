@@ -1,0 +1,7 @@
+mode := enum { Light, Dark }
+Keep(P:tuple(i64,string))<computes>:tuple(i64,string) = P
+settings := struct { Pair:tuple([]mode,tuple(i64,string)) = tuple{array{},Keep(tuple{6,"Traverse"})} }
+Desktop<public>:settings = settings{}
+Gap<public>:i64 = Desktop.Pair(1)(0)
+Label<public>:string = Desktop.Pair(1)(1)
+Unit<public>:tuple() = tuple{}

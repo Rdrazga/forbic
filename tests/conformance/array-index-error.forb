@@ -1,0 +1,2 @@
+Items:[]i64=array{1}
+Value:i64=Attempt(Items[1/0],0)

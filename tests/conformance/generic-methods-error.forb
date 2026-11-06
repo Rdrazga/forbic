@@ -1,0 +1,7 @@
+# A generic method has no dispatch slot, so it cannot override a method or be overridden.
+Base := class{
+    Pick[U:type](X:U)<computes>:U{ X }
+}
+Derived := class(Base){
+    Pick<override>()<computes>:i64 = 1
+}

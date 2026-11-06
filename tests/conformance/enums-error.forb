@@ -1,0 +1,3 @@
+first := enum{Same}
+second := enum{Same}
+Value:second = first.Same

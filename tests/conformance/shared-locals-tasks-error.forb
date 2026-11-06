@@ -1,0 +1,3 @@
+# RFC-0085, I5: a task body shares a local var it assigns; what it captured for a parameter is a copy.
+Count(X:i64)<transacts><suspends>:i64 = Block{ T := Spawn{ Sleep(1.0); Set(X, X + 1) }; T.Await() }
+V:task(i64) = Spawn{ Count(1) }

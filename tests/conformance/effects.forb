@@ -1,0 +1,57 @@
+# RFC-0078: the Book's effect families. Each function declares exactly what its body does.
+var Count:i64=10
+counter:=class{var N:i64=5}
+Shared:counter=counter{}
+
+Peek()<reads>:i64=Count+Shared.N
+Put(V:i64)<writes>:i64=Block{set Count=V;set Shared.N=V+1;V}
+Fresh(V:i64)<allocates>:counter=counter{N:=V}
+Bump(C:counter)<reads><writes>:i64=Block{set C.N=C.N+1;C.N}
+Old(V:i64)<transacts>:i64=Bump(Fresh(V))
+Small(X:i64)<computes>:i64=X+1
+Seen(X:i64)<reads>:i64=X+Count
+Check(X:i64)<decides><reads>:i64=Block{Require[X<Count];X}
+Try(V:i64)<writes><decides>:i64=Block{set Count=V;Require[V<5];V}
+
+# Declared and checked; nothing starts a suspending function before P3.
+Wait(X:i64)<computes><suspends>:i64=X
+Poll(X:i64)<suspends><reads>:i64=Wait(X)+Count
+
+# A function with fewer effects stands where more are expected.
+Twice(F:function<transacts>(tuple(i64),i64),X:i64)<transacts>:i64=F(F(X))
+Ask(F:function<reads><decides>(tuple(i64),i64),X:i64)<reads>:i64=Attempt(F[X],-1)
+Held:function<reads><suspends>(tuple(i64),i64)=Seen
+
+# An override may narrow the effects of its slot.
+shape:=class<abstract>{
+var Scale:i64=2
+Area<abstract>()<transacts>:i64
+}
+square:=class(shape){
+Side:i64=3
+Area<override>()<reads>:i64=Self.Side*Self.Scale
+}
+dot:=class(shape){
+Area<override>()<computes>:i64=1
+}
+Total(S:shape)<transacts>:i64=S.Area()
+
+# A class states the effect of building it.
+tag:=class<computes>{Id:i64=7}
+log:=class<transacts>{
+var Size:i64=0
+Block{set Self.Size=Count}
+}
+MakeTag()<allocates>:tag=tag{}
+MakeLog()<transacts>:log=log{}
+
+First<public>:i64=Peek()
+Second<public>:i64=Put(20)
+Third<public>:i64=Peek()
+Fourth<public>:i64=Old(8)
+Fifth<public>:i64=Twice(Small,1)+Twice(Seen,1)
+Sixth<public>:i64=Ask(Small,1)+Ask(Check,5)+Ask(Check,50)
+Seventh<public>:i64=Attempt(Try[9],-1)
+Eighth<public>:i64=Count
+Ninth<public>:i64=Total(square{})*10+Total(dot{})
+Tenth<public>:i64=MakeLog().Size+tag{}.Id+MakeTag().Id

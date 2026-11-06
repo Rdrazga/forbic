@@ -1,0 +1,4 @@
+shown alpha
+done at 1700000000
+later
+{"Stamp":1700000000,"Config":[{"$reader":"config"}],"Log":[{"$writer":"log"}],"First":"alpha","Kept":1,"Gone":0,"Lost":"-","Task":[{"$task":{"sequence":1,"state":"completed","result":1700000001}}],"Done":[],"$scheduler":{"tick_rate":60,"tick":60,"created":1,"completed":1,"canceled":0,"switches":3,"waiting":[]},"$inputs":{"count":4,"bytes":9}}

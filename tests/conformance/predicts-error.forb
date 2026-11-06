@@ -1,0 +1,4 @@
+# A predicting function calls only predicting functions; one without <predicts> dictates.
+Plain(X:i64)<computes>:i64 = X + 1
+Predicted(X:i64)<computes><predicts>:i64 = Plain(X) * 2
+A:i64 = Predicted(1)

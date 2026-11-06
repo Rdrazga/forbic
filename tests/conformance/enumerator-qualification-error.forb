@@ -1,0 +1,3 @@
+# In the body of an enum, a qualifier names the enum being declared.
+shape := enum{ circle, square }
+color := enum{ (shape:)red, green }

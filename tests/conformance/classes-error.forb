@@ -1,0 +1,6 @@
+Meter:=class{
+  var Total:i64=0
+  Share(Parts:i64)<transacts>:i64=Self.Total/Parts
+}
+M:=Meter{}
+Boom<public>:i64=Attempt(M.Share(0),1)

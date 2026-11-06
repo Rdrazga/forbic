@@ -1,0 +1,12 @@
+Items:[]i64=array{3,4,5}
+Offset:i64=100
+Names:[]string=array{"a","b"}
+Run(K:i64)<computes>:[]i64=For(X:Items,X*K+Offset)
+Idx<public>:[]i64=For(I->X:Items,I*10+X)
+Pairs<public>:[]string=For(N:Names,N+"!")
+Big<public>:[]i64=For(X:For(Y:Items,Y+1),X*2)
+Kept<public>:[]i64=For(X:Items,X>3,X*2)
+KeptIdx<public>:[]i64=For(I->X:Items,I>0,X>3,I+X)
+Empty<public>:[]i64=For(X:Items,X>9,X)
+A<public>:[]i64=Run(2)
+Str<public>:string=Block{T:=For(N:Names,N+"?");Attempt(T[0],"")}

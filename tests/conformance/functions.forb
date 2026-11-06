@@ -1,0 +1,22 @@
+var Log:i64=0
+IsEven(N:i64)<computes>:logic=If(N==0,true,IsOdd(N-1))
+IsOdd(N:i64)<computes>:logic=If(N==0,false,IsEven(N-1))
+Ping(N:i64)<transacts><decides>:i64=If(N<=0,Log,Block{set Log=Log*10+1;Require[N!=7];Pong[N-1]})
+Pong(N:i64)<transacts><decides>:i64=If(N<=0,Log,Block{set Log=Log*10+2;Ping[N-1]})
+Func(A:i64,(B:i64,C:i64),D:i64)<computes>:i64=A+B+C+D
+Nest((P,(Q,R)):tuple(i64,tuple(i64,string)))<computes>:string=R+ToString(P*10+Q)
+Fatal(Message:string)<computes>:false=Err(Message)
+Half(N:i64)<computes>:i64=If(N>=0,N/2,Fatal("negative"))
+Second[A:type,B:type](P:tuple(A,B))<computes>:B{P(1)}
+First[T:type](Xs:[]T,Default:T)<computes>:T{If(Xs.Length>0,ElementAt(Xs,0),Default)}
+Even<public>:logic=IsEven(10)
+Odd<public>:logic=IsEven(7)
+Kept<public>:i64=Attempt(Ping[4],-1)
+KeptLog<public>:i64=Log
+Undone<public>:i64=Attempt(Ping[9],-1)
+UndoneLog<public>:i64=Log
+Sum<public>:i64=Func(1,tuple{2,3},4)
+Text<public>:string=Nest(tuple{4,tuple{2,"n"}})
+Halved<public>:i64=Half(9)
+Picked<public>:string=Second(tuple{1,"b"})
+Head<public>:i64=First(array{7,8},0)

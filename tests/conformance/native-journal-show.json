@@ -1,0 +1,16 @@
+{"header":{"toolchain":"forbic 0.0.1 (Forbic pure-core prototype; Zig 0.17.0)","profile":"bootstrap","program":"ec50736c89ee3e902e2e44cd3257a8c500e9475c6e6cc7dd5e06b92c93db6f1a","seed":6216465378251330560,"tick_rate":60,"grants":[{"kind":"reader","name":"config","path":"tests/conformance/native-handles.txt","repositionable":true},{"kind":"writer","name":"log","path":".zig-cache/native-journal-log.txt","base":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}]}}
+{"input":{"sequence":0,"kind":"clock","request":0,"tick":0,"status":"value","value":1700000000}}
+{"input":{"sequence":1,"kind":"line","request":0,"tick":0,"status":"value","line":"alpha"}}
+{"action":{"sequence":0,"channel":2,"text":"start alpha"}}
+{"action":{"sequence":1,"channel":0,"text":"shown alpha"}}
+{"action":{"sequence":2,"channel":2,"text":"end alpha"}}
+{"seal":{"actions":3,"inputs":2}}
+{"input":{"sequence":2,"kind":"line","request":0,"tick":0,"status":"value","line":"beta"}}
+{"action":{"sequence":3,"channel":0,"text":"done at 1700000000"}}
+{"seal":{"actions":4,"inputs":3}}
+{"input":{"sequence":3,"kind":"clock","request":0,"tick":60,"status":"value","value":1700000001}}
+{"action":{"sequence":4,"channel":2,"text":"later 1700000001"}}
+{"seal":{"actions":5,"inputs":4}}
+{"action":{"sequence":5,"channel":0,"text":"later"}}
+{"seal":{"actions":6,"inputs":4}}
+{"end":{"outcome":"completed"}}

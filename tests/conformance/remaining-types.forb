@@ -1,0 +1,83 @@
+# The remaining type features of RFC-0080: `void` results, the top type `any` with its explicit
+# conversion and checked casts, `Case[...]` that fails when no arm takes the value, and the
+# explicit conversion of a tuple to an array.
+Animal := class{ Name:string = "animal" }
+Dog := class(Animal){ Bark:i64 = 3 }
+Cat := class<final>(Animal){}
+Walker := interface{ Legs()<transacts>:i64 }
+Robot := class(Walker){ Legs<override>()<transacts>:i64 = 2 }
+Point := struct{ X:i64, Y:i64 }
+Color := enum{ Red, Green, Blue }
+Ints := []i64
+Step := function(tuple(i64),i64)
+Twice(N:i64)<computes>:i64 = N * 2
+MakeDog()<transacts>:Dog = Dog{Name := "rex"}
+MakeCat()<transacts>:Animal = Cat{}
+MakeRobot()<transacts>:Walker = Robot{}
+
+# A function whose result is `void` runs its body, drops the value and yields the unit value.
+var Count:i64 = 0
+Bump(N:i64)<transacts>:void = Set(Count, Count + N)
+Measure(S:string)<computes>:void = S.Length + 1
+Unit<public>:tuple() = Measure("abc")
+Bumped<public>:void = Bump(5)
+AfterBump<public>:i64 = Count
+Dropped<public>:void = void(Twice(21))
+SameUnit<public>:logic = Unit == Bumped and Dropped == tuple{}
+
+# `any(X)` is the one way into `any`. The value is unchanged: a report prints it as it is.
+Whole:any = any(5)
+Text:any = any("text")
+Pet:any = any(MakeDog())
+Spot:any = any(Point{X := 1, Y := 2})
+Many<public>:[]any = array{Whole, Text, Spot, any(Color.Green), any(array{1, 2, 3}), any(2.5), any(true), any('c'), any(option{4})}
+
+# `Type[Value]` gives it back as the type it has, and fails for any other type.
+AsInt<public>:i64 = Attempt(i64[Whole], -1)
+NotInt<public>:i64 = Attempt(i64[Text], -1)
+AsText<public>:string = Attempt(string[Text], "none")
+AsDog<public>:i64 = Attempt(Dog[Pet].Bark, -1)
+AsAnimal<public>:string = Attempt(Animal[Pet].Name, "none")
+CatIsDog<public>:i64 = Attempt(Dog[any(MakeCat())].Bark, -1)
+RobotLegs<public>:i64 = Attempt(Walker[any(MakeRobot())].Legs(), -1)
+AsPoint<public>:i64 = Attempt(Point[Spot].Y, -1)
+AsColor<public>:Color = Attempt(Color[Many[3]], Color.Red)
+AsInts<public>:i64 = Attempt(Ints[Many[4]].Length, -1)
+AsStep<public>:i64 = Attempt(Step[any(Twice)](21), -1)
+
+# A `Case` over `any` tests each type in turn; an instance is also what its class inherits.
+Kind(V:any)<computes>:string = Case(V, N:i64 => "int", S:string => "string", P:Point => "point", L:Ints => "ints", K:Dog => "dog", M:Animal => "animal", _ => "other")
+Kinds<public>:[]string = For(V:Many, Kind(V))
+PetKind<public>:string = Kind(Pet) + "/" + Kind(any(MakeCat()))
+
+# A failed cast undoes what its region wrote, like any failure.
+var Held:any = any(1)
+Keep(V:any)<transacts>:any = Block{ Before := Held; set Held = V; Before }
+First<public>:i64 = Attempt(i64[Keep(any("two"))], -1)
+Undone<public>:i64 = Attempt(Block{ Keep(any(Color.Red)); i64[Held] }, -7)
+StillHeld<public>:string = Attempt(string[Held], "none")
+
+# Through a generic function the type is a parameter of the cast.
+Open[T:type](V:any)<computes><decides>:T { T[V] }
+Opened<public>:i64 = Attempt(Open[i64][Whole], -1) + Attempt(Open[Ints][Many[4]].Length, -1) * 10
+Refused<public>:string = Attempt(Open[string][Whole], "refused")
+
+# `Case[...]` fails when no arm takes the value, and needs no default.
+Named(N:i64)<computes><decides>:string = Case[N, 1 => "one", 2 => "two"]
+One<public>:string = Attempt(Named[1], "none")
+Three<public>:string = Attempt(Named[3], "none")
+Warm(C:Color)<computes><decides>:logic = Case[C, Color.Red => true]
+Reds<public>:[]logic = array{Attempt(Warm[Color.Red], false), Attempt(Warm[Color.Blue], false)}
+Letters<public>:i64 = Attempt(Case["b", "a" => 1, "b" => 2], 0) * 10 + Attempt(Case['z', 'a' => 1, 'b' => 2], 0)
+Evens<public>:[]i64 = For(V:1..4, Case[V, 2 => 20, 4 => 40])
+Chosen<public>:i64 = If(Case[3, 1 => true, 2 => false], 1, 0)
+
+# `ToArray` converts a tuple explicitly; the place of a call types what it builds from nothing.
+Triple:tuple(i64,i64,i64) = tuple{1, 2, 3}
+Listed<public>:[]i64 = ToArray(Triple)
+Words<public>:string = Join(ToArray(tuple{"x", "y"}), "-")
+Pets:[]Animal = ToArray(tuple{MakeDog(), MakeCat()})
+PetNames<public>:string = Attempt(Pets[0].Name + Pets[1].Name, "none")
+Nothing<public>:[]i64 = Concatenate()
+NoWords<public>:string = Join(array{}, ",")
+Joined<public>:[]i64 = Concatenate(array{}, Listed, ToArray(tuple{4}))

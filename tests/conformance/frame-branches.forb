@@ -1,0 +1,7 @@
+row:=struct{Name:string,Size:i64}
+Offset(N:i64)<computes>:i64=If(N<5,N+2,10)
+Label(Full:logic)<computes>:string=If(Full,"雪","empty")
+Make(Keep:logic,N:i64)<computes>:row=If(Keep,row{Name:=Label(true),Size:=Offset(N)},row{Name:=Label(false),Size:=0})
+Rows<public>:[]row=array{Make(true,4),Make(false,8)}
+Count<public>:i64=Rows.Length
+Total<public>:i64=Offset(Count)

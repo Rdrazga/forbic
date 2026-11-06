@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.enum-test","api_version":1,"source_sha256":"49123b977d9fd3eee60a5c4d061a0553030256f07912925de8f7b19f3331f107","work_budget":64,"isolation":"pure-language; no OS sandbox","bindings":3,"values":{"Desktop":{"Mode":"mode.Dark","Allowed":["mode.Light","mode.Dark"]},"Selected":"mode.Light"}}

@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.while-loops-test"
+ApiVersion:i64=1
+SourceSha256:string="cce5dbe763d47ec3566f4755a5094cd1afeb3220b7dae89822c72a1edd6f6b9e"
+WorkBudget:i64=8192
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

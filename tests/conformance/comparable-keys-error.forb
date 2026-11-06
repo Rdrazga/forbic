@@ -1,0 +1,2 @@
+K:tuple(i64,option(string))=tuple{1,option{"a"}}
+Bad<public>:map(tuple(i64,option(string)),i64)=map{tuple{1,option{"a"}}=>1,K=>2}

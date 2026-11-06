@@ -1,0 +1,7 @@
+# A live local starts from its type's default until its guard runs: a class has none.
+point := class{ X:i64 = 0 }
+Origin()<transacts>:i64 = Block{
+    var live P:point = point{}
+    P.X
+}
+V:i64 = Origin()

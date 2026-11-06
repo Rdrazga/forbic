@@ -1,0 +1,3 @@
+Safe(X:i64)<computes>:i64=X
+Safe(X:string)<computes>:i64=10/X.Length
+Boom<public>:i64=Safe("")

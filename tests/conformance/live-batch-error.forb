@@ -1,0 +1,5 @@
+# A batch's body runs to its end before what it notified is delivered: it cannot suspend.
+var Level:i64 = 0
+Raise()<transacts><suspends>:void = Block{
+    B:i64 = Batch{ set Level = 1; Sleep(1.0); Level }
+}

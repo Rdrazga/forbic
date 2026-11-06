@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.case-test"
+ApiVersion:i64=1
+SourceSha256:string="f58dcb20d08a3e85e6c335b46dfe7b391cc5d8195b94d427c0d76a6e13dd977a"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

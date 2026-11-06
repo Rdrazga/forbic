@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.overloads-test","api_version":1,"source_sha256":"bbed4bd2ecac85762484dbc7c9aa35f1667a015e969c97f4159e07094705aac3","work_budget":4096,"isolation":"pure-language; no OS sandbox","bindings":14,"values":{"A":"int 5","B":"str x","C":"pair 3","D":"yes","E":2,"F":20,"G":6,"H":3,"I":42,"J":5,"K":8}}

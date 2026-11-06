@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.interpolation-test"
+ApiVersion:i64=1
+SourceSha256:string="3140d4de6a10b0e1d1ae9d95e75ec75f402eee40ca7642dcf321708b6fa9010f"
+WorkBudget:i64=1024
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

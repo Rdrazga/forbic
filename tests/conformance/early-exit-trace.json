@@ -1,0 +1,1 @@
+{"format":2,"failure_count":1,"truncated":false,"failures":[{"instruction":40,"function":12,"local_instruction":5,"code":"requirement_failed","reason":null,"path":"tests/conformance/early-exit.forb","span":{"start":793,"end":800},"line":10,"column":67}]}

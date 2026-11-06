@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.anonymous-functions-test","api_version":1,"source_sha256":"f541958b521fc6f67f4bd036b55641145946f3b2455b4451849d84bcc013c0c9","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Selected":{"function":{"name":"Fn","module":null,"anonymous":82}},"Good":3,"Recovered":9,"Total":21}}

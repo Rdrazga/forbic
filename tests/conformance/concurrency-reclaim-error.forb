@@ -1,0 +1,11 @@
+# The error variant of concurrency-reclaim: a service that keeps every reading it builds in a
+# local across its sleeps. What a suspended frame holds is a root, so reclamation keeps them all,
+# and the cells for instances run out at the reading that is one too many.
+Reading := class{ Visit:i64, A:i64, B:i64, C:i64, D:i64, E:i64, F:i64, G:i64, H:i64, J:i64, K:i64, L:i64, M:i64, N:i64, O:i64, P:i64 }
+Hoard(Rounds:i64)<transacts><suspends>:i64 = Block{
+    var Kept:[]Reading = array{}
+    var I:i64 = 0
+    Loop{ If(I >= Rounds, Break(), false); set I = I + 1; Made := Reading{ Visit := I, A := 1, B := 2, C := 3, D := 4, E := 5, F := 6, G := 7, H := 8, J := 9, K := 10, L := 11, M := 12, N := 13, O := 14, P := 15 }; set Kept = Kept + array{Made}; Sleep(0.0) }
+    Kept.Length
+}
+T:task(i64) = Spawn{ Hoard(70) }

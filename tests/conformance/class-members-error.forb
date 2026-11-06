@@ -1,0 +1,5 @@
+Meter := interface{ var Level:i64 = 0 }
+Tank := class(Meter){}
+(M:Meter).Share(Parts:i64 = 0)<transacts>:i64 = 100 / (Parts + M.Level)
+T:Meter = Tank{}
+X:i64 = T.Share()

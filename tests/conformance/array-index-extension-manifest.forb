@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.array-index-test"
+ApiVersion:i64=1
+SourceSha256:string="601150edd386e43afeb55ea2ee71d27c4aa365d12765174a59b9b0da30e423e2"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

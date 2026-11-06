@@ -1,0 +1,24 @@
+var Count:i64=0
+Items:[]i64=array{5,7}
+Some:option(i64)=option{7}
+None:option(i64)=option{}
+Bump(N:i64)<transacts>:void=If(N>0,Set(Count,Count+N))
+Look(I:i64)<transacts>:i64=Block{If(Items[I]>6,Set(Count,Count+100));If(X:=Items[I],Set(Count,Count+X));Count}
+Bumped<public>:i64=Block{Bump(3);Bump(-1);Count}
+Looked<public>:i64=Look(0)+Look(9)+Look(1)
+Once<public>:[]i64=For(X:=Some?,X*10)
+Never<public>:[]i64=For(X:=None?,X*10)
+GetThing()<transacts><decides>:i64=2
+PassesFilter()<transacts><decides>:logic=true
+Guarded<public>:[]i64=For(PassesFilter[],N:1..3,N)
+Fed<public>:[]i64=For(Thing:=GetThing[],N:Thing..Thing+2,Thing*10+N)
+Undone()<transacts>:[]i64=For(Block{set Count=Count+1000;false},X:Items,X)
+Skipped<public>:[]i64=Undone()
+After<public>:i64=Count
+Color:=enum{Red,Green,Blue}
+Name(C:Color)<computes>:string=Case(C,Color.Red=>"red",Color.Green=>"green",Color.Blue=>"blue",_=>"none")
+Named<public>:string=Name(Color.Blue)
+Grade(S:string)<computes>:i64=Case(S,"a"=>1,"b"=>2,_=>0)
+Graded<public>:i64=Grade("b")
+Near(X:float)<computes>:i64=Case(X,Y:float where Y>=1.0=>1,_=>0)
+Neared<public>:i64=Near(1.5)

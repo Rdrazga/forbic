@@ -1,0 +1,37 @@
+# RFC-0085, I8: fields with accessors. Such a field has no cell: a read calls its getter and a
+# `set` its setter, with an `accessor` that only the access can make. The Book's example 23
+# (12:849), then its example 100 (10:3279), in Forbic spelling.
+entity := class{
+    var Health<getter(GetHealth)><setter(SetHealth)>:i64 = external{}
+    var InternalHealth:i64 = 100
+    GetHealth(:accessor)<reads>:i64 = Self.InternalHealth
+    SetHealth(:accessor, NewValue:i64)<transacts>:void = If(NewValue >= 0 and NewValue <= 100, Block{ set Self.InternalHealth = NewValue; 0 }, 0)
+}
+subscribable_property := interface{
+    var Value<getter(GetValue)><setter(SetValue)>:i64 = external{}
+    var Storage:i64 = 100
+    GetValue(:accessor)<reads>:i64 = Self.Storage + 10
+    SetValue(:accessor, NewValue:i64)<transacts>:void = If(NewValue >= 0, Block{ set Self.Storage = NewValue; 0 }, 0)
+}
+tracked_value := class(subscribable_property){}
+Object := tracked_value{}
+Initial:i64 = Object.Value
+set Object.Value = 150
+Updated:i64 = Object.Value
+# Through the interface: the setter refuses -5; `+=` reads through the getter once.
+AsProperty:subscribable_property = Object
+set AsProperty.Value = -5
+set AsProperty.Value += 1
+Through:i64 = AsProperty.Value
+Hero := entity{}
+set Hero.Health = 150
+Refused:i64 = Hero.Health
+set Hero.Health = 40
+Accepted:i64 = Hero.Health
+set Hero.Health -= 15
+Lowered:i64 = Hero.Health
+# A setter's writes in a region that fails are undone with it.
+Hurt(E:entity, By:i64)<transacts><decides>:i64 = Block{ set E.Health -= By; Require[E.Health > 0]; E.Health }
+Survived:i64 = Attempt(Hurt[Hero, 5], -1)
+Fallen:i64 = Attempt(Hurt[Hero, 20], -1)
+Kept:i64 = Hero.Health

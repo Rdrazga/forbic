@@ -1,0 +1,63 @@
+# Cancelling reactions, P4.7 (RFC-0084, N6): T.Cancel() of an Upon or a When. One that waits on
+# its guard settles cancelled at once and its dependencies go; one that is firing finishes its
+# body, then an Upon completes and a When settles cancelled; one whose start is still queued
+# never starts. Those that await a cancelled reaction are cancelled (RFC-0082 Q3).
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# The Book's 15:532 over module cells (its locals are refused, Q1): the cancel, made by a spawned
+# task, drops the dependency on X, so the write of 10 leaves Y at 0.
+var X:i64 = 0
+var Y:i64 = 0
+Watch:task(i64) = Upon(X > 5, Set(Y, X))
+StopObserving()<transacts><suspends>:void = Watch.Cancel()
+Before()<transacts><suspends>:void = Block{ Defer{ Note("before unwinds") }; Watch.Await(); Note("never") }
+B:task(void) = Spawn{ Before() }
+S:task(void) = Spawn{ StopObserving() }
+set X = 10
+Seen:i64 = Y
+
+# Awaiting a cancelled Upon: a task already waiting (Before, and here WaitsFirst) is asked when
+# it settles, and unwinds when it runs; one that awaits it afterwards is cancelled at its Await.
+After()<transacts><suspends>:void = Block{ Defer{ Note("after unwinds") }; Watch.Await(); Note("never") }
+var Gate:i64 = 0
+Late:task(i64) = Upon(Gate > 0, Gate)
+WaitsFirst:task(void) = Spawn{ Block{ Defer{ Note("first unwinds") }; V := Late.Await(); Note("never {V}") } }
+StopLate()<transacts><suspends>:void = Block{ Late.Cancel(); Note("late cancelled") }
+L:task(void) = Spawn{ StopLate() }
+A:task(void) = Spawn{ After() }
+
+# A firing When cancelled by a task its body hands off to: the body runs to its end, and the
+# When registers no more, so the write of 3 runs nothing.
+var Z:i64 = 0
+var Handles:[]task(void) = array{}
+Stopper()<transacts><suspends>:void = Block{ If(T := Handles[0], T.Cancel(), void(0)); Note("stopper asked") }
+Stop()<transacts>:i64 = Block{ T:task(void) = Spawn{ Stopper() }; 0 }
+Clamp:task(void) = When(Z > 0, Block{ Note("clamp saw {Z}"); Q := If(Z > 1, Stop(), 0); Note("clamp ends") })
+set Handles = array{Clamp}
+set Z = 1
+set Z = 2
+set Z = 3
+
+# An Upon asked while it fires completes with its body's result.
+var R:i64 = 0
+var Results:[]task(i64) = array{}
+Asker()<transacts><suspends>:void = Block{ If(T := Results[0], T.Cancel(), void(0)); Note("upon asked") }
+Ask()<transacts>:i64 = Block{ T:task(void) = Spawn{ Asker() }; 7 }
+Once:task(i64) = Upon(R > 0, Ask() * R)
+set Results = array{Once}
+set R = 3
+Got:task(void) = Spawn{ Block{ V := Once.Await(); Note("once gave {V}") } }
+
+# An Upon cancelled while its start is queued: First starts earlier in the same drain, reaches
+# it through a cell and cancels it, and its guard is never evaluated.
+var Queued:[]task(string) = array{}
+First()<transacts><suspends>:void = Block{ Note("first runs"); If(T := Queued[0], T.Cancel(), void(0)) }
+Main()<transacts><suspends>:void = Block{
+    Made:logic = Attempt(Block{ F := Spawn{ First() }; U := Upon(Z >= 0, Block{ Note("never"); "u" }); set Queued = array{U}; true }, false)
+    Note("drained")
+}
+M:task(void) = Spawn{ Main() }
+
+# One left waiting at the end, which nothing cancels: listed with the wait guard.
+Forever:task(void) = When(Z > 100, Note("z"))

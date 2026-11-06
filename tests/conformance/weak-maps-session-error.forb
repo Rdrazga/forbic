@@ -1,0 +1,3 @@
+# RFC-0087, P5.4 (W5, the Book's 03:1144): a session cell is neither read nor replaced whole.
+var Counter:weak_map(session, i64) = map{}
+Copy:weak_map(session, i64) = Counter

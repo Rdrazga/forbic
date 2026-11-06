@@ -1,0 +1,26 @@
+Shape<public>:=class<abstract>{
+  Name<public>:string
+  var Scale:i64=1
+  Area<public><abstract>()<transacts>:i64
+}
+Square:=class(Shape){
+  Side:i64
+  Area<override>()<transacts>:i64=Self.Side*Self.Side*Self.Scale
+}
+Node<public>:=class{
+  Value<public>:i64
+  var Next<public>:option(Node)
+}
+Box<public>:Shape=Square{Name:="square",Side:=3}
+Tail<public>:=Node{Value:=2,Next:=option{}}
+Head<public>:=Node{Value:=1,Next:=option{Tail}}
+set Tail.Next=option{Head}
+Covered<public>:i64=Box.Area()
+Ring<public>:[]Node=array{Head,Tail}
+Gone<public>:i64=Attempt(Block{N:=Node{Value:=7,Next:=option{}};Require[N.Value<0];N.Value},-1)
+Hidden:=Node{Value:=9,Next:=option{}}
+vault:=class{Code:i64}
+Kept<public>:any=any(vault{Code:=55})
+Add(A:i64,B:i64)<computes>:i64=A+B
+Secret:i64=40
+Plus<public>:function<computes>(tuple(i64),i64)=Bind(Add,Secret)

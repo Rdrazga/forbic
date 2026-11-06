@@ -1,0 +1,46 @@
+# Await of a guard, P4.6 (RFC-0084): `Await(G)` evaluates G and goes on when it holds; when it
+# fails, the task waits on what G read. A write of one of those wakes the task to the ready
+# queue, and it evaluates G again where it stands when it runs, after the code that wrote.
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# The Book's 15:419: the doubler waits until the source passes 10.
+gauge := class{ var Level:i64 = 0 }
+DoubleWhenFull(Source:gauge, Target:gauge)<transacts><suspends>:void = Block{
+    Await(Source.Level > 10)
+    set Target.Level = Source.Level * 2
+    Note("doubled {Target.Level}")
+}
+In:gauge = gauge{}
+Out:gauge = gauge{}
+Doubler:task(void) = Spawn{ DoubleWhenFull(In, Out) }
+set In.Level = 5
+set In.Level = 12
+Early:i64 = Out.Level
+
+# A guard that yields a value, and holds at once: the task does not wait.
+var Items:[]i64 = array{4, 5}
+Second()<transacts><suspends>:i64 = Await(Items[1] * 10)
+Quick:task(i64) = Spawn{ Second() }
+
+# Woken while its guard has stopped holding: the write of 30 wakes it, the write of 0 comes
+# before it runs, so it waits again, until the writer's 40.
+var X:i64 = 0
+Patient()<transacts><suspends>:void = Block{ V := Await(Block{ Require[X > 10]; X }); Note("saw {V}") }
+Writer()<transacts><suspends>:void = Block{ Sleep(1.0); set X = 40; Note("wrote 40") }
+P:task(void) = Spawn{ Patient() }
+set X = 30
+set X = 0
+W:task(void) = Spawn{ Writer() }
+
+# A task waiting at an Await is cancelled: it unwinds there and runs its Defer; the write after
+# the request notifies nothing.
+var Y:i64 = 0
+Doomed()<transacts><suspends>:void = Block{ Defer{ Note("doomed unwinds") }; Await(Y > 0); Note("never") }
+Killer(T:task(void))<transacts><suspends>:void = Block{ Sleep(2.0); T.Cancel(); set Y = 1; Note("cancelled") }
+D:task(void) = Spawn{ Doomed() }
+K:task(void) = Spawn{ Killer(D) }
+
+# One left waiting when the run ends: listed with the wait `guard` at its Await.
+var Z:i64 = 0
+Forever:task(void) = Spawn{ Block{ Await(Z > 0); Note("z") } }

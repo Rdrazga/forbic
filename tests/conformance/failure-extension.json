@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.failure-test","api_version":1,"source_sha256":"5f3a3f4e9ca3ed09ed2ac4157e9961912f1dfa44197f70d0aa82bb7f47599fb7","work_budget":128,"isolation":"pure-language; no OS sandbox","bindings":4,"values":{"Gap":6,"Rows":[[],[7]],"Enabled":true,"Reason":"kanagawa"}}

@@ -1,0 +1,15 @@
+Xs:[]i64=array{1,2,3}
+Rows:[][]i64=array{array{1,2},array{},array{3}}
+Stock:map(string,i64)=map{"nut"=>3,"bolt"=>0,"gear"=>2}
+Prices:map(string,i64)=map{"nut"=>5,"gear"=>40}
+var Log:i64=0
+Pairs<public>:[]i64=For(X:Xs,Y:Xs,X<Y,X*10+Y)
+Flat<public>:[]i64=For(I->R:Rows,C:R,I*100+C)
+Squares<public>:[]i64=For(I:1..4,I*I)
+Empty<public>:[]i64=For(I:3..2,I)
+Triangle<public>:[]i64=For(I:1..3,J:I..3,I*10+J)
+Worth<public>:[]string=For(Name->Count:Stock,Count>0,Price:=Prices[Name],"{Name}={Count*Price}")
+Picked<public>:[]i64=For(I:0..4,Xs[I]*2)
+Record()<transacts>:[]i64=For(X:Xs,Block{set Log=Log+X;Require[X!=2];Log})
+Kept<public>:[]i64=Record()
+After<public>:i64=Log

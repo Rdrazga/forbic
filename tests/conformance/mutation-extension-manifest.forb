@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.mutation-test"
+ApiVersion:i64=1
+SourceSha256:string="e91503e84d9ffe99c50991042071570efd3d21c7ad408bd75169fa7a19fd8cea"
+WorkBudget:i64=128
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

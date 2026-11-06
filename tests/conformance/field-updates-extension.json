@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.field-updates-test","api_version":1,"source_sha256":"b32716b2089df9b1b6f527522c108683128c3fcf1187e42402293e2320aff02c","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":4,"values":{"Moved":{"Name":"n","In":{"X":1,"Y":"a"},"Count":5},"Seen":20,"Loc":10}}

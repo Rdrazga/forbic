@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.predicates"
+ApiVersion:i64=1
+SourceSha256:string="a1e1e8f709c4727a9bc7307eced75547daa75e3d0b80142db0f7a81449e4a78f"
+WorkBudget:i64=128
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

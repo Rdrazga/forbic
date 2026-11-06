@@ -1,0 +1,4 @@
+{"generation":"54ec7d0ed082fc64646ff726691b6da8707db7492d4b4471a0b455fed8dd89fc","number":2,"parent":"7726d7f05fdb72c8bc130844d7a9f151765023be3b6e8c3d5ae8167b44594601"}
+{"schema":{"schema":1,"cells":[{"cell":":Stats","key":"persistent_key","value":0}],"types":[{"struct":{"package":"/","name":"player_stats","fields":[{"name":"Level","type":1,"default":"1"},{"name":"Experience","type":1,"default":"0"}]}},{"primitive":"i64"}]}}
+{"entry":{"cell":":Stats","key":"alice","object":"5a26c10825fef79f9e5c2611eb75f54bae05aec178c47545d73c2abb396fa1fd","value":{"$package_name":"/","$class_name":"player_stats","x_Level":1,"x_Experience":15}}}
+{"entry":{"cell":":Stats","key":"bob","object":"f3379e1412aa8a84a55bf9c862ec63be218aa90598b94273e52f960d35e000c8","value":{"$package_name":"/","$class_name":"player_stats","x_Level":1,"x_Experience":3}}}

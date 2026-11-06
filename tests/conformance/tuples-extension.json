@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.tuple-test","api_version":1,"source_sha256":"c6feb1ac5417b49796b7d7f163f8188153647e59599dad8dc455086a0ea83e08","work_budget":64,"isolation":"pure-language; no OS sandbox","bindings":4,"values":{"Desktop":{"Pair":[[],[6,"Traverse"]]},"Gap":6,"Label":"Traverse","Unit":[]}}

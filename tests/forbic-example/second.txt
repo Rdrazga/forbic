@@ -1,0 +1,12 @@
+quote (in memory, nothing saved):
+acme: 3 x 10 in EU, total 36 (orders 1, spent 36)
+globex: 1 x 250 in US, total 267 (orders 1, spent 267)
+acme: 2 x 5 in EU, total 12 (orders 2, spent 48)
+refused: initech MARS 1 1
+quoted revenue: 315
+orders (kept in the state directory):
+acme: 3 x 10 in EU, total 36 (orders 3, spent 84)
+globex: 1 x 250 in US, total 267 (orders 2, spent 534)
+acme: 2 x 5 in EU, total 12 (orders 4, spent 96)
+refused: initech MARS 1 1
+revenue: 315

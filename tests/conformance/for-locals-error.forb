@@ -1,0 +1,3 @@
+Xs:[]i64=array{1,2}
+F()<transacts>:i64=Block{T:=0;For(X:Xs,Block{set T=T+X;T});T}
+A<public>:i64=F()

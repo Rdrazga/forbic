@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.map-updates-test"
+ApiVersion:i64=1
+SourceSha256:string="e68cc9d20d3c2e1ff5f8842294fea6a5540f6eb5f05f5b597522aada65f899b6"
+WorkBudget:i64=2048
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

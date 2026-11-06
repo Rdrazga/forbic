@@ -1,0 +1,11 @@
+var Cell:i64=1
+Apply[E:effect,T:type](F:function<E>(tuple(T),T),X:T)<E>:T{F(F(X))}
+Pass[E:effect](F:function<E>(tuple(i64),i64),X:i64)<E>:i64{F[X]}
+Inc(N:i64)<computes>:i64=N+1
+Bump(N:i64)<transacts>:i64=Block{set Cell=Cell+N;Cell}
+Small(N:i64)<transacts><decides>:i64=Block{set Cell=Cell+1;Require[N<3];N}
+Pure<public>:i64=Apply[computes,i64](Inc,5)
+Moved<public>:i64=Apply[transacts,i64](Bump,2)
+Kept<public>:i64=Attempt(Pass[transacts<decides>][Small,2],0)
+Rolled<public>:i64=Attempt(Pass[transacts<decides>][Small,9],Cell)
+Total<public>:i64=Pure+Moved+Kept+Rolled+Cell

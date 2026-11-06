@@ -1,0 +1,14 @@
+var Cell:i64=1
+Visit(N:i64)<transacts><decides>:i64=Block{
+ set Cell=Cell+1
+ Require[N<3]
+ N+1
+}
+box:=struct{F:function<transacts><decides>(tuple(i64),i64)=Visit}
+Make()<computes>:box=box{}
+Run(F:function<transacts><decides>(tuple(i64),i64),N:i64,X:i64)<transacts><decides>:i64=Iterate(F,N,X)
+B:box=Make()
+Selected<public>:function<transacts><decides>(tuple(i64),i64)=B.F
+Good<public>:i64=Attempt(Run[Selected,3,0],0)
+Recovered<public>:i64=Attempt(Iterate(Selected,5,0),Cell)
+Total<public>:i64=Good+Recovered+Cell

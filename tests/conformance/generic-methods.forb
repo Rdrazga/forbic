@@ -1,0 +1,80 @@
+# RFC-0081: generic methods, the `subtype` family as values and bounds, `SortBy`, function type
+# aliases with effects and casts out of `any` to a function type with more effects.
+
+# A generic method has type parameters of its own and is specialized for each list of them.
+Shape := interface{
+    Area()<reads>:i64
+    Scaled[U:type](F:function(tuple(i64), U))<reads>:U{ F(Self.Area()) }
+}
+Square := class(Shape){
+    Side:i64
+    Area<override>()<reads>:i64 = Self.Side * Self.Side
+}
+Box[T:type] := class{
+    Value:T
+    Map[U:type](F:function(tuple(T), U))<reads><allocates>:Box[U]{ Box[U]{Value := F(Self.Value)} }
+    With[U:type](Other:U)<reads>:tuple(T, U){ tuple{Self.Value, Other} }
+}
+Counter := class{
+    var Total:i64 = 0
+    Add[U:type](Items:[]U)<transacts>:i64{ Block{ set Self.Total = Self.Total + Items.Length; Self.Total } }
+    Depth[U:type](N:i64, X:U)<computes>:i64{ If(N <= 0, 0, 1 + Self.Depth[U](N - 1, X)) }
+}
+Sq:Shape = Square{Side := 3}
+Described<public>:string = Sq.Scaled[string](Fn(N:i64)<computes>:string{ "area {N}" })
+Ints := Box[i64]{Value := 5}
+Mapped<public>:string = Ints.Map[string](Fn(N:i64)<computes>:string{ "v{N}" }).Value
+Paired<public>:tuple(i64, string) = Ints.With[string]("five")
+Bound := Ints.With[logic]
+Applied<public>:tuple(i64, logic) = Bound(true)
+Tally := Counter{}
+Grow()<transacts>:i64 = Tally.Add[string](array{"a", "b"}) + Tally.Add[i64](array{1})
+Grown<public>:i64 = Grow()
+Undone<public>:i64 = Attempt(Block{ Tally.Add[i64](array{1, 2, 3}); Require[Tally.Total > 100]; Tally.Total }, -1)
+Kept<public>:i64 = Tally.Total
+Deep<public>:i64 = Tally.Depth[string](4, "s")
+
+# `castable_subtype(T)` values cast, `concrete_subtype(T)` values build, `subtype(T)` values are held.
+Component := class<castable>{ Id:i64 = 0 }
+Physics := class(Component){ Mass:i64 = 5 }
+Render := class(Component){ Look:string = "flat" }
+Entity := class<abstract>{ Name:string }
+Player := class<concrete>(Entity){ Name<override>:string = "player" }
+Enemy := class<concrete>(Entity){ Name<override>:string = "enemy" }
+Kinds := castable_subtype(Component)
+Wanted:Kinds = Physics
+Matches(C:Component, K:Kinds)<computes>:logic = Attempt(Block{ K[C]; true }, false)
+Parts:[]Component = array{Physics{Id := 1}, Render{Id := 2}, Physics{Id := 3}}
+Ids(Ps:[]Component, K:Kinds)<reads>:[]i64 = For(P:Ps, Matches(P, K), P.Id)
+Physical<public>:[]i64 = Ids(Parts, Wanted)
+AllKinds:[]Kinds = array{Component, Physics, Render}
+CountAll(Ks:[]Kinds)<reads>:[]i64 = For(K:Ks, Ids(Parts, K).Length)
+Counts<public>:[]i64 = CountAll(AllKinds)
+Spawner := class{
+    Kind:concrete_subtype(Entity)
+    Spawn()<reads><allocates>:Entity = Self.Kind{}
+}
+Spawned<public>:[]string = array{Spawner{Kind := Player}.Spawn().Name, Spawner{Kind := Enemy}.Spawn().Name}
+Remembered:subtype(Entity) = Player
+Numbers:subtype(i64) = i64
+Cast[T:castable_subtype(Component)](C:Component)<computes><decides>:T{ T[C] }
+Massive<public>:i64 = Attempt(Cast[Physics][Parts[0]].Mass, -1) * 10 + Attempt(Cast[Render][Parts[0]].Id, -1)
+
+# `SortBy` is a stable merge sort through a comparison that fails when the left does not go first.
+Card := struct{ Rank:i64, Tag:string }
+ByRank(A:Card, B:Card)<computes><decides>:void = Require[A.Rank < B.Rank]
+Hand:[]Card = array{Card{Rank := 3, Tag := "a"}, Card{Rank := 1, Tag := "b"}, Card{Rank := 3, Tag := "c"}, Card{Rank := 2, Tag := "d"}, Card{Rank := 1, Tag := "e"}}
+Sorted<public>:[]string = For(C:SortBy(Hand, ByRank), C.Tag)
+var Compared:i64 = 0
+Counting(A:i64, B:i64)<transacts><decides>:void = Block{ set Compared = Compared + 1; Require[A > B] }
+Descending()<transacts>:[]i64 = SortBy(array{2, 9, 4, 7}, Counting)
+Down<public>:[]i64 = Descending()
+Succeeded<public>:i64 = Compared
+
+# A function type alias may name effects; a cast out of `any` takes a function with fewer.
+Wide := function<transacts>(tuple(i64), i64)
+Twice(N:i64)<computes>:i64 = N * 2
+Held:any = any(Twice)
+Widened<public>:i64 = Attempt(Wide[Held], Fn(N:i64)<transacts>:i64{ 0 })(21)
+Exact := function<computes>(tuple(i64), i64)
+Narrowed<public>:i64 = Attempt(Exact[Held](4), -1)

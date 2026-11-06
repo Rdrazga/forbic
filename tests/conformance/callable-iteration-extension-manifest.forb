@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.callable-iteration-test"
+ApiVersion:i64=1
+SourceSha256:string="5a356e80f730965e6754aaf0164f9f8d092cbc1e4a4d1b812a7697b852830224"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

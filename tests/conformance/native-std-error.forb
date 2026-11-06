@@ -1,0 +1,2 @@
+Sum:=native{"std.sum"}
+Value:i64=Sum(array{9223372036854775807,1})

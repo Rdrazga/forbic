@@ -1,0 +1,10 @@
+defaults := struct {
+    Layout:map(string,option(i64)) = map{"gap" => option{6}, "master" => option{55}, "missing" => option{}}
+    Colors:map(string,string) = map{"accent" => "#7e9cd8", "background" => "#1f1f28"}
+}
+Config:defaults = defaults{}
+Gap<public>:i64 = Or(Or(Lookup(Config.Layout,"gap"),option{}),12)
+Master<public>:i64 = Or(Or(Lookup(Config.Layout,"master"),option{}),50)
+Absent<public>:option(i64) = Or(Lookup(Config.Layout,"missing"),option{})
+Accent<public>:string = Or(Lookup(Config.Colors,"accent"),"#ffffff")
+HasGap<public>:logic = Lookup(Config.Layout,"gap").IsSet

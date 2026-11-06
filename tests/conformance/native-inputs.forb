@@ -1,0 +1,9 @@
+Stamp()<transacts>:float=GetSecondsSinceEpoch()
+Later(Name:string,Wait:float)<transacts><suspends>:float=Block{Sleep(Wait);Print("{Name} {GetSecondsSinceEpoch()}");GetSecondsSinceEpoch()}
+Start<public>:float=GetSecondsSinceEpoch()
+Again<public>:logic=Stamp()==Start
+Lost<public>:float=Attempt(Block{X:=GetSecondsSinceEpoch();Require[X<0.0];X},-1.0)
+Shown<public>:tuple()=Print("start {Start}")
+First<public>:task(float)=Spawn{Later("first",1.0)}
+Second<public>:task(float)=Spawn{Later("second",1.0)}
+Third<public>:task(float)=Spawn{Later("third",2.5)}

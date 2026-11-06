@@ -1,0 +1,10 @@
+Stamp<public>:float=GetSecondsSinceEpoch()
+Config<public>:option(reader)=option{OpenReader["config"]}
+Log<public>:option(writer)=option{OpenWriter["log"]}
+First<public>:string=Attempt(Block{R:=Config?;R.ReadLine[]},"-")
+Kept<public>:i64=Attempt(Block{W:=Log?;W.WriteLine("start {First}");Print("shown {First}");W.WriteLine("end {First}");1},0)
+Gone<public>:i64=Attempt(Block{W:=Log?;W.WriteLine("never");Require[false];1},0)
+Lost<public>:string=Attempt(Block{R:=Config?;L:=R.ReadLine[];Require[false];L},"-")
+Later(W:writer)<transacts><suspends>:float=Block{Sleep(1.0);T:=GetSecondsSinceEpoch();W.WriteLine("later {T}");Print("later");T}
+Task<public>:option(task(float))=Attempt(Block{W:=Log?;option{Spawn{Later(W)}}},option{})
+Done<public>:tuple()=Print("done at {Stamp}")

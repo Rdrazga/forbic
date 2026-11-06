@@ -1,0 +1,4 @@
+# A live-only variable is never assigned: its guard is all that writes it.
+var Health:i64 = 100
+live Status:string = If(Health < 50, "low", "fine")
+set Status = "dead"

@@ -1,0 +1,24 @@
+Items:[]i64=array{3,4,5}
+var Trace:i64=0
+Note(D:i64)<transacts>:i64=Set(Trace,Trace*10+D)
+Sign(N:i64)<computes>:i64=Block{If(N<0,Return(-1),false);If(N==0,Return(0),false);1}
+Find(T:i64)<transacts>:i64=Block{For(I->X:Items,If(X==T,Return(I),false));-1}
+Bits(X:i64)<transacts>:i64=Block{var B:i64=1;var C:i64=0;Loop{If(B>X,Break(),false);set B=2*B;set C=C+1};C}
+Scan(Limit:i64)<transacts>:i64=Block{var Rounds:i64=0;Loop{set Rounds=Rounds+1;For(X:Items,If(X*Rounds>Limit,Break(),false))};Rounds}
+FirstOver(L:i64)<transacts>:i64=Block{var I:i64=0;Loop{Defer{Note(I)};set I=I+1;If(I*I>L,Return(I),false)}}
+Cleanup(N:i64)<transacts>:i64=Block{Defer{Note(1)};Block{Defer{Note(2)};If(N>0,Return(Note(3)),false);Note(4);0};Note(5);9}
+Risky(N:i64)<transacts><decides>:i64=Block{Note(6);Defer{Note(7)};Require[N>0];N}
+Checked(N:i64)<computes>:i64=Block{If(N<0,Err("negative"),false);N}
+A<public>:i64=Sign(-5)+Sign(0)*10+Sign(7)*100
+B<public>:i64=Find(5)*10+Find(9)
+C<public>:i64=Bits(8)
+D<public>:i64=Scan(20)
+E<public>:i64=FirstOver(10)
+T1<public>:i64=Trace
+F<public>:i64=Cleanup(1)
+G<public>:i64=Cleanup(0)
+T2<public>:i64=Trace
+H<public>:i64=Attempt(Risky[0],-1)
+I<public>:i64=Attempt(Risky[2],-1)
+T3<public>:i64=Trace
+J<public>:i64=Checked(4)

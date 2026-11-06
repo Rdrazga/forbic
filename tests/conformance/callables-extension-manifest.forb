@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.callables-test"
+ApiVersion:i64=1
+SourceSha256:string="cf54bad04fcbfc0ef3e698509b6b21ce932373512cd0f72f8142aa5aeeeda032"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

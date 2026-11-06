@@ -1,0 +1,1 @@
+{"format":1,"failure_count":1,"truncated":false,"failures":[{"instruction":73,"code":"requirement_failed","reason":null,"path":"tests/conformance/accessor-initialisation.forb","span":{"start":2676,"end":2683},"line":46,"column":69}]}

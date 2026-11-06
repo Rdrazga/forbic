@@ -1,0 +1,13 @@
+state:=struct{Index:i64,Sum:i64}
+var Cell:i64=1
+Visit(N:i64,S:state)<transacts><decides>:state=Block{
+ set Cell=Cell+1
+ Require[N>0]
+ Next:state=state{Index:=S.Index+1,Sum:=S.Sum+Cell}
+ If(N==1,Next,Visit[N-1,Next])
+}
+Seed:state=state{Index:=0,Sum:=0}
+Final<public>:state=Attempt(Visit[3,Seed],Seed)
+Recovered<public>:state=Attempt(Visit[0,Final],Final)
+Total<public>:i64=Final.Sum+Recovered.Sum+Cell
+Visits<public>:i64=Final.Index

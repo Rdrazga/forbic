@@ -1,0 +1,31 @@
+# Live variables, P4.1 (RFC-0084): a live variable keeps the value of its guard as the cells
+# the guard read are written, until a plain set ends it.
+var Health:i64 = 100
+var MaxHealth:i64 = 120
+var live Ratio:i64 = Health * 100 / MaxHealth
+live Status:string = If(Ratio < 50, "low", "fine")
+
+# A guard reads through functions and the var fields of instances.
+gauge := class{ var Level:i64 = 0; Limit:i64 = 10 }
+Tank:gauge = gauge{ Level := 4 }
+Room()<reads>:i64 = Tank.Limit - Tank.Level
+var live Free:i64 = Room()
+
+# `set live` in a function captures its parameters by value.
+var Shield:i64 = 0
+Arm(Bonus:i64)<transacts>:i64 = Block{ set live Shield = Health / 10 + Bonus; Shield }
+Armed:i64 = Arm(5)
+
+# Writes propagate at once: the records that read them run again, lowest first.
+Hit(Damage:i64)<transacts>:i64 = Block{ set Health = Health - Damage; Ratio }
+After:i64 = Hit(60)
+Seen:string = Status
+Fill()<transacts>:i64 = Block{ set Tank.Level = 9; Free }
+Filled:i64 = Fill()
+
+# A region that fails takes back the write and what it propagated.
+Tried:logic = Attempt(Block{ set Health = 1; Require[Status == "fine"]; true }, false)
+
+# A plain set ends a live variable: later writes leave it alone.
+set Shield = 0
+set Health = 110

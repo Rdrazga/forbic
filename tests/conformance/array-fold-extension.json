@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.array-fold-test","api_version":1,"source_sha256":"844586c9d25468a111ccc7ff642cbdfb5e5d0f443aa984de479d6d0d9599f608","work_budget":1024,"isolation":"pure-language; no OS sandbox","bindings":7,"values":{"Sum":116,"Largest":9,"Empty":7,"Last":"b"}}

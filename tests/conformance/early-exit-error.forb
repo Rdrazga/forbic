@@ -1,0 +1,3 @@
+var Cell:i64=1
+Stop(N:i64)<transacts>:i64=Block{Defer{set Cell=Cell+1};Loop{If(N>2,Err("too large"),false);Break()};N}
+A<public>:i64=Attempt(Stop(3),0)

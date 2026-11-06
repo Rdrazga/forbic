@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.state-loops-test","api_version":1,"source_sha256":"8ed62968bfceb0b84bcae8b33234788d8d12a41d0cc53399b0edc0c87cdd0b5e","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Selected":{"function":{"name":"Visit","module":null}},"Good":3,"Recovered":5,"Total":13}}

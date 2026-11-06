@@ -1,0 +1,13 @@
+{
+  "root": "main.forb",
+  "modules": [
+    {
+      "path": "main.forb",
+      "source": "Kit:=import{\"kit/shapes.forb\"}\nPeek<public>:i64=Kit.Geometry.Peek\nSecret<public>:i64=Kit.Geometry.Private.Secret\n"
+    },
+    {
+      "path": "kit/shapes.forb",
+      "source": "Geometry<public>:=module{\n  Private:=module{\n    Secret<public>:i64=99\n  }\n  Peek<public>:i64=Private.Secret\n}\n"
+    }
+  ]
+}

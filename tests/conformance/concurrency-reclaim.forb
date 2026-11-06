@@ -1,0 +1,26 @@
+# RFC-0082, P3.5: reclamation across task stacks. Two service loops, each of whose visits
+# builds a reading, an array and a string and then sleeps, so that the other task runs before
+# the visit ends. The run outgrows its stored witness and runs again in `digest` mode, where the
+# end of every visit reclaims what the visit built, with what each suspended task holds kept as
+# roots: the array, the string and the note its service made before the loop. Without that rule
+# the visits' readings alone would fill the cells the bootstrap profile has for instances.
+Reading := class{ Visit:i64, Service:i64, A:i64, B:i64, C:i64, D:i64, E:i64, F:i64 }
+Note := class{ var Count:i64, Text:string }
+var Visits:i64 = 0
+Service(N:i64, Rounds:i64)<transacts><suspends>:string = Block{
+    Base := array{N, N, N, N}
+    Name := "service {N}"
+    Own := Note{ Count := 0, Text := Name }
+    Loop{
+        If(Own.Count >= Rounds, Break(), false)
+        set Own.Count = Own.Count + 1
+        set Visits = Visits + 1
+        Made := Reading{ Visit := Own.Count, Service := N, A := 1, B := 2, C := 3, D := 4, E := 5, F := 6 }
+        Wide := Base + array{Made.Visit}
+        Line := "visit {Made.Visit} of {Name}: {Wide.Length}"
+        Sleep(0.0)
+    }
+    "{Own.Text} kept {Base.Length} after {Own.Count} visits"
+}
+Fast:task(string) = Spawn{ Service(1, 40) }
+Slow:task(string) = Spawn{ Service(2, 80) }

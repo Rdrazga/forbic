@@ -1,0 +1,4 @@
+Base := class{ Id:i64 }
+MakeBase<constructor>(Id:i64)<transacts> := Base{Id := Id}
+Other := class{ Z:i64 = 0 }
+X := Other{MakeBase<constructor>(1)}

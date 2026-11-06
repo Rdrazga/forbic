@@ -1,0 +1,1 @@
+var Cell:i64=1;First(A:i64,B:i64)<computes>:i64=A;Bad()<transacts>:i64=Attempt(Set(Cell,3),Set(Cell,1/0));Value:i64=First(Bad(),1/0)

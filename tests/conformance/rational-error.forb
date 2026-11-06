@@ -1,0 +1,2 @@
+Least:i64=-9223372036854775807-1
+Value:i64=Attempt(Quotient[Least,-1],0)

@@ -1,0 +1,2 @@
+Items:[]i64=array{1,2}
+Boom<public>:[]i64=For(X:Items,10/(X-1))

@@ -1,0 +1,31 @@
+# TASK-0109, W4.5: `forbic fmt` turns this file into formatting-comments.forb, which it leaves as it is.
+# Block comments <# #> (nesting) and indented comments <#> next to code and to each other.
+<# A block comment alone on its lines,
+   kept as one unit #>
+<# one #> <# two <# nested #> #>
+Base<public>:i64 = 40 <# inline #> + 2   <# after code #> # and a line comment
+Wide<public>:i64 = 1 + <# spans
+   two lines #> 2
+Total<public>:i64 = Block{
+    <# alone at depth one,
+          its second line stays as far from the first #>
+    Y:i64 = Base * 2 <# between #> - 1
+    <# a lead #> Y + <#x#> 1
+    <#>
+        An indented comment under a tab:
+            its lines keep their depth.
+
+        Still the comment.
+    Y
+    <# tail #> # line
+}
+Text<public>:string = "a <# kept #> b # kept {Base}"
+<#>
+        An indented comment at the top level,
+    hidden<public>:i64=99
+Last<public>:i64 = Block{
+    <#>
+            deep comment inside a block
+    1
+}
+<# at the end of the file #>

@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.callable-iteration-test","api_version":1,"source_sha256":"5a356e80f730965e6754aaf0164f9f8d092cbc1e4a4d1b812a7697b852830224","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Selected":{"function":{"name":"Visit","module":null}},"Good":3,"Recovered":4,"Total":11}}

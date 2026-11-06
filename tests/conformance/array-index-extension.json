@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.array-index-test","api_version":1,"source_sha256":"601150edd386e43afeb55ea2ee71d27c4aa365d12765174a59b9b0da30e423e2","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":10,"values":{"Hit":6,"Miss":-1,"Past":-1,"Name":"beta","Kept":2,"Dropped":1,"Total":8}}

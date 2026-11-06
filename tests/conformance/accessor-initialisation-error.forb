@@ -1,0 +1,8 @@
+# RFC-0085, I9: every archetype gives each field with accessors and no default a value.
+c := class{
+    var H<getter(G)><setter(S)>:i64
+    var I:i64 = 1
+    G(:accessor)<reads>:i64 = Self.I
+    S(:accessor, V:i64)<writes>:void = Block{ set Self.I = V; 0 }
+}
+X := c{I := 2}

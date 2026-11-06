@@ -1,0 +1,2 @@
+Count:i64=0
+Bad<public>:string="x={10/Count}"

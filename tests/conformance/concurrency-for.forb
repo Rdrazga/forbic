@@ -1,0 +1,49 @@
+# Structured concurrency, P3.8 (RFC-0082): a For whose generators, filters and bindings cannot
+# fail may have a body that suspends. It has no rollback region per iteration.
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# Book 14:1086 with its For: the request lands after one step.
+var Steps:i64 = 0
+ResponsiveComputation()<transacts><suspends>:void = Block{
+    For(I:0..9, Block{ set Steps = Steps + 1; NextTick() })
+}
+
+# Every form waits in its body, and yields the array of its body's values.
+Step(N:i64)<transacts><suspends>:i64 = Block{ Sleep(0.1); N * 2 }
+Xs:[]i64 = array{5, 6, 7}
+Forms()<transacts><suspends>:[][]i64 = Block{
+    A := For(I:0..2, Step(I))
+    B := For(I:0..4, I != 2, J := I * 10, Step(J))
+    C := For(I:1..2, J:I..2, Step(I * 10 + J))
+    D := For(K->X:Xs, X > 5, Step(K + X))
+    array{A, B, C, D}
+}
+
+# A local the loop assigns is carried across the waits; a Return leaves loop and function.
+Total()<transacts><suspends>:i64 = Block{
+    var T:i64 = 0
+    For(I:1..4, Block{ set T = T + I; NextTick() })
+    T
+}
+Find()<transacts><suspends>:i64 = Block{
+    For(I:0..9, Block{ If(I == 3, Return(I * 100), 0); NextTick() })
+    -1
+}
+
+# A cancellation lands in the iteration that waits: its Defer runs, then the function's.
+Worker()<transacts><suspends>:void = Block{
+    Defer{ Note("worker ends") }
+    For(I:0..9, Block{ Defer{ Note("iteration {I} ends") }; Sleep(1.0) })
+}
+
+Main()<transacts><suspends>:tuple([][]i64, i64, i64) = Block{
+    Task := Spawn{ ResponsiveComputation() }
+    Task.Cancel()
+    W := Spawn{ Worker() }
+    Sleep(1.5)
+    W.Cancel()
+    F := Forms()
+    tuple{F, Total(), Find()}
+}
+Started:task(tuple([][]i64, i64, i64)) = Spawn{ Main() }

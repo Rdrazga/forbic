@@ -1,0 +1,1 @@
+{"format":1,"failure_count":2,"truncated":false,"failures":[{"instruction":25,"code":"requirement_failed","reason":null,"path":"tests/conformance/classes.forb","span":{"start":899,"end":906},"line":33,"column":38},{"instruction":43,"code":"requirement_failed","reason":null,"path":"tests/conformance/classes.forb","span":{"start":1058,"end":1064},"line":37,"column":35}]}

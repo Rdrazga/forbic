@@ -1,0 +1,1 @@
+{"Start":0,"Corner":{"X":3,"Y":4},"Lamp":"light.Start","Glowing":false,"Widths":7704,"Squares":[{"$object":0},{"$object":4}],"Areas":28,"Same":"same","Counted":82,"$objects":[{"id":0,"class":"square","fields":{"Name":"shape","Scale":2,"Side":2}},{"id":4,"class":"shape","fields":{"Name":"shape","Scale":1}}]}

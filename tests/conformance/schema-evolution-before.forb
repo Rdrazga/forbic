@@ -1,0 +1,21 @@
+# RFC-0087, P5.6: the first version of schema-evolution.forb, which wrote the committed store
+# schema-evolution.state when run as
+#   forbic eval tests/conformance/schema-evolution-before.forb --key alice --state DIR
+# and keeping DIR/store. Its schema is the generation's (G1, G2): schema-evolution.forb is a later
+# version the store accepts, schema-evolution-error.forb one it refuses (G3).
+mode<public> := enum<persistable><open>{Easy, Normal}
+profile<public> := class<final><persistable>{
+    Title:string = ""
+    Level:i64 = 1
+    Mode:mode = mode.Easy
+}
+best<public> := struct<persistable>{ Score:i64, At:float = 0.0 }
+var Profiles<public>:weak_map(persistent_key, profile) = map{}
+var Best<public>:weak_map(persistent_key, best) = map{}
+Main()<transacts><decides>:i64 = Block{
+    K := GetPersistentKey["alice"]
+    set Profiles[K] = profile{Title := "Ace", Level := 3, Mode := mode.Normal}
+    set Best[K] = best{Score := 120, At := 2.5}
+    1
+}
+Saved<public>:i64 = Attempt(Main[], 0)

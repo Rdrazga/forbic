@@ -1,0 +1,16 @@
+var Cell:i64=0
+Big:float=1.0e30
+Bad:float=NaN
+Nearest(X:float)<computes>:i64=Attempt(Round[X],-99)
+Probe(X:float)<transacts>:i64=Attempt(Block{set Cell=Cell+1;Floor[X]},Cell)
+Tie<public>:i64=Nearest(2.5)+Nearest(3.5)+Nearest(-2.5)
+Above<public>:i64=Nearest(2.75)
+Down<public>:i64=Attempt(Floor[-2.5],0)
+Up<public>:i64=Attempt(Ceil[-2.5],0)
+Toward<public>:i64=Attempt(Int[-2.5],0)
+Huge<public>:i64=Nearest(Big)
+NotANumber<public>:i64=Nearest(Bad)
+Kept<public>:i64=Probe(4.5)
+Dropped<public>:i64=Probe(Bad)
+Scaled<public>:float=ToFloat(7)*0.5
+Total<public>:i64=Tie+Above+Down+Up+Toward+Huge+NotANumber+Kept+Dropped+Cell

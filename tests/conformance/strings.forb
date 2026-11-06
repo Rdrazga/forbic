@@ -1,0 +1,16 @@
+Substring:=native{"std.substring"}
+Upper:=native{"std.upper"}
+Trim:=native{"std.trim"}
+Split:=native{"std.split"}
+Join:=native{"std.join"}
+Name:string="雪"
+Wrap(S:string)<computes>:string="("+S+")"
+Greeting<public>:string="hello, "+Name+"!"
+Size<public>:i64=Greeting.Length
+Report<public>:string="count="+ToString(42)+" ratio="+ToString(2.5)+" on="+ToString(true)
+Loud<public>:string=Upper(Trim("  ok  "))
+Part<public>:string=Or(Substring(Greeting,7,3),"?")
+Cut<public>:string=Or(Substring(Greeting,8,1),"?")
+Words<public>:[]string=Split("a,b,,c",",")
+Back<public>:string=Join(Words,"+")
+Chain<public>:string=Iterate(Wrap,2,"a")

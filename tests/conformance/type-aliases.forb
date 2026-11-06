@@ -1,0 +1,13 @@
+Grid:=[][]i64
+Pick:=option(i64)
+Transform:=function(tuple(i64),i64)
+Cell:=struct{Rows:Grid=array{array{1,2},array{3}}}
+Total(G:Grid)<computes>:i64=Attempt(G[1][0],-1)
+Apply[T:type](F:Transform,X:i64)<computes>:i64{F(X)}
+Double(N:i64)<computes>:i64=N*2
+Data:Grid=array{array{7,8},array{9}}
+Maybe:Pick=option{4}
+A<public>:i64=Total(Data)
+B<public>:i64=Apply[i64](Double,21)
+C<public>:i64=Total(Cell{}.Rows)
+D<public>:i64=Or(Maybe,0)

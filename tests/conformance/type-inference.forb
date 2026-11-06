@@ -1,0 +1,12 @@
+Count:=42
+Name:="雪"
+Items:=array{1,2,3}
+Box:=struct{N:i64=7}
+Made:=Box{}
+Total:=Count+Items.Length
+Twice(N:i64)<computes>:i64=Block{Half:=N/2;Half*4}
+Loc<public>:i64=Block{X:=10;Y:=X*2;Y+X}
+Text<public>:string=Name+ToString(Count)
+Big<public>:i64=Twice(10)
+Field<public>:i64=Made.N
+Sum<public>:i64=Total

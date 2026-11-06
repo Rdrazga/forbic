@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.calls-test","api_version":1,"source_sha256":"5fff1ec27364ab1cbf33669da396f9b0c3e6598c992f5711a62f6dda06b1e73a","work_budget":128,"isolation":"pure-language; no OS sandbox","bindings":3,"values":{"Rows":[{"Name":"雪","Size":6},{"Name":"雪","Size":10}],"Count":2,"Total":4}}

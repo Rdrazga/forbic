@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.type-inference-test"
+ApiVersion:i64=1
+SourceSha256:string="c677390c279832cec69be0d571a477a550292ee39bd2405d45bc81c2cc1d196c"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

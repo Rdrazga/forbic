@@ -1,0 +1,6 @@
+# A reaction's body runs at a delivery point, on top of the frame that wrote: it cannot
+# suspend.
+var Level:i64 = 0
+Watch()<transacts><suspends>:void = Block{
+    W:task(void) = When(Level > 0, Sleep(1.0))
+}

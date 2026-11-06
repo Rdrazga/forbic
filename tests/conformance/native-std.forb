@@ -1,0 +1,17 @@
+Sum:=native{"std.sum"}
+Sorted:=native{"std.sorted"}
+Max:=native{"std.max"}
+Find:=native{"std.find"}
+Dot:=native{"std.dot"}
+Sqrt:=native{"std.sqrt"}
+Range:=native{"std.range"}
+Items:[]i64=array{9,3,7,3}
+Score(Values:[]i64,Bias:i64)<computes>:i64=Sum(Values)+Bias
+Total<public>:i64=Sum(Items)
+Ordered<public>:[]i64=Sorted(Items)
+Biggest<public>:i64=Or(Max(Items),-1)
+Where<public>:i64=Or(Find(Items,7),-1)
+Missing<public>:i64=Or(Find(Items,5),-1)
+Norm<public>:float=Sqrt(Dot(array{3.0,4.0},array{3.0,4.0}))
+Count<public>:i64=Sum(Range(5))
+Scored<public>:i64=Score(Items,100)

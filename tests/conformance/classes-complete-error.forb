@@ -1,0 +1,5 @@
+# A result may only narrow: `animal` is wider than the `dog` the slot returns.
+animal := class{}
+dog := class(animal){}
+kennel := class{ Make()<allocates>:dog = dog{} }
+shelter := class(kennel){ Make<override>()<allocates>:animal = animal{} }

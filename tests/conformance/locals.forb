@@ -1,0 +1,11 @@
+row:=struct{Name:string,Size:i64,Before:i64}
+var Cell:i64=1
+Make(N:i64)<transacts>:row=Block{
+ var Size:i64=Cell
+ Old:i64=Size
+ Attempt(Block{set Size=Size+N;set Cell=Size;If(Require[N>=0],Size,Size)},Set(Size,Old+2))
+ row{Name:="雪",Size:=Size,Before:=Old}
+}
+Rows<public>:[]row=Block{First:row=Make(4);Second:row=Make(-1);array{First,Second}}
+Count<public>:i64=Rows.Length
+Total<public>:i64=Block{var Local:i64=Cell;Snapshot:i64=Local;Set(Local,7);Snapshot+Local+Cell}

@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.frame-branches-test"
+ApiVersion:i64=1
+SourceSha256:string="cd589738e6d5c32f8efbb5dc9064ba6aea216c22aacfe1ad117423d2bd68dd14"
+WorkBudget:i64=128
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

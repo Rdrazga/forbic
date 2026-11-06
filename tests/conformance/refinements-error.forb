@@ -1,0 +1,4 @@
+# A bound of a refinement is a literal of its base (11:756): not a name, which could change.
+Limit:i64 = 120
+Age := type{_X:i64 where 0 <= _X, _X <= Limit}
+Valid:Age = 25

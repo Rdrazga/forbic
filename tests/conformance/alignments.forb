@@ -1,0 +1,60 @@
+# The breaking alignments of RFC-0076: short-circuit `and`/`or`, comparison chains, unique
+# classes, `option{}` and `If` conditions that catch inside a failure context, and parameter
+# defaults that read earlier parameters.
+var Calls:i64 = 0
+Hit(V:logic)<transacts>:logic = Block{ set Calls = Calls + 1; V }
+Mid(V:i64)<transacts>:i64 = Block{ set Calls = Calls + 10; V }
+Items:[]i64 = array{4, 9}
+Prices:map(i64,i64) = map{1 => 10, 2 => 20}
+
+# The right operand runs only when the left one does not decide.
+Guarded(I:i64)<computes>:logic = I < Items.Length and Attempt(Items[I], 0) > 5
+Skipped<public>:logic = false and Hit(true)
+Kept<public>:logic = true or Hit(false)
+Ran<public>:logic = true and Hit(true)
+AfterLogic<public>:i64 = Calls
+Safe<public>:logic = Guarded(1) and not Guarded(7)
+NoTrap<public>:logic = false and (1 / 0 == 0)
+
+# A chain holds when every link does; the middle operand is evaluated once and what follows a
+# link that fails is not evaluated.
+InRange(X:i64)<computes>:logic = 0 <= X <= 100
+Ranges<public>:logic = InRange(0) and InRange(100) and not InRange(101)
+Once<public>:logic = 1 < Mid(5) < 9
+Stopped<public>:logic = 3 < Mid(2) < Mid(9)
+AfterChains<public>:i64 = Calls
+Mixed<public>:logic = 1 <= 1 < 2 == 2 != 3 >= 3 > 2
+
+# Only a unique class has an identity to compare or to key a map by.
+Token := class<unique>{ Id:i64 = 0 }
+Gold := class<unique>(Token){ Carat:i64 = 24 }
+First := Token{}
+Second := Token{}
+Bar := Gold{}
+Viewed:Token = Bar
+Identity<public>:logic = First == First and First != Second and Viewed == Bar
+Owners:map(Token,i64) = map{First => 1, Bar => 2}
+Owned<public>:i64 = Attempt(Owners[First] * 10 + Owners[Viewed], -1)
+
+# `option{E}` catches the failure of `E` inside a `<decides>` function and undoes its writes.
+Find(K:i64)<computes><decides>:option(i64) = option{Prices[K]}
+Write(K:i64)<transacts><decides>:option(i64) = option{Block{ set Calls = Calls + 100; Prices[K] }}
+Missing<public>:option(i64) = Attempt(Find[5], option{-1})
+Found<public>:option(i64) = Attempt(Find[2], option{-1})
+Undone<public>:option(i64) = Attempt(Write[9], option{-1})
+AfterUndone<public>:i64 = Calls
+Each<public>:[]option(i64) = For(K:1..3, option{Prices[K]})
+
+# The condition of an `If` is its own failure context there too.
+Big(O:option(i64))<computes><decides>:i64 = If(O? > 3, 1, 0)
+Sizes<public>:i64 = Attempt(Big[option{5}] * 100 + Big[option{}] * 10 + Big[option{1}], -1)
+
+# A default reads the parameters before it, and `Self` in a method.
+Area(W:i64, H:i64 = W, Depth:i64 = W + H)<computes>:i64 = W * 100 + H * 10 + Depth
+Square<public>:i64 = Area(2)
+Slab<public>:i64 = Area(2, 3)
+Counter := class{
+    var N:i64 = 5
+    Add(K:i64, Step:i64 = Self.N + K)<transacts>:i64 = K * 100 + Step
+}
+Added<public>:i64 = Counter{}.Add(1)

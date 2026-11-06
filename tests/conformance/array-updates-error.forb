@@ -1,0 +1,2 @@
+var Items:[]i64=array{1,2}
+Boom:i64=Attempt(Block{set Items[0]/=0;1},2)

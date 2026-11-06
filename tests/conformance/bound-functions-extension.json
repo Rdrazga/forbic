@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.bound-functions-test","api_version":1,"source_sha256":"828eadcaa212ef616a021e001210e6a5cc24c2fc09f6ec1f5baa9b0596096f16","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Selected":{"function":{"name":"Visit","module":null}},"Good":3,"Recovered":9,"Total":21}}

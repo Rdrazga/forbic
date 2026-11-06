@@ -1,0 +1,47 @@
+# Rules tightened to the Book (TASK-0109, B8): `castable_concrete_subtype` is both a castable_subtype and
+# a concrete_subtype; `<castable>` is not declared on a parametric class (a parametric class may stand
+# below a castable one); and `_` is the wildcard of a Case pattern and no declared name.
+Base := class<castable>{ N:i64 = 1 }
+Kid := class<castable><concrete>(Base){ N<override>:i64 = 2 }
+Other := class<castable><concrete>(Base){ N<override>:i64 = 3 }
+Plain := class<castable>(Base){ N<override>:i64 = 4 }
+
+Kinds := castable_concrete_subtype(Base)
+
+# One value builds an instance with the class's defaults and tests an instance for the class.
+Build(K:Kinds)<allocates>:Base = K{}
+Is(X:Base, K:Kinds)<computes>:logic = Attempt(Block{ K[X]; true }, false)
+
+Chosen:Kinds = Kid
+Built:Base = Build(Chosen)
+BuiltN<public>:i64 = Built.N
+BuiltIsKid<public>:logic = Is(Built, Chosen)
+OtherIsKid<public>:logic = Is(Other{}, Chosen)
+PlainIsKid<public>:logic = Is(Plain{}, Chosen)
+
+All:[]Kinds = array{ Kid, Other, Kid }
+Made<public>:[]i64 = For(K:All, Build(K).N)
+Tests<public>:[]logic = For(K:All, Is(Other{}, K))
+
+# As a bound it asks for a castable class and a concrete one.
+Make[T:castable_concrete_subtype(Base)]()<allocates>:T{ T{} }
+Cast[T:castable_concrete_subtype(Base)](X:Base)<computes><decides>:T{ T[X] }
+Generic<public>:i64 = Make[Other]().N * 10 + Attempt(Cast[Kid][Kid{}].N, 0 - 1)
+
+# A parametric class may stand below a castable class; it is not itself declared <castable>.
+Box[T:type] := class(Base){ Value:T }
+Boxed<public>:i64 = Box[i64]{ Value := 7 }.Value + Attempt(Block{ Chosen[Box[i64]{ Value := 1 }]; 100 }, 0)
+
+# `_` is the wildcard of a pattern.
+Kind(A:Base)<transacts>:i64 = Case(A, _:Kid => 1, _:Other => 2, _ => 3)
+Kinded<public>:i64 = Kind(Kid{}) * 100 + Kind(Other{}) * 10 + Kind(Plain{})
+Maybe(O:option(i64))<computes>:i64 = Case(O, option{ _ } => 1, _ => 0)
+Wild<public>:i64 = Maybe(option{ 5 }) * 10 + Maybe(option{})
+
+# `and` and `or` skip the right operand when the left decides.
+var Calls:i64 = 0
+Tick()<transacts>:logic = Block{ set Calls = Calls + 1; true }
+Skipped<public>:logic = false and Tick()
+Also<public>:logic = true or Tick()
+Run<public>:logic = true and Tick()
+Counted<public>:i64 = Calls

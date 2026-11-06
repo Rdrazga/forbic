@@ -1,0 +1,2 @@
+point := struct { X:i64 }
+ToString(P:point)<computes>:i64 = 1

@@ -1,0 +1,19 @@
+Xs:[]i64=array{1,2,3,4}
+Maybe:option(i64)=option{}
+Sum()<transacts>:i64=Block{var T:i64=0;For(X:Xs,Block{set T=T+X;T});T}
+Kept()<transacts>:[]i64=Block{var T:i64=0;For(X:Xs,X>1,Block{set T=T+X;T})}
+Skip()<transacts>:i64=Block{var T:i64=0;Ys:=For(X:Xs,Block{set T=T+X;Xs[X];X});T*10+Ys.Length}
+Pairs()<transacts>:i64=Block{var T:i64=0;var N:i64=0;For(X:Xs,Y:1..X,Block{set T=T+Y;set N=N+1;Y});T*100+N}
+Find(K:i64)<transacts>:i64=Block{var T:i64=0;For(X:Xs,Block{set T=T+X;If(X==K,Return(T*100),false)});T}
+Fill()<transacts>:[]i64=Block{var Ys:[]i64=array{0,0,0,0};For(I->X:Xs,Block{set Ys[I]=X*2;I});Ys}
+Drain()<transacts>:i64=Block{var I:i64=0;var T:i64=0;While(N:=Xs[I],Block{set T=T+N;set I=I+1});T}
+Total<public>:i64=Sum()
+Running<public>:[]i64=Kept()
+Skipped<public>:i64=Skip()
+Triangle<public>:i64=Pairs()
+Found<public>:i64=Find(3)
+Missed<public>:i64=Find(9)
+Doubled<public>:[]i64=Fill()
+Drained<public>:i64=Drain()
+Chosen<public>:i64=If(Maybe?>3,1,2)
+Bound<public>:i64=If(N:=Xs[1],N*10,-1)

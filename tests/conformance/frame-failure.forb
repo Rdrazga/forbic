@@ -1,0 +1,6 @@
+row:=struct{Name:string,Size:i64}
+Recover(N:i64)<computes>:i64=Attempt(If(Require[N>=0],N+2,N),7)
+Make(Keep:logic,N:i64)<computes>:row=Attempt(If(Require[Keep],row{Name:="雪",Size:=Recover(N)},row{Name:="unused",Size:=0}),row{Name:="empty",Size:=0})
+Rows<public>:[]row=array{Make(true,4),Make(false,8)}
+Count<public>:i64=Rows.Length
+Total<public>:i64=Recover(-1)

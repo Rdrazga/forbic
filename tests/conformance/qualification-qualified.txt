@@ -1,0 +1,31 @@
+# RFC-0085, I11: automatic qualification (16:789). `forbic qualify` prints this file with every
+# identifier in its qualified form; the values below are those of the program itself.
+(/:)Start:(/Verse.org/Verse:)i64 = 0
+(/:)light := enum{ (/light:)Start, (/light:)Glow, (/light:)i64 }
+(/:)point := struct{ (/point:)X:(/Verse.org/Verse:)i64 = 0, (/point:)Y:(/Verse.org/Verse:)i64 = 0 }
+(/:)count := type{_X:(/Verse.org/Verse:)i64 where 0 <= _X}
+(/:)shape := class{
+    (/shape:)Name:(/Verse.org/Verse:)string = "shape"
+    var (/shape:)Scale:(/Verse.org/Verse:)i64 = 1
+    (/shape:)Area()<transacts>:(/Verse.org/Verse:)i64 = Self.(/shape:)Scale
+    (/shape:)Grow((local:)By:(/Verse.org/Verse:)i64)<transacts>:(/Verse.org/Verse:)i64 = Block{ set Self.(/shape:)Scale = Self.(/shape:)Scale + (local:)By; Self.(/shape:)Scale }
+}
+(/:)square := class((/:)shape){
+    (/square:)Side:(/Verse.org/Verse:)i64 = 2
+    (/square:)Area<override>()<transacts>:(/Verse.org/Verse:)i64 = Self.(/square:)Side * Self.(/square:)Side * Self.(/shape:)Scale
+}
+(/:)Size((local:)P:(/:)point)<computes>:(/Verse.org/Verse:)i64 = (local:)P.(/point:)X + (local:)P.(/point:)Y
+(/:)Size((local:)S:(/Verse.org/Verse:)string)<computes>:(/Verse.org/Verse:)i64 = (local:)S.Length
+((local:)P:(/:)point).(/:)Sum()<computes>:(/Verse.org/Verse:)i64 = (local:)P.(/point:)X + (local:)P.(/point:)Y
+(/:)Identity[(local:)T:type]((local:)Value:(local:)T)<computes>:(local:)T{(local:)Value}
+(/:)Total((local:)Items:[](/Verse.org/Verse:)i64)<transacts>:(/Verse.org/Verse:)i64 = Block{ var (local:)Sum:(/Verse.org/Verse:)i64 = 0; For((local:)Item:(local:)Items, Block{ set (local:)Sum = (local:)Sum + (local:)Item; (local:)Sum }); (local:)Sum }
+(/:)Adder((local:)Base:(/Verse.org/Verse:)i64)<computes>:(/Verse.org/Verse:)i64 = Block{ (local:)Add := Fn[(local:)Base:(/Verse.org/Verse:)i64 = (local:)Base]((local:)N:(/Verse.org/Verse:)i64)<computes>:(/Verse.org/Verse:)i64{(local:)Base + (local:)N}; (local:)Add(1) + (local:)Base }
+(/:)Mix()<computes>:(/Verse.org/Verse:)i64 = Block{(local:)Start:(/Verse.org/Verse:)i64 = 5; (local:)Start * 10 + (local:)Start}
+(/:)Corner:(/:)point = (/:)point{(/point:)X := 3, (/point:)Y := 4}
+(/:)Lamp:(/:)light = (/light:)Start
+(/:)Glowing:(/Verse.org/Verse:)logic = If((/:)Lamp == (/:)light.(/light:)Glow, true, false)
+(/:)Widths:(/Verse.org/Verse:)i64 = (/:)Size((/:)Corner) * 100 + (/:)Size("four") + (/:)Corner.(/:)Sum() * 1000
+(/:)Squares:[](/:)shape = (/Verse.org/Verse:)array{(/:)square{}, (/:)shape{}}
+(/:)Areas:(/Verse.org/Verse:)i64 = Attempt((/:)Squares[0].(/shape:)Grow(1) * 10 + (/:)Squares[0].(/shape:)Area(), -1)
+(/:)Same:(/Verse.org/Verse:)string = (/:)Identity[(/Verse.org/Verse:)string]("same")
+(/:)Counted:(/Verse.org/Verse:)i64 = (/:)Total((/Verse.org/Verse:)array{1, 2, 3}) + (/:)Adder(10) + (/:)Mix() + (/:)Start

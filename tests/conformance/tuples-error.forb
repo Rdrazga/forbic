@@ -1,0 +1,2 @@
+Pair:tuple(i64,string) = tuple{6,"Traverse"}
+Bad:i64 = Pair(2)

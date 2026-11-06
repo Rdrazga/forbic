@@ -1,0 +1,1 @@
+{"format":2,"failure_count":1,"truncated":false,"failures":[{"instruction":12,"function":0,"local_instruction":7,"code":"requirement_failed","reason":null,"path":"tests/conformance/state-loops.forb","span":{"start":85,"end":92},"line":4,"column":2}]}

@@ -1,0 +1,2 @@
+Stamp()<reads>:float=GetSecondsSinceEpoch()
+Start<public>:float=Stamp()

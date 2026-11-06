@@ -1,0 +1,89 @@
+# RFC-0085, I3: nested functions, statements of a Block{} that capture what their bodies name
+# (immutable locals and parameters by value, a local var by its cell), call themselves, and are
+# values where they are not called.
+# Book example 51 (06:1088): called directly.
+Outer(X:i64)<computes>:i64 = Block{
+    Inner(Y:i64)<computes>:i64 = Y * 2
+    Inner(X)
+}
+# Example 52 (06:1105): a value that keeps the Name it closed over.
+MakeGreeter(Name:string)<computes>:function(tuple(), string) = Block{
+    Greeting()<computes>:string = "Hello, {Name}!"
+    Greeting
+}
+# Example 54 (06:1153): both name Count, so Count is one cell, a new one for each call.
+counter := tuple(function<reads>(tuple(), i64), function<transacts>(tuple(), void))
+MakeCounter(Initial:i64)<transacts>:counter = Block{
+    var Count:i64 = Initial
+    GetCount()<reads>:i64 = Count
+    Increment()<transacts>:void = Set(Count, Count + 1)
+    tuple{GetCount, Increment}
+}
+# Example 56 (06:1202): declared before it is used.
+Defined()<computes>:i64 = Block{
+    G()<computes>:i64 = 42
+    G()
+}
+# Example 57 (06:1225): the method calls its superclass's, and the nested function uses that.
+base_class := class{ F(X:i64)<computes>:i64 = X }
+derived_class := class(base_class){
+    F<override>(X:i64)<computes>:i64 = Block{
+        Base := Super.F(X)
+        Plus()<computes>:i64 = Base + 1
+        Plus()
+    }
+}
+# Example 50 (06:1061) over a generic function: compiled with each specialization.
+Partial[a:type, b:type, c:type](F:function(tuple(a, b), c), X:a)<computes>:function(tuple(b), c){Block{
+    PartialFunc(Y:b)<computes>:c = F(X, Y)
+    PartialFunc
+}}
+Add(X:i64, Y:i64)<computes>:i64 = X + Y
+# Recursion, and a nested function that calls an earlier one.
+Fact(N:i64)<computes>:i64 = Block{
+    Go(K:i64, Acc:i64)<computes>:i64 = If(K <= 1, Acc, Go(K - 1, Acc * K))
+    Twice(K:i64)<computes>:i64 = Go(K, 1) * 2
+    Twice(N)
+}
+# Closures that name a nested function carry its captures: an Fn and a loop's body.
+Total(Xs:[]i64)<transacts>:i64 = Block{
+    var Sum:i64 = 0
+    Put(X:i64)<transacts>:void = Set(Sum, Sum + X)
+    Both := Fn(X:i64)<transacts>:void{ Block{ Put(X); Put(X) } }
+    For(X:Xs, Both(X))
+    Sum
+}
+# A nested function inside another, a transparent one, and an exit from one.
+Layers(N:i64)<computes>:i64 = Block{
+    Mid(K:i64)<computes>:i64 = Block{
+        In(J:i64)<computes>:i64 = J + K + N
+        In(1) * 10
+    }
+    Half(K:i64)<computes> := K / 2
+    Find(K:i64)<computes>:i64 = Block{ If(K > 3, Return(K * 100), 0); K }
+    Mid(2) + Half(9) + Find(5)
+}
+# In a method it captures Self, and a write in a region that fails is undone.
+account := class{
+    var Balance:i64 = 10
+    Spend(Amounts:[]i64)<transacts>:i64 = Block{
+        Take(K:i64)<transacts><decides>:i64 = Block{ set Self.Balance -= K; Require[Self.Balance >= 0]; K }
+        For(K:Amounts, Attempt(Block{ Take[K]; 1 }, 0))
+        Self.Balance
+    }
+}
+V1:i64 = Outer(5)
+Hello:function(tuple(), string) = MakeGreeter("Alice")
+V2:string = Hello()
+Counter:counter = MakeCounter(0)
+V3:i64 = Block{ Counter(1)(); Counter(1)(); Counter(0)() }
+Other:counter = MakeCounter(10)
+V4:i64 = Other(0)()
+V5:i64 = Defined()
+V6:i64 = derived_class{}.F(3)
+Add5:function(tuple(i64), i64) = Partial[i64, i64, i64](Add, 5)
+V7:i64 = Add5(3)
+V8:i64 = Fact(5)
+V9:i64 = Total(array{1, 2, 3})
+V10:i64 = Layers(1)
+V11:i64 = account{}.Spend(array{4, 8, 3})

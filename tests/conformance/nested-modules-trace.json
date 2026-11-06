@@ -1,0 +1,1 @@
+{"format":2,"failure_count":1,"truncated":false,"failures":[{"instruction":20,"function":0,"local_instruction":17,"code":"requirement_failed","reason":null,"path":"kit/shapes.forb","span":{"start":90,"end":91},"line":3,"column":50}]}

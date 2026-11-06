@@ -1,0 +1,50 @@
+# RFC-0085, I13 (Q1): one capture rule. A local var that any closure names is shared, and the
+# closure refers to the variable, as the Book's closures do (06:1105). Immutable locals,
+# parameters and explicit captures stay by value, and so does a var that no closure names.
+var Out:i64 = 0
+var Late:i64 = 0
+var Wake:i64 = 0
+var Gone:i64 = 0
+# An Fn built before the code around it writes the local reads the write (closures.forb's Snap).
+Snap()<transacts>:i64 = Block{ var L:i64 = 1; F := Fn(X:i64){ L + X }; set L = 50; F(1) }
+# What an explicit capture list copies is copied: L is read where the Fn is built.
+Copy()<transacts>:i64 = Block{ var L:i64 = 1; F := Fn[C:i64 = L](X:i64)<computes>:i64{ C + X }; set L = 50; F(1) }
+# A parameter and an immutable local are values; a var no closure names is a plain local.
+Values(P:i64)<computes>:i64 = Block{ K := P + 1; F := Fn(X:i64){ K + P + X }; F(1) }
+Plain()<transacts>:i64 = Block{ var N:i64 = 0; F := Fn(X:i64){ X + 1 }; set N = N + F(1); N }
+# A task body and a Branch{} read what the creator wrote after building them.
+Tasks()<transacts><suspends>:i64 = Block{
+    var X:i64 = 1
+    T := Spawn{ Sleep(1.0); X * 10 }
+    Branch{ Sleep(1.0); Set(Out, X) }
+    set X = 7
+    R := T.Await()
+    Sleep(2.0)
+    R + Out
+}
+# An Upon body and a When body read it when the write of Wake fires them.
+Reactions()<transacts><suspends>:i64 = Block{
+    var X:i64 = 1
+    U:task(i64) = Upon(Wake > 0, Set(Late, X * 2))
+    W:task(void) = When(Wake > 0, Set(Gone, X))
+    set X = 5
+    set Wake = 3
+    Sleep(1.0)
+    Late * 100 + Gone
+}
+# Arms, a Batch{} body and the landing of a losing arm's Defer name it too; they read the cell.
+Arms()<transacts><suspends>:i64 = Block{
+    var X:i64 = 4
+    var Landed:i64 = 0
+    R := Sync(Block{ Sleep(1.0); X }, Block{ Sleep(2.0); X + 1 })
+    B:i64 = Batch{ X * 2 }
+    W := Race(Block{ Defer{ set Landed = X * 10 }; Sleep(9.0); 1 }, Block{ Sleep(1.0); 2 })
+    R(0) * 10000 + R(1) * 1000 + B * 100 + W * 10 + Landed
+}
+V1:i64 = Snap()
+V2:i64 = Copy()
+V3:i64 = Values(4)
+V4:i64 = Plain()
+V5:task(i64) = Spawn{ Tasks() }
+V6:task(i64) = Spawn{ Reactions() }
+V7:task(i64) = Spawn{ Arms() }

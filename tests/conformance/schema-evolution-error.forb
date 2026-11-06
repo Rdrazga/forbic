@@ -1,0 +1,17 @@
+# RFC-0087, P5.6 (G3): a version of schema-evolution-before.forb that the store it wrote refuses,
+#   forbic check tests/conformance/schema-evolution-error.forb --state tests/conformance/schema-evolution.state
+# with one located line per refusal: the cell Best removed (at the start of the file), the open enum
+# closed, the field Level removed and the default of Title changed (Q9). A run would be refused
+# the same way, before the store is touched.
+mode<public> := enum<persistable><closed>{Easy, Normal}
+profile<public> := class<final><persistable>{
+    Title:string = "Rookie"
+    Mode:mode = mode.Easy
+}
+var Profiles<public>:weak_map(persistent_key, profile) = map{}
+Main()<transacts><decides>:i64 = Block{
+    K := GetPersistentKey["alice"]
+    set Profiles[K] = profile{Title := "Ace"}
+    1
+}
+Saved<public>:i64 = Attempt(Main[], 0)

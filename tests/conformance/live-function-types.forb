@@ -1,0 +1,32 @@
+# Functions as types, P4.3 (RFC-0084, L8): a variable whose type is a function holds what is
+# assigned, its raw value, and follows the function of it; `In->Out` names the raw value.
+var Mult:i64 = 2
+Multiply(Arg:i64)<reads>:i64 = Arg * Mult
+var Scaled:Multiply = 10
+set Scaled = 4
+set Mult = 3
+clamp := class{
+    var Low:i64 = 0
+    var High:i64 = 100
+    Apply(V:i64)<reads>:i64 = If(V < Self.Low, Self.Low, If(V > Self.High, Self.High, V))
+}
+Bounds:clamp = clamp{}
+var Base->Health:Bounds.Apply = 50
+set Health = 120
+Clamped:tuple(i64, i64) = tuple{Base, Health}
+set Bounds.High = 60
+Fixed:Multiply = 5
+var live Follows:Multiply = Mult + 1
+set Mult = 4
+Heal(N:i64)<transacts>:i64 = Block{ set Health += N; Base }
+Healed:i64 = Heal(1)
+Assigned:i64 = Set(Scaled, 6)
+unit := class{
+    var Power:Multiply = 1
+    var Raw<public>->Shield<public>:Bounds.Apply = 70
+}
+U:unit = unit{ Raw := 90 }
+set U.Power = 2
+set U.Shield = 30
+Tried:logic = Attempt(Block{ set Scaled = 100; set U.Power = 50; Require[Scaled < 0]; true }, false)
+set Mult = 5

@@ -1,0 +1,2 @@
+Items:[]i64=array{1,2}
+Boom<public>:i64=If(X:=Items[1],10/(X-2)>0,1,0)

@@ -1,0 +1,1 @@
+{"Health":110,"MaxHealth":120,"Ratio":91,"Status":"fine","Tank":{"$object":0},"Free":1,"Shield":0,"Armed":15,"After":33,"Seen":"low","Filled":1,"Tried":false,"$objects":[{"id":0,"class":"gauge","fields":{"Level":9,"Limit":10}}],"$live":{"records":4,"propagations":9,"evaluations":13,"entries":17,"deliveries":0,"firings":0}}

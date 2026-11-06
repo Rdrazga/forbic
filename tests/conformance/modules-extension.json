@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.module-test","api_version":2,"source_sha256":"37575adca6004d58982b24b3c0cb3b0d9c1a164a768ff030ea87f3bd6836773a","work_budget":128,"isolation":"pure-language; no OS sandbox","bindings":5,"values":{"Gap":6,"Master":55,"Tone":"theme/settings.forb::mode.dark","Accent":"#7e9cd8"}}

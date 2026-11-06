@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.closures-test","api_version":1,"source_sha256":"874387dda02caad3623e997a6234b2e86e83767497f7e5655b757dac3783005b","work_budget":2048,"isolation":"pure-language; no OS sandbox","bindings":10,"values":{"A":15,"B":13,"C":"v6","D":13,"E":121,"F":13,"G":51,"H":100}}

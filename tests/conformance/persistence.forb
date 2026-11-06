@@ -1,0 +1,30 @@
+# RFC-0087, P5.5: persistent cells, module vars of type weak_map(persistent_key, V), loaded where they are
+# declared and saved when they are set. Run with --key alice --key bob and no state directory: the store
+# is empty, so every load is at its end, and every write is committed to no store (S3).
+player_stats<public> := struct<persistable>{ Level:i64 = 1, Experience:i64 = 0 }
+var Stats<public>:weak_map(persistent_key, player_stats) = map{}
+GetStats(Key:persistent_key)<reads>:player_stats = Attempt(Stats[Key], player_stats{})
+AddExperience(Key:persistent_key, Points:i64)<reads><writes>:i64 = Block{
+    Current := GetStats(Key)
+    set Stats[Key] = player_stats{Level := Current.Level, Experience := Current.Experience + Points}
+    Points
+}
+Main()<transacts><decides>:i64 = Block{
+    K := GetPersistentKey["alice"]
+    AddExperience(K, 10)
+    AddExperience(K, 5)
+    GetStats(K).Experience
+}
+Gained<public>:i64 = Attempt(Main[], -1)
+# A key is granted by its name: bob has no entry yet, and carol is not granted.
+Bob<public>:i64 = Attempt(GetStats(GetPersistentKey["bob"]).Level, -1)
+Nobody<public>:i64 = Attempt(GetStats(GetPersistentKey["carol"]).Level, -1)
+# A write in a region that fails is undone, and the action it prepared is dropped with it.
+Undone<public>:i64 = Attempt(Block{AddExperience(GetPersistentKey["bob"], 7); Require[false]; 0}, Attempt(GetStats(GetPersistentKey["bob"]).Experience, -2))
+# A write that commits is saved: bob's entry is now 3.
+Later<public>:i64 = Attempt(AddExperience(GetPersistentKey["bob"], 3), -1)
+# Keys are values: equal by grant, and map keys.
+Same<public>:logic = Attempt(GetPersistentKey["alice"] == GetPersistentKey["alice"], false)
+Held<public>:option(map(persistent_key, i64)) = option{map{GetPersistentKey["alice"] => 1, GetPersistentKey["bob"] => 2}}
+# The JSON of an entry is what the store holds.
+Saved<public>:string = ToJson(player_stats{Level := 5})

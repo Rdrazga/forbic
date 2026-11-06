@@ -1,0 +1,2 @@
+# Greting is not declared: Greeting is.
+Loud<public>:string = "{Greting}!"

@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.aggregate-test"
+ApiVersion:i64=1
+SourceSha256:string="aa18ed5b570573a66d4b49e732fb77d7fa89a4d718349ceccca4220a0ae21bd6"
+WorkBudget:i64=64
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

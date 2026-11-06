@@ -1,0 +1,2 @@
+Seed:i64=1
+Value:float=ToFloat(Seed/0)

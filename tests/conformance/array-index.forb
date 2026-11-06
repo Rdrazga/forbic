@@ -1,0 +1,12 @@
+var Cell:i64=0
+Rows:[][]i64=array{array{4,5},array{6}}
+Names:[]string=array{"alpha","beta"}
+At(Row:i64,Col:i64)<computes><decides>:i64=Rows[Row][Col]
+Probe(I:i64)<transacts>:i64=Attempt(Block{set Cell=Cell+1;Rows[I].Length},Cell)
+Hit<public>:i64=Attempt(At[1,0],-1)
+Miss<public>:i64=Attempt(At[1,1],-1)
+Past<public>:i64=Attempt(At[2,0],-1)
+Name<public>:string=Attempt(Names[1],"none")
+Kept<public>:i64=Probe(0)
+Dropped<public>:i64=Probe(9)
+Total<public>:i64=Hit+Miss+Past+Kept+Dropped+Cell

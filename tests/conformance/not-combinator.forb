@@ -1,0 +1,12 @@
+Items:[]i64=array{1,2}
+var Hits:i64=0
+Absent(I:i64)<computes><decides>:i64=Block{Not[Items[I]];7}
+Present(I:i64)<computes><decides>:i64=Block{Not[Items[I]];7}
+Probe()<transacts><decides>:i64=Block{Not[Block{set Hits=Hits+1;Items[9]}];Hits}
+Twice()<transacts><decides>:i64=Block{Not[Block{set Hits=Hits+10;Items[0]>5}];Hits}
+A<public>:i64=Attempt(Absent[5],-1)
+B<public>:i64=Attempt(Absent[0],-1)
+C<public>:i64=Attempt(Probe[],-1)
+D<public>:i64=Hits
+E<public>:i64=Attempt(Twice[],-1)
+F<public>:i64=Hits

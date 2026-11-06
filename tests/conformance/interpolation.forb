@@ -1,0 +1,11 @@
+Name:string="雪"
+Count:i64=3
+Ratio:float=0.5
+On:logic=true
+Items:[]i64=array{7,8}
+Greeting<public>:string="Hello {Name}! n={Count} r={Ratio} on={On}"
+Math<public>:string="{Count*2+1} of {Count}"
+Braces<public>:string="\{literal\} {Count}"
+Nested<public>:string="a{"b{"c{Count}"}"}"
+Read<public>:string=Attempt("first={Items[0]}","none")
+Miss<public>:string=Attempt("third={Items[2]}","none")

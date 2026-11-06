@@ -1,0 +1,6 @@
+var Count<public>:i64=1
+Frozen<public>:i64=Count
+First(X:i64,Y:i64)<computes>:i64=X
+Increment(X:i64)<transacts>:i64=Set(Count,Count+X)
+Discard<public>:i64=Attempt(First(Increment(5),Fail["discard increment"]),Count)
+set Count=Count+1

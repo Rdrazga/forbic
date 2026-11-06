@@ -1,0 +1,2 @@
+Score:subscribable_event(i64) = subscribable_event(i64){}
+Bump(N:i64)<writes>:void = Score.Signal(N)

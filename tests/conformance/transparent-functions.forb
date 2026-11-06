@@ -1,0 +1,31 @@
+# RFC-0085, I7: a transparent function takes its result type from its body.
+Next<public>(X:i64)<computes> := X + 1
+Label(N:i64)<computes> := "n = {N}"
+Positive(X:i64)<computes><decides> := Block{ Require[X > 0]; X }
+Pair(X:i64)<computes> := tuple{Next(X), Label(X)}
+Scaled(Xs:[]i64, K:i64)<computes> := For(X:Xs, X * K)
+var Total:i64 = 0
+Add(N:i64)<transacts> := Block{ set Total += N; Total }
+Describe(X:i64)<computes> := X * 10
+Describe(X:string)<computes> := "<{X}>"
+(X:i64).Squared()<computes> := X * X
+Adder(K:i64)<computes> := Fn(X:i64){ X + K }
+point := struct{ X:i64 = 0, Y:i64 = 0 }
+Origin(D:i64)<computes> := point{ X := D, Y := -D }
+# `<constructor>` keeps its meaning: a constructor function, not a transparent one.
+counter := class{ Start:i64 = 0 }
+MakeCounter<constructor>(S:i64)<allocates> := counter{ Start := S }
+A<public>:i64 = Next(41)
+B:string = Label(3)
+C:tuple(i64, i64) = tuple{Attempt(Positive[5], 0), Attempt(Positive[-5], 0)}
+D:tuple(i64, string) = Pair(1)
+E:[]i64 = Scaled(array{1, 2, 3}, 4)
+F:tuple(i64, i64) = tuple{Add(2), Add(5)}
+G:tuple(i64, string) = tuple{Describe(4), Describe("x")}
+H:i64 = (7).Squared()
+Inc:function<computes>(tuple(i64), i64) = Adder(3)
+I:i64 = Inc(4)
+Through:function<computes>(tuple(i64), i64) = Next
+J:i64 = Through(9)
+K:point = Origin(2)
+L:i64 = MakeCounter(6).Start

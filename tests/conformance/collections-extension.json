@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.collection-test","api_version":1,"source_sha256":"2eadb223ad04fc2136744642974358b7535ebced7e5189760e371e103198e898","work_budget":2048,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Gap":6,"Master":55,"Absent":[],"Accent":"#7e9cd8","HasGap":true}}

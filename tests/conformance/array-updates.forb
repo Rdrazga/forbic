@@ -1,0 +1,10 @@
+Cell:=struct{V:i64=0}
+var Items:[]i64=array{4,5,6}
+var Grid:[][]i64=array{array{1,2},array{3,4}}
+var Cells:[]Cell=array{Cell{},Cell{V:=7}}
+Run()<transacts><decides>:i64=Block{set Items[1]=50;set Items[0]+=1;set Grid[1][0]=30;set Cells[1].V+=3;Items[0]+Items[1]}
+Total<public>:i64=Attempt(Run[],-1)
+Moved<public>:[]i64=Attempt(WithIndex[Items,2,99],Items)
+Missed<public>:i64=Attempt(Block{set Items[9]=1;1},-9)
+Loc<public>:i64=Attempt(Block{var L:[]i64=array{1,2,3};set L[2]=L[0]+L[1];L[2]},-1)
+Corner<public>:i64=Attempt(Grid[1][0]+Cells[1].V,-1)

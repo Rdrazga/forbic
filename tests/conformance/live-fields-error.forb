@@ -1,0 +1,5 @@
+# A live-only field is never assigned: its guard is all that writes it.
+var Source:i64 = 0
+tag := class{ live Twice:i64 = Source * 2 }
+T:tag = tag{}
+set T.Twice = 1

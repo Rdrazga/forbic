@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.frame-branches-test","api_version":1,"source_sha256":"cd589738e6d5c32f8efbb5dc9064ba6aea216c22aacfe1ad117423d2bd68dd14","work_budget":128,"isolation":"pure-language; no OS sandbox","bindings":3,"values":{"Rows":[{"Name":"雪","Size":6},{"Name":"empty","Size":0}],"Count":2,"Total":4}}

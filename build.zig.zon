@@ -1,0 +1,8 @@
+.{
+    .name = .forbic,
+    .version = "0.0.1",
+    .minimum_zig_version = "0.17.0",
+    .dependencies = .{},
+    .paths = .{ "build.zig", "build.zig.zon", "src", "apps", "tests", "examples", "docs", "README.md", "LICENSE-APACHE", "LICENSE-MIT" },
+    .fingerprint = 0x9eec3a2d0b9b5766,
+}

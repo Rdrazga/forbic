@@ -1,0 +1,12 @@
+hello
+kept
+risky 1
+caught
+outer 2
+say 7
+say 8
+<array>
+5
+<struct>
+bye 5 1
+{"Hello":[],"Kept":1,"Gone":-1,"Inner":2,"Undone":-1,"Caught":[],"Called":15,"Die":5,"Lost":-1,"Next":1,"Wide":-915853,"Unit":0.020742529924025477,"Deck":[1,2,4,5,3],"ShownDeck":[],"ShownDie":[],"ShownPoint":[],"Bye":[]}

@@ -1,0 +1,75 @@
+# Parametric classes, structs and interfaces (RFC-0073): one type for each list of type
+# arguments, made where it is first named; constraints; superclasses and interfaces that are
+# instantiations; recursion; and a parametric type inside a generic function.
+Animal := class{
+    Name:string = "animal"
+    Speak()<transacts>:string = "..."
+}
+Dog := class(Animal){ Speak<override>()<transacts>:string = "woof" }
+Point[T:type] := struct{ X:T, Y:T, Label:string = "p" }
+Container[T:type] := interface{
+    Get()<transacts>:T
+    Twice()<transacts>:[]T = array{Self.Get(), Self.Get()}
+}
+Box[T:type] := class<unique>(Container[T]){
+    var Value:T
+    Uses:i64 = 0
+    Get<override>()<transacts>:T = Self.Value
+    Put(New:T, Keep:logic = false)<transacts>:T = Block{ Old:T = Self.Value; set Self.Value = If(Keep, Old, New); Old }
+}
+Counted := class<unique>(Box[i64]){
+    Step:i64 = 10
+    Get<override>()<transacts>:i64 = Self.Value + Self.Step
+}
+Pair[A:type, B:type] := class{
+    First:A
+    Second:B
+    Swap()<transacts>:Pair[B, A] = Pair[B, A]{First := Self.Second, Second := Self.First}
+}
+Node[T:type] := class{
+    Value:T
+    Next:option(Node[T]) = option{}
+}
+Pen[T:subtype(Animal)] := class{
+    Kept:T
+    Hear()<transacts>:string = Self.Kept.Speak() + "/" + Self.Kept.Name
+}
+Index[K:comparable] := class{
+    var Seen:map(K, i64) = map{}
+    Count(Key:K)<transacts>:i64 = Block{ N:i64 = Or(Lookup(Self.Seen, Key), 0) + 1; set Self.Seen = WithIndex[Self.Seen, Key, N]; N }
+}
+Wrap[T:type](X:T)<transacts>:Box[T]{ Box[T]{Value := X} }
+Sum(List:option(Node[i64]))<transacts>:i64 = Attempt(Block{ Head := List?; Head.Value + Sum(Head.Next) }, 0)
+(B:Box[string]).Shout()<transacts>:string = B.Value + "!"
+Describe(C:Container[i64])<transacts>:i64 = Case(C, K:Counted => K.Step, B:Box[i64] => B.Uses + 1, _ => 0 - 1)
+
+Ints := Box[i64]{Value := 1}
+Texts:Box[string] = Wrap[string]("a")
+Got:i64 = Ints.Get()
+Old:i64 = Ints.Put(5)
+Kept:i64 = Ints.Put(9, Keep := true)
+Now:i64 = Ints.Get()
+Same:logic = Wrap[i64](3) == Ints
+Alias:Box[i64] = Ints
+Shared:logic = Alias == Ints
+Shouted:string = Texts.Shout()
+Tally := Counted{Value := 2}
+AsBox:Box[i64] = Tally
+Through:Container[i64] = Tally
+Dispatched:i64 = Through.Get() + AsBox.Get()
+Doubled:[]i64 = Through.Twice()
+Narrowed:i64 = Attempt(Counted[AsBox].Step, 0)
+Refused:i64 = Attempt(Counted[Ints].Step, 0 - 1)
+Kinds:[]i64 = array{Describe(Tally), Describe(Ints)}
+Swapped:Pair[string, i64] = Pair[i64, string]{First := 7, Second := "x"}.Swap()
+SwappedFirst:string = Swapped.First
+List := Node[i64]{Value := 1, Next := option{Node[i64]{Value := 2, Next := option{Node[i64]{Value := 3}}}}}
+Total:i64 = Sum(option{List})
+Heard:string = Pen[Dog]{Kept := Dog{}}.Hear()
+Words := Index[string]{}
+Counts:tuple(i64, i64, i64) = tuple{Words.Count("a"), Words.Count("b"), Words.Count("a")}
+Origin:Point[i64] = Point[i64]{X := 1, Y := 2}
+Equal:logic = Origin == Point[i64]{X := 1, Y := 2}
+Places:map(Point[i64], string) = map{Origin => "origin"}
+Found:string = Or(Lookup(Places, Point[i64]{X := 1, Y := 2}), "none")
+Boxes:[]Box[i64] = array{Ints, Tally}

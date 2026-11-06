@@ -1,0 +1,40 @@
+# The orders service of the Forbic embedding example (docs/embedding.md).
+# Each request is a line `CUSTOMER REGION QUANTITY UNIT_PRICE`, prices in whole units. The host
+# grants the reader `requests`, a persistent key per customer and, for a durable run, a state
+# directory, where each customer's record survives the process.
+customer<public> := struct<persistable>{ Orders:i64 = 0, Spent:i64 = 0 }
+var Customers<public>:weak_map(persistent_key, customer) = map{}
+# The host's native: the tax rate of a region in basis points, from the host's own table.
+TaxRate := native{"orders.tax_rate"}
+Split := native{"std.split"}
+ParseInt := native{"std.parse_int"}
+
+# One request: its total with tax, added to the customer's record, and a receipt line. It fails,
+# and changes nothing, for a malformed line, an unknown region or a customer without a key.
+Order(Fields:[]string)<transacts><decides>:i64 = Block{
+    Name := Fields[0]
+    Region := Fields[1]
+    Quantity := Or(ParseInt(Fields[2]), 0)
+    Price := Or(ParseInt(Fields[3]), 0)
+    Require[Quantity > 0]
+    Require[Price > 0]
+    Rate := Or(TaxRate(Region), -1)
+    Require[Rate >= 0]
+    Net := Quantity * Price
+    Total := Net + Net * Rate / 10000
+    Key := GetPersistentKey[Name]
+    Before := Attempt(Customers[Key], customer{})
+    After := customer{Orders := Before.Orders + 1, Spent := Before.Spent + Total}
+    set Customers[Key] = After
+    Print("{Name}: {Quantity} x {Price} in {Region}, total {Total} (orders {After.Orders}, spent {After.Spent})")
+    Total
+}
+
+# Every request the reader holds, in order; the revenue of those served.
+Serve(R:reader, Revenue:i64)<transacts>:i64 = Attempt(Block{
+    Line := R.ReadLine[]
+    Earned := Attempt(Order[Split(Line, " ")], Block{ Print("refused: {Line}"); 0 })
+    Serve(R, Revenue + Earned)
+}, Revenue)
+
+Revenue<public>:i64 = Attempt(Block{ R := OpenReader["requests"]; Serve(R, 0) }, -1)

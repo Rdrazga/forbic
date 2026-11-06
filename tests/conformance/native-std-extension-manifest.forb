@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.native-std-test"
+ApiVersion:i64=1
+SourceSha256:string="b9083abd9d6a1777a950c0a36ad4a545d489f3404e24523fa09004239dc12e20"
+WorkBudget:i64=512
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false

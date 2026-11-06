@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.type-inference-test","api_version":1,"source_sha256":"c677390c279832cec69be0d571a477a550292ee39bd2405d45bc81c2cc1d196c","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":10,"values":{"Loc":30,"Text":"雪42","Big":20,"Field":7,"Sum":45}}

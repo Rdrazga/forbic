@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.array-concat-test","api_version":1,"source_sha256":"d6703f909730690cff41c95919c6b9d3334c22625bf5b3e392cc0d3945171073","work_budget":512,"isolation":"pure-language; no OS sandbox","bindings":6,"values":{"Joined":[1,2,3],"Grown":[0,10,20,30,40],"Words":["a","b","c"],"Both":8,"Pick":30}}

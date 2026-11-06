@@ -1,0 +1,2 @@
+Maybe:option(i64)=option{0}
+Boom<public>:i64=Case(Maybe,option{X} where X<0=>1,option{X}=>10/X,option{}=>0)

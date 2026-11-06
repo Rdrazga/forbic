@@ -1,0 +1,4 @@
+# Await of a guard, P4.6 (RFC-0084): an Await suspends the task that reaches it while its
+# guard fails, so it stands only in a <suspends> function, never in root code.
+var X:i64 = 0
+Ready:logic = Await(X > 0)

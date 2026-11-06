@@ -1,0 +1,1 @@
+{"format":1,"failure_count":1,"truncated":false,"failures":[{"instruction":63,"code":"requirement_failed","reason":null,"path":"tests/conformance/interpolation.forb","span":{"start":379,"end":380},"line":11,"column":42}]}

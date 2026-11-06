@@ -1,0 +1,1 @@
+{"format":1,"failure_count":1,"truncated":false,"failures":[{"instruction":60,"code":"requirement_failed","reason":null,"path":"tests/conformance/live-fields.forb","span":{"start":1860,"end":1867},"line":49,"column":75}]}

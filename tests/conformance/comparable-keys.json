@@ -1,0 +1,1 @@
+{"Cells":[[0,0],"origin",[3,4],"b",[1,2],"again"],"Hit":"a","Miss":"?","Points":[{"X":1,"Y":2},"Color.Red",{"X":2,"Y":1},"Color.Green"],"Shade":"Color.Green","Lists":[[["x"],[]],1,[],2],"Found":3,"Equal":true,"Ordered":false,"Zero":true,"A":2,"B":-1,"Rolled":3,"Keys":[[0,0],[3,4],[1,2]],"Names":["3,4=b","1,2=again"],"Final":[[0,0],"origin",[3,4],"b",[1,2],"again"]}

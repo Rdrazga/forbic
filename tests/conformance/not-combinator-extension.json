@@ -1,0 +1,1 @@
+{"protocol":1,"status":"ok","operation":"eval","id":"org.traverse.not-combinator-test","api_version":1,"source_sha256":"9d67949dd8222ee66e0b56d388359287ff05ceb5394b53b92712edd687e302c5","work_budget":2048,"isolation":"pure-language; no OS sandbox","bindings":8,"values":{"A":7,"B":-1,"C":0,"D":0,"E":-1,"F":0}}

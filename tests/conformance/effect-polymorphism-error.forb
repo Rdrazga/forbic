@@ -1,0 +1,2 @@
+Id[E:effect](X:i64)<E>:i64{X}
+Value:i64=Id[computes](1/0)

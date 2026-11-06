@@ -1,0 +1,9 @@
+var Count:i64=1
+var Scale:float=2.0
+var Label:string="a"
+Bump(N:i64)<transacts>:i64=Block{set Count+=N;set Count*=2;Count}
+Run<public>:i64=Bump(3)
+Loc<public>:i64=Block{var X:i64=10;set X-=4;set X/=2;X}
+set Scale*=1.5
+set Label+="b"
+set Count-=1

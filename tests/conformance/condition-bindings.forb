@@ -1,0 +1,19 @@
+Items:[]i64=array{3,4,5}
+Scores:map(string,i64)=map{"a"=>10,"b"=>20}
+var Log:i64=0
+Pick(I:i64)<computes>:i64=If(X:=Items[I],X>3,X*100,-1)
+Two(K:string,I:i64)<computes>:i64=If(S:=Scores[K],X:=Items[I],S+X,0)
+Plain(I:i64)<computes>:i64=If(Items[I]>3,I>0,1,2)
+Roll()<transacts>:i64=If(Block{set Log=Log+1;true},Items[9]>0,10,Log)
+Split(P:tuple(i64,string))<computes>:string=Block{(N,S):=P;S+ToString(N)}
+Triple()<computes>:i64=Block{(A,B,C):=tuple{1,2,3};A*100+B*10+C}
+A<public>:i64=Pick(1)
+B<public>:i64=Pick(0)
+C<public>:i64=Pick(7)
+D<public>:i64=Two("a",2)
+E<public>:i64=Two("z",2)
+F<public>:i64=Plain(1)
+G<public>:i64=Plain(0)
+H<public>:i64=Roll()
+I<public>:string=Split(tuple{5,"n"})
+J<public>:i64=Triple()

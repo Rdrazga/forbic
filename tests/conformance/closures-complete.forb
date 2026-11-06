@@ -1,0 +1,33 @@
+# RFC-0085, I6: the forms of Part 1 composed in one function. Nested functions (one with a
+# default, one overloaded, one recursive), an Fn that calls them, a task body, Sync arms, the
+# landing of a Race loser's Defer, a Batch{} body and a When body all assign the locals of Run,
+# so Count and Log are each one cell that every one of them reads and writes (S1, S2). Seen,
+# which only an Fn reads, is shared by that name and reads the later 5 (Q1). A closure kept in a
+# module var holds both cells after Run has returned.
+var G:i64 = 0
+var Out:[]i64 = array{}
+var Keep:option(function<reads>(tuple(), i64)) = option{}
+Run()<transacts><suspends>:i64 = Block{
+    var Count:i64 = 0
+    var Log:i64 = 0
+    var Seen:i64 = 1
+    Note(Digit:i64 = 1)<transacts>:i64 = Set(Log, Log * 10 + Digit)
+    Add(K:i64)<transacts>:i64 = Set(Count, Count + K)
+    Add(S:string)<transacts>:i64 = Set(Count, Count + S.Length)
+    Fact(N:i64)<transacts>:i64 = If(N <= 1, Note(9), Block{ Add(N); Fact(N - 1) })
+    Snap := Fn()<reads>:i64{ Seen }
+    Both := Fn()<transacts>:i64{ Block{ Add(2); Note(2) } }
+    B1 := Both()
+    T := Spawn{ Sleep(1.0); Add("abc"); Note() }
+    R := Sync(Block{ Sleep(2.0); Note(3) }, Block{ Sleep(3.0); Add(10) })
+    W := Race(Block{ Defer{ Note(4) }; Sleep(9.0); 1 }, Block{ Sleep(1.0); 2 })
+    B:i64 = Batch{ Add(100); Count }
+    Watch:task(void) = When(G, Note(G))
+    set G = 7
+    set Seen = 5
+    F := Fact(3)
+    set Keep = option{ Fn()<reads>:i64{ Count * 10000000 + Log } }
+    set Out = array{ Snap(), B1, T.Await(), R(0), R(1), W, B, F, Count, Log }
+    0
+}
+P:task(i64) = Spawn{ Run() }

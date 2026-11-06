@@ -1,0 +1,20 @@
+Say(N:i64)<transacts>:i64=Block{Print("say {N}");N}
+Risky(N:i64)<transacts><decides>:i64=Block{Print("risky {N}");Require[N>0];N}
+Pt:=struct{X:i64,Y:i64}
+Hello<public>:tuple()=Print("hello")
+Kept<public>:i64=Attempt(Block{Print("kept");Risky[1]},-1)
+Gone<public>:i64=Attempt(Block{Print("gone");Risky[0]},-1)
+Inner<public>:i64=Attempt(Block{A:i64=Attempt(Block{Print("inner");Risky[0]},Block{Print("caught");2});Print("outer {A}");A},-1)
+Undone<public>:i64=Attempt(Block{A:i64=Attempt(Block{Print("inner kept");1},0);Print("outer gone");Risky[A-1]},-1)
+Caught<public>:option(i64)=option{Risky[0]}
+Called<public>:i64=Say(7)+Say(8)
+Die<public>:i64=GetRandomInt(1,6)
+Lost<public>:i64=Attempt(Block{X:=GetRandomInt(1,6);Print("never {X}");Require[X>6];X},-1)
+Next<public>:i64=GetRandomInt(6,1)
+Wide<public>:i64=GetRandomInt(-1000000,1000000)
+Unit<public>:float=GetRandomFloat(0.0,1.0)
+Deck<public>:[]i64=Shuffle(array{1,2,3,4,5})
+ShownDeck<public>:tuple()=Print(ToDiagnostic(Deck))
+ShownDie<public>:tuple()=Print(ToDiagnostic(Die))
+ShownPoint<public>:tuple()=Print(ToDiagnostic(Pt{X:=1,Y:=2}))
+Bye<public>:tuple()=Print("bye {Die} {Next}")

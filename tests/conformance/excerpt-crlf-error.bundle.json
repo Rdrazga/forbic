@@ -1,0 +1,13 @@
+{
+  "root": "main.forb",
+  "modules": [
+    {
+      "path": "main.forb",
+      "source": "Base:=import{\"lib/base.forb\"}\r\nB:i64=Base.One+true\r\n"
+    },
+    {
+      "path": "lib/base.forb",
+      "source": "One<public>:i64=1\r\n"
+    }
+  ]
+}

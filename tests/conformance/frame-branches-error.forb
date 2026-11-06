@@ -1,0 +1,2 @@
+Bad(L:logic,N:i64)<computes>:i64=If(L,1,1/N)
+Value:i64=Bad(false,0)

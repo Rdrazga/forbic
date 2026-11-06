@@ -1,0 +1,1 @@
+{"format":2,"failure_count":1,"truncated":false,"failures":[{"instruction":11,"function":4,"local_instruction":17,"code":"requirement_failed","reason":null,"path":"tests/conformance/while-loops.forb","span":{"start":347,"end":353},"line":5,"column":83}]}

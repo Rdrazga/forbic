@@ -1,0 +1,2 @@
+Xs:[]i64=array{1,0}
+A<public>:[]i64=For(X:Xs,10/X)

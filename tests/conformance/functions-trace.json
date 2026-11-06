@@ -1,0 +1,1 @@
+{"format":2,"failure_count":1,"truncated":false,"failures":[{"instruction":16,"function":2,"local_instruction":15,"code":"requirement_failed","reason":null,"path":"tests/conformance/functions.forb","span":{"start":196,"end":203},"line":4,"column":72}]}

@@ -1,0 +1,25 @@
+# Structured concurrency, P3.3 (RFC-0082): Sync, Race, cancellation and the landings of Defers.
+var Log:[]string = array{}
+Note(S:string)<transacts>:void = Set(Log, Log + array{S})
+
+# Each arm runs as a task of its own; Sync yields their results in arm order.
+Fetch(N:i64, S:float)<transacts><suspends>:i64 = Block{ Defer{ Note("fetch {N} done") }; Sleep(S); N * 10 }
+Both()<transacts><suspends>:tuple(i64, i64) = Sync(Fetch(1, 0.5), Fetch(2, 0.25))
+
+# Race: the first arm to complete wins; the others are cancelled and run their Defers before
+# the Race yields. A cancelled task unwinds through every frame, innermost first.
+Wait(N:i64)<transacts><suspends>:i64 = Block{ Defer{ Note("wait {N} cancelled") }; Sleep(Inf); N }
+Pair()<transacts><suspends>:i64 = Block{ Defer{ Note("pair cancelled") }; P := Sync(Wait(3), Wait(4)); P(0) + P(1) }
+First()<transacts><suspends>:i64 = Race(Pair(), Fetch(5, 1.0))
+
+Main()<transacts><suspends>:void = Block{
+    P := Both()
+    Note("both {P(0)} {P(1)}")
+    Note("first {First()}")
+}
+Started:task(void) = Spawn{ Main() }
+
+# An expression whose arm never ends keeps its task waiting: both are listed at the end.
+Gate:event(i64) = event(i64){}
+Stuck()<transacts><suspends>:tuple(i64, i64) = Sync(Gate.Await(), Fetch(6, 0.1))
+Waiting:task(tuple(i64, i64)) = Spawn{ Stuck() }

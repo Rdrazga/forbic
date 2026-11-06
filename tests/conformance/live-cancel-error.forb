@@ -1,0 +1,6 @@
+# Cancelling reactions, P4.7 (RFC-0084): Cancel is a site, so the body of a When, which runs at
+# once when its guard succeeds and cannot suspend, cannot cancel a reaction itself: it hands off
+# to a task that does.
+var X:i64 = 0
+Other:task(void) = When(X > 5, void(0))
+Stop:task(void) = When(X > 0, Other.Cancel())

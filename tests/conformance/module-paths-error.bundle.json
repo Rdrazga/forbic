@@ -1,0 +1,1 @@
+{"root": "/user@example.com/App", "modules": [{"path": "user@example.com/App/main.forb", "source": "Square<public>:i64 = 9\n"}, {"path": "user@example.com/App/report.forb", "source": "# A path to a folder the tree does not have.\nusing{/user@example.com/Gone}\nTotal<public>:i64 = Square\n"}]}

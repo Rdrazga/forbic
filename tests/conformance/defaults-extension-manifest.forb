@@ -1,0 +1,7 @@
+ExtensionId:string="org.traverse.defaults-test"
+ApiVersion:i64=1
+SourceSha256:string="6ce98e7094182520a8352e83940a28e7315732503856e0b4e580446300624e43"
+WorkBudget:i64=64
+RequestsNotify:logic=false
+RequestsClipboard:logic=false
+RequestsNetwork:logic=false
